@@ -7,7 +7,12 @@
 #endif
 
 SampleEngine::SampleEngine() {}
-SampleEngine::~SampleEngine() {}
+
+SampleEngine::~SampleEngine()
+{
+    // Asegurar que se libera toda la memoria al destruir
+    reset();
+}
 
 void SampleEngine::prepare(double sr, int samplesPerBlock)
 {
@@ -18,6 +23,13 @@ void SampleEngine::reset()
 {
     // Marcar como no cargado primero para detener cualquier acceso
     kitLoaded = false;
+    
+    // Esperar a que termine cualquier carga asíncrona en progreso
+    int maxWait = 100; // 10 segundos máximo
+    while (isLoadingAsync.load() && maxWait-- > 0)
+    {
+        juce::Thread::sleep(100);
+    }
     
     // Esperar un momento para que cualquier thread de audio termine de usar los buffers
     juce::Thread::sleep(10);
@@ -58,14 +70,19 @@ void SampleEngine::loadKit(std::unique_ptr<DrumKit> kit, bool async)
     // Si ya tenemos un kit cargado
     if (currentKit && kitLoaded)
     {
-        // Si es el mismo kit Y los samples están cargados, solo actualizar el kit
+        // Si es el mismo kit Y los samples están cargados, reusar
         if (currentKit->name == kit->name && !audioBufferCache.empty())
         {
             // Actualizar solo la estructura del kit (por si cambió algo)
             currentKit = std::move(kit);
             return;
         }
-        // Es un kit diferente, resetear
+    }
+    
+    // Siempre resetear antes de cargar un kit nuevo o diferente
+    // Esto asegura que no hay fugas de memoria
+    if (currentKit || !audioBufferCache.empty())
+    {
         reset();
     }
     
@@ -123,6 +140,9 @@ void SampleEngine::loadSamplesAsync()
         }
     }
 
+    // Marcar que estamos cargando
+    isLoadingAsync = true;
+
     // Cargar samples en background thread
     juce::Thread::launch([this, fileGroups]()
     {
@@ -135,6 +155,7 @@ void SampleEngine::loadSamplesAsync()
         }
         
         kitLoaded = true;
+        isLoadingAsync = false; // Marcar que terminamos
         
         // Llamar callback si existe (copiar primero para thread-safety)
         std::function<void(bool)> callback;

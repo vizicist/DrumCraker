@@ -2,7 +2,7 @@
 
 **DrumCraker** is a free drum sampler VST3 plugin optimized for Linux and PipeWire, fully compatible with DrumGizmo drum kits. Designed for low-latency performance and realistic drum sound reproduction.
 
-![Version](https://img.shields.io/badge/version-1.1.0-gold)
+![Version](https://img.shields.io/badge/version-1.1.1-gold)
 ![Platform](https://img.shields.io/badge/platform-Linux-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
 

@@ -36,6 +36,7 @@ private:
     
     std::unique_ptr<DrumKit> currentKit;
     std::atomic<bool> kitLoaded{false};
+    std::atomic<bool> isLoadingAsync{false};
     
     // Cache de buffers de audio cargados
     std::map<juce::String, std::unique_ptr<juce::AudioBuffer<float>>> audioBufferCache;
