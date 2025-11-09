@@ -57,20 +57,20 @@ DrumCraker adds natural human feel to MIDI performances, working with both fixed
 
 ## Installation
 
-### Quick Install
+### Option 1: Download Pre-built Release (Recommended)
+
+1. Download the latest `.vst3` from [GitHub Releases](https://github.com/Wamphyre/DrumCraker/releases)
+2. Extract and install:
 
 ```bash
-# Build the plugin
-./build.sh
-
 # Install for current user
-cp -r releases/DrumCraker.vst3 ~/.vst3/
+cp -r DrumCraker.vst3 ~/.vst3/
 
 # Or install system-wide (requires sudo)
-sudo cp -r releases/DrumCraker.vst3 /usr/lib/vst3/
+sudo cp -r DrumCraker.vst3 /usr/lib/vst3/
 ```
 
-### Build from Source
+### Option 2: Build from Source
 
 ```bash
 # Install dependencies (Debian/Ubuntu)
@@ -78,8 +78,13 @@ sudo apt install build-essential cmake git libasound2-dev \
     libjack-jackd2-dev libfreetype-dev libx11-dev libxrandr-dev \
     libxinerama-dev libxcursor-dev libgl1-mesa-dev
 
-# Build
+# Clone repository
+git clone https://github.com/Wamphyre/DrumCraker.git
+cd DrumCraker
+
+# Build and install
 ./build.sh
+cp -r releases/DrumCraker.vst3 ~/.vst3/
 ```
 
 The build script automatically:
@@ -178,25 +183,6 @@ Popular kits include:
 - **Performance**: Processed during asynchronous loading
 - **Supported Rates**: Any source rate (44.1kHz, 48kHz, 88.2kHz, 96kHz, etc.)
 
-## Development
-
-### Building for Development
-
-```bash
-# Clone JUCE manually for development
-git clone https://github.com/juce-framework/JUCE.git
-
-# Build with debug symbols
-mkdir build && cd build
-cmake .. -DCMAKE_BUILD_TYPE=Debug
-make -j$(nproc)
-```
-
-### Compilation Flags
-
-- **Release**: `-O3 -march=native -flto`
-- **Debug**: `-g -O0`
-
 ## Roadmap
 
 - [ ] Per-channel volume and pan controls
@@ -212,8 +198,6 @@ make -j$(nproc)
 If you find DrumCraker useful and want to support its development, consider buying me a beer! ☕
 
 [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/wamphyre94078)
-
-For issues, questions, or contributions, please visit the project repository.
 
 ---
 
