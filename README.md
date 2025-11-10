@@ -186,6 +186,7 @@ Popular kits include:
 ## Roadmap
 
 - [ ] Per-channel volume and pan controls
+- [ ] Add compatibility for Hydrogen drumkits
 
 ## Credits
 
