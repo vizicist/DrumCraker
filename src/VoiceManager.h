@@ -10,14 +10,20 @@ public:
     Voice() = default;
     
     void start(const DrumSample* sample, float velocity, SampleEngine* engine, 
-               int offset = 0, double sampleRate = 44100.0);
+               int offset = 0, double sampleRate = 44100.0, const juce::String& instrumentName = "");
     void stop();
     bool isActive() const { return active; }
     
-    void renderNextBlock(juce::AudioBuffer<float>& outputBuffer, 
-                        int startSample, int numSamples);
+    // Render all channels of sample to buffer
+    void renderToBuffer(juce::AudioBuffer<float>& outputBuffer,
+                       int startSample, int numSamples);
+    
+    // Advance playback position (call once per block)
+    void advancePosition(int numSamples);
     
     int getStartOffset() const { return startOffset; }
+    const DrumSample* getCurrentSample() const { return currentSample; }
+    juce::String getInstrumentName() const { return instrumentName; }
 
 private:
     bool active = false;
@@ -27,6 +33,7 @@ private:
     int startOffset = 0;
     float currentVelocity = 1.0f;
     double playbackSampleRate = 44100.0;
+    juce::String instrumentName;
 };
 
 class VoiceManager
@@ -42,8 +49,18 @@ public:
     
     double getSampleRate() const { return sampleRate; }
     
+    // Render all voices to buffer (complete mix)
     void renderNextBlock(juce::AudioBuffer<float>& outputBuffer,
                         int startSample, int numSamples);
+    
+    // Multi-channel rendering: render voices for a specific bus
+    void renderNextBlockForBus(juce::AudioBuffer<float>& busBuffer,
+                              int startSample, int numSamples,
+                              int targetBusIndex,
+                              const std::map<juce::String, int>& instrumentToBusMap);
+    
+    // Advance all voice positions (call after rendering)
+    void advanceAllVoices(int numSamples);
 
 private:
     static constexpr int maxVoices = 64;

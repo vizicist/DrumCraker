@@ -11,7 +11,7 @@ std::unique_ptr<DrumKit> DrumKitLoader::loadKit(const juce::File& kitFile)
     if (!parseKitXML(kitFile, *kit))
         return nullptr;
 
-    // Buscar y cargar midimap
+    // Find and load midimap
     auto midiMapFile = findMidiMapFile(kitFile);
     if (midiMapFile.existsAsFile())
         parseMidiMapXML(midiMapFile, *kit);
@@ -28,7 +28,7 @@ bool DrumKitLoader::parseKitXML(const juce::File& kitFile, DrumKit& kit)
     kit.name = xml->getStringAttribute("name");
     kit.description = xml->getStringAttribute("description");
 
-    // Parsear canales
+    // Parse channels
     if (auto* channelsNode = xml->getChildByName("channels"))
     {
         for (auto* channelNode : channelsNode->getChildIterator())
@@ -38,7 +38,7 @@ bool DrumKitLoader::parseKitXML(const juce::File& kitFile, DrumKit& kit)
         }
     }
 
-    // Parsear instrumentos
+    // Parse instruments
     if (auto* instrumentsNode = xml->getChildByName("instruments"))
     {
         for (auto* instrumentNode : instrumentsNode->getChildIterator())
@@ -50,14 +50,14 @@ bool DrumKitLoader::parseKitXML(const juce::File& kitFile, DrumKit& kit)
             instrument->name = instrumentNode->getStringAttribute("name");
             instrument->group = instrumentNode->getStringAttribute("group");
 
-            // Cargar archivo de instrumento
+            // Load instrument file
             auto instrumentFile = kit.basePath.getChildFile(
                 instrumentNode->getStringAttribute("file"));
 
             if (instrumentFile.existsAsFile() && 
                 parseInstrumentXML(instrumentFile, *instrument))
             {
-                // Parsear channel map
+                // Parse channel map
                 for (auto* channelMapNode : instrumentNode->getChildIterator())
                 {
                     if (channelMapNode->hasTagName("channelmap"))
@@ -143,7 +143,7 @@ juce::File DrumKitLoader::findMidiMapFile(const juce::File& kitFile)
     auto kitName = kitFile.getFileNameWithoutExtension();
     auto basePath = kitFile.getParentDirectory();
     
-    // Buscar archivo midimap con el mismo nombre base
+    // Find midimap file with same base name
     auto midiMapName = kitName.replace("DRSKit", "Midimap");
     return basePath.getChildFile(midiMapName + ".xml");
 }

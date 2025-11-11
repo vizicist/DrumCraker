@@ -34,7 +34,7 @@ private:
     juce::Slider masterVolumeSlider;
     juce::Label masterVolumeLabel;
     
-    // Controles de humanización
+    // Humanization controls
     juce::Slider velocityRandomnessSlider;
     juce::Label velocityRandomnessLabel;
     juce::Slider timingRandomnessSlider;

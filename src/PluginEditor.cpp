@@ -3,13 +3,14 @@
 DrumSamplerEditor::DrumSamplerEditor(DrumSamplerProcessor& p)
     : AudioProcessorEditor(&p), processor(p)
 {
-    // Cargar imagen de fondo desde recursos del bundle VST3
+    
+    // Load background image from VST3 bundle resources
     juce::File backgroundFile = juce::File::getSpecialLocation(juce::File::currentExecutableFile)
         .getParentDirectory().getParentDirectory().getChildFile("Resources").getChildFile("background.png");
     
     if (!backgroundFile.existsAsFile())
     {
-        // Fallback: intentar desde working directory
+        // Fallback: try from working directory
         backgroundFile = juce::File::getCurrentWorkingDirectory()
             .getChildFile("assets").getChildFile("background.png");
     }
@@ -17,10 +18,10 @@ DrumSamplerEditor::DrumSamplerEditor(DrumSamplerProcessor& p)
     if (backgroundFile.existsAsFile())
         backgroundImage = juce::ImageFileFormat::loadFrom(backgroundFile);
     
-    // Tamaño de la ventana igual al background
+    // Window size equal to background
     setSize(1024, 939);
     
-    // Timer para actualizar UI
+    // Timer to update UI
     startTimer(100);
 
     // Version label
@@ -30,10 +31,10 @@ DrumSamplerEditor::DrumSamplerEditor(DrumSamplerProcessor& p)
     versionLabel.setColour(juce::Label::textColourId, juce::Colour(0xFFFFD700)); // Gold
     addAndMakeVisible(versionLabel);
 
-    // Load buttons con estilo moderno y sombra más opaca
+    // Load buttons with modern style and more opaque shadow
     auto setupButton = [](juce::TextButton& button, const juce::String& text) {
         button.setButtonText(text);
-        button.setColour(juce::TextButton::buttonColourId, juce::Colour(0xD0151515));  // Más opaco
+        button.setColour(juce::TextButton::buttonColourId, juce::Colour(0xD0151515));  // More opaque
         button.setColour(juce::TextButton::buttonOnColourId, juce::Colour(0xE0252525));
         button.setColour(juce::TextButton::textColourOffId, juce::Colours::white);
         button.setColour(juce::TextButton::textColourOnId, juce::Colour(0xFFFFD700));
@@ -48,12 +49,12 @@ DrumSamplerEditor::DrumSamplerEditor(DrumSamplerProcessor& p)
     loadMidiMapButton.onClick = [this] { loadMidiMapButtonClicked(); };
     addAndMakeVisible(loadMidiMapButton);
 
-    // Status labels con sombra más opaca para mejor visibilidad
+    // Status labels with more opaque shadow for better visibility
     auto setupStatusLabel = [](juce::Label& label, const juce::String& text, juce::Colour textColour) {
         label.setText(text, juce::dontSendNotification);
         label.setFont(juce::Font(17.0f, juce::Font::bold));
         label.setColour(juce::Label::textColourId, textColour);
-        label.setColour(juce::Label::backgroundColourId, juce::Colour(0xC0000000));  // Más opaco
+        label.setColour(juce::Label::backgroundColourId, juce::Colour(0xC0000000));  // More opaque
         label.setJustificationType(juce::Justification::centred);
     };
     
@@ -67,12 +68,12 @@ DrumSamplerEditor::DrumSamplerEditor(DrumSamplerProcessor& p)
     statusLabel.setFont(juce::Font(16.0f, juce::Font::italic));
     addAndMakeVisible(statusLabel);
 
-    // Sliders con estilo moderno y sombra más opaca
+    // Sliders with modern style and more opaque shadow
     auto setupSlider = [](juce::Slider& slider, juce::Label& label, const juce::String& labelText) {
         label.setText(labelText, juce::dontSendNotification);
         label.setFont(juce::Font(18.0f, juce::Font::bold));
         label.setColour(juce::Label::textColourId, juce::Colours::white);
-        label.setColour(juce::Label::backgroundColourId, juce::Colour(0xB0000000));  // Más opaco
+        label.setColour(juce::Label::backgroundColourId, juce::Colour(0xB0000000));  // More opaque
         label.setJustificationType(juce::Justification::centred);
         
         slider.setSliderStyle(juce::Slider::RotaryHorizontalVerticalDrag);
@@ -81,7 +82,7 @@ DrumSamplerEditor::DrumSamplerEditor(DrumSamplerProcessor& p)
         slider.setColour(juce::Slider::rotarySliderOutlineColourId, juce::Colour(0xFF707070));
         slider.setColour(juce::Slider::thumbColourId, juce::Colour(0xFFFFD700));
         slider.setColour(juce::Slider::textBoxTextColourId, juce::Colours::white);
-        slider.setColour(juce::Slider::textBoxBackgroundColourId, juce::Colour(0xC0000000));  // Más opaco
+        slider.setColour(juce::Slider::textBoxBackgroundColourId, juce::Colour(0xC0000000));  // More opaque
         slider.setColour(juce::Slider::textBoxOutlineColourId, juce::Colour(0xFF505050));
     };
 
@@ -127,13 +128,13 @@ DrumSamplerEditor::DrumSamplerEditor(DrumSamplerProcessor& p)
     addAndMakeVisible(roundRobinSlider);
     addAndMakeVisible(roundRobinLabel);
     
-    // Actualizar UI con estado actual
+    // Update UI with current state
     updateUIFromProcessor();
 }
 
 void DrumSamplerEditor::timerCallback()
 {
-    // Actualizar sliders si los parámetros cambiaron
+    // Update sliders if parameters changed
     if (std::abs(masterVolumeSlider.getValue() - processor.masterVolume->get()) > 0.01)
         masterVolumeSlider.setValue(processor.masterVolume->get(), juce::dontSendNotification);
     
@@ -146,7 +147,7 @@ void DrumSamplerEditor::timerCallback()
     if (std::abs(roundRobinSlider.getValue() - processor.roundRobinVariation->get()) > 0.001)
         roundRobinSlider.setValue(processor.roundRobinVariation->get(), juce::dontSendNotification);
     
-    // Actualizar status según el estado de carga
+    // Update status according to loading state
     bool loadingKit = processor.getIsLoadingKit();
     bool loadingMidiMap = processor.getIsLoadingMidiMap();
     
@@ -174,14 +175,14 @@ void DrumSamplerEditor::timerCallback()
 
 void DrumSamplerEditor::updateUIFromProcessor()
 {
-    // Actualizar labels con información del kit cargado
+    // Update labels with loaded kit information
     if (!processor.getCurrentKitName().isEmpty())
     {
         kitNameLabel.setText("Kit: " + processor.getCurrentKitName(), juce::dontSendNotification);
         statusLabel.setText("Ready", juce::dontSendNotification);
     }
     
-    // Actualizar label del MIDI map
+    // Update MIDI map label
     if (!processor.getCurrentMidiMapName().isEmpty())
     {
         midiMapLabel.setText("MIDI Map: " + processor.getCurrentMidiMapName(), juce::dontSendNotification);
@@ -192,14 +193,14 @@ DrumSamplerEditor::~DrumSamplerEditor() {}
 
 void DrumSamplerEditor::paint(juce::Graphics& g)
 {
-    // Dibujar imagen de fondo
+    // Draw background image
     if (backgroundImage.isValid())
     {
         g.drawImage(backgroundImage, getLocalBounds().toFloat());
     }
     else
     {
-        // Fallback: gradiente oscuro
+        // Fallback: dark gradient
         g.fillAll(juce::Colour(0xFF1A1A1A));
         juce::ColourGradient gradient(juce::Colour(0xFF2A2A2A), 0, 0,
                                      juce::Colour(0xFF0A0A0A), 0, static_cast<float>(getHeight()), false);
@@ -212,29 +213,29 @@ void DrumSamplerEditor::resized()
 {
     auto bounds = getLocalBounds();
     
-    // Version label en la esquina superior derecha
+    // Version label in top right corner
     versionLabel.setBounds(bounds.getWidth() - 100, 95, 80, 25);
     
-    // Botones de carga MÁS ARRIBA - por encima del texto "drumcraker" del background
+    // Load buttons HIGHER UP - above "drumcraker" text in background
     int buttonWidth = 280;
     int buttonHeight = 45;
     int buttonSpacing = 60;
-    int buttonY = 80;  // 50px más arriba
+    int buttonY = 80;  // 50px higher
     int totalButtonWidth = (buttonWidth * 2) + buttonSpacing;
     int buttonStartX = (bounds.getWidth() - totalButtonWidth) / 2;
     
     loadKitButton.setBounds(buttonStartX, buttonY, buttonWidth, buttonHeight);
     loadMidiMapButton.setBounds(buttonStartX + buttonWidth + buttonSpacing, buttonY, buttonWidth, buttonHeight);
     
-    // Knobs MÁS ABAJO - cerca de los amplificadores del fondo
+    // Knobs LOWER DOWN - near amplifiers in background
     int knobSize = 140;
     int knobSpacing = 50;
-    int knobY = 540;  // Más abajo, cerca de los amplis
+    int knobY = 540;  // Lower, near amps
     int totalKnobWidth = (knobSize * 4) + (knobSpacing * 3);
     int knobStartX = (bounds.getWidth() - totalKnobWidth) / 2;
     
-    // Status labels AÚN MÁS ABAJO - cerca del footer
-    int labelY = 750;  // Más cerca del footer
+    // Status labels EVEN LOWER - near footer
+    int labelY = 750;  // Closer to footer
     int labelWidth = bounds.getWidth() - 200;
     int labelX = (bounds.getWidth() - labelWidth) / 2;
     
@@ -283,7 +284,7 @@ void DrumSamplerEditor::loadKitButtonClicked()
                 kitNameLabel.setText("Kit: " + processor.getCurrentKitName(), juce::dontSendNotification);
                 statusLabel.setText("Loading samples...", juce::dontSendNotification);
                 
-                // El callback se llamará cuando termine la carga asíncrona
+                // Callback will be called when async loading finishes
             }
             else
             {

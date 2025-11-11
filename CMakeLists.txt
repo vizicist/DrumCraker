@@ -1,16 +1,16 @@
 cmake_minimum_required(VERSION 3.15)
-project(DrumCrakerVST VERSION 1.1.1)
+project(DrumCrakerVST VERSION 1.2.0)
 
-# Definir versión del plugin
+# Define plugin version
 set(PLUGIN_VERSION_MAJOR 1)
-set(PLUGIN_VERSION_MINOR 1)
-set(PLUGIN_VERSION_PATCH 1)
+set(PLUGIN_VERSION_MINOR 2)
+set(PLUGIN_VERSION_PATCH 0)
 set(PLUGIN_VERSION "${PLUGIN_VERSION_MAJOR}.${PLUGIN_VERSION_MINOR}.${PLUGIN_VERSION_PATCH}")
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# Optimizaciones para rendimiento
+# Performance optimizations
 set(CMAKE_CXX_FLAGS_RELEASE "-O3 -march=native -flto")
 
 # JUCE
@@ -35,7 +35,6 @@ target_sources(DrumCrakerVST PRIVATE
     src/DrumKitLoader.cpp
     src/SampleEngine.cpp
     src/VoiceManager.cpp
-    src/CacheManager.cpp
 )
 
 target_compile_definitions(DrumCrakerVST PUBLIC

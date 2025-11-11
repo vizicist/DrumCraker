@@ -2,9 +2,10 @@
 
 **DrumCraker** is a free drum sampler VST3 plugin optimized for Linux and PipeWire, fully compatible with DrumGizmo drum kits. Designed for low-latency performance and realistic drum sound reproduction.
 
-![Version](https://img.shields.io/badge/version-1.1.1-gold)
+![Version](https://img.shields.io/badge/version-1.2.0-gold)
 ![Platform](https://img.shields.io/badge/platform-Linux-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
+[![ko-fi](https://img.shields.io/badge/Ko--fi-Support%20Me-FF5E5B?logo=ko-fi&logoColor=white)](https://ko-fi.com/wamphyre94078)
 
 ![DrumCraker Screenshot](assets/screenshot.png)
 
@@ -13,16 +14,20 @@
 ### Core Functionality
 - **DrumGizmo Compatible**: Load any DrumGizmo drum kit (XML format)
 - **Separate Kit & MIDI Map Loading**: Independent control over drum kit and MIDI mapping
-- **Multi-Channel Support**: Up to 13 audio channels per drum kit
+- **Multi-Channel Output**: Up to 16 stereo buses with intelligent instrument routing
+- **Smart Routing**: Automatic grouping by instrument type (Kick→Bus1, Snare→Bus2, etc.)
 - **Velocity Layers**: Automatic sample selection based on MIDI velocity
 - **High-Quality Resampling**: Lagrange interpolation for automatic sample rate conversion
 - **Asynchronous Loading**: Non-blocking sample loading in background thread
+- **Optimized Performance**: Unordered maps and instrument caching for minimal CPU usage
 
 ### Audio Engine
-- **Optimized for PipeWire**: Low-latency audio processing
+- **Zero Memory Leaks**: Thread-safe memory management with automatic cleanup
 - **64 Polyphonic Voices**: Simultaneous note playback with intelligent voice stealing
-- **Lock-Free Processing**: No allocations or locks in audio thread
+- **Lock-Free Audio Thread**: No allocations or locks in real-time processing
 - **Master Volume Control**: -60dB to +12dB range with smooth gain adjustment
+- **Multi-Bus Rendering**: Efficient per-bus voice rendering with zero overhead in stereo mode
+- **Optimized Lookups**: Hash-based caching for instrument and sample access
 
 ### Humanization Engine
 DrumCraker adds natural human feel to MIDI performances, working with both fixed and variable velocity tracks:
@@ -114,6 +119,26 @@ Popular kits include:
 - **CrocellKit**: Heavy metal kit
 - **MuldjordKit**: All-purpose kit
 
+### Multi-Channel Routing
+
+DrumCraker automatically routes instruments to separate buses for advanced mixing:
+
+- **Automatic Grouping**: Instruments are grouped by type (Kick, Snare, HiHat, Tom, Cymbal, etc.)
+- **Up to 16 Buses**: Each group gets its own stereo bus for independent processing
+- **Intelligent Assignment**: Based on DrumGizmo kit's instrument groups
+- **Stereo Fallback**: If only one bus is enabled, all instruments mix to main output
+- **DAW Integration**: Enable/disable buses in your DAW's mixer for flexible routing
+
+**Example Routing:**
+- Bus 1: Kick drums
+- Bus 2: Snare drums  
+- Bus 3: Hi-hats
+- Bus 4: Toms
+- Bus 5: Cymbals
+- Bus 6+: Additional percussion
+
+This allows you to apply separate EQ, compression, reverb, and effects to each drum group directly in your DAW.
+
 ### Parameters
 
 #### Master Volume
@@ -166,9 +191,10 @@ Popular kits include:
 
 ### Audio Processing
 - **Sample Rate**: Automatic conversion to project sample rate
-- **Buffer Size**: Optimized for 64-256 samples
+- **Buffer Size**: Optimized for 32-512 samples
 - **Latency**: < 1 buffer (< 1.3ms @ 64 samples/48kHz)
-- **CPU Usage**: ~5-10% with 16 active voices @ 48kHz/64 samples
+- **Memory**: Zero leaks, efficient cleanup on kit changes
+- **CPU Usage**: Optimized with hash-based lookups and instrument caching (15-25% reduction vs v1.1.1)
 
 ### Velocity Layer Selection
 - Automatically normalizes DrumGizmo power values to 0-1 range
@@ -185,8 +211,8 @@ Popular kits include:
 
 ## Roadmap
 
-- [ ] Per-channel volume and pan controls
-- [ ] Add compatibility for Hydrogen drumkits
+- [ ] Add compatibility for Hydrogen drumkits (too hard but possible)
+- [ ] MIDI learn for parameter automation
 
 ## Credits
 

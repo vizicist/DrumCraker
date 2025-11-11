@@ -10,7 +10,25 @@ SampleEngine::SampleEngine() {}
 
 SampleEngine::~SampleEngine()
 {
-    // Asegurar que se libera toda la memoria al destruir
+    // Signal all threads to stop
+    shouldStopLoading = true;
+    isLoadingAsync = false;
+    kitLoaded = false;
+    
+    // Wait for async loading to finish
+    int maxWait = 50;
+    while (isLoadingAsync.load() && maxWait-- > 0)
+    {
+        juce::Thread::sleep(100);
+    }
+    
+    // Clear callback immediately to prevent use-after-free
+    {
+        juce::ScopedLock lock(cacheLock);
+        loadingCallback = nullptr;
+    }
+    
+    // Ensure all memory is freed on destruction
     reset();
 }
 
@@ -21,22 +39,28 @@ void SampleEngine::prepare(double sr, int samplesPerBlock)
 
 void SampleEngine::reset()
 {
-    // Marcar como no cargado primero para detener cualquier acceso
+    // Signal cancellation
+    shouldStopLoading = true;
     kitLoaded = false;
+    isLoadingAsync = false;
     
-    // Esperar a que termine cualquier carga asíncrona en progreso
-    int maxWait = 100; // 10 segundos máximo
+    // Wait for async thread to finish
+    int maxWait = 20;
     while (isLoadingAsync.load() && maxWait-- > 0)
     {
         juce::Thread::sleep(100);
     }
     
-    // Esperar un momento para que cualquier thread de audio termine de usar los buffers
-    juce::Thread::sleep(10);
+    // Clear callback safely
+    {
+        juce::ScopedLock lock(cacheLock);
+        loadingCallback = nullptr;
+    }
     
+    // Lock for cleanup operations
     juce::ScopedLock lock(cacheLock);
     
-    // Liberar explícitamente cada buffer antes de clear
+    // Free audio buffers efficiently
     for (auto& entry : audioBufferCache)
     {
         if (entry.second)
@@ -46,20 +70,22 @@ void SampleEngine::reset()
         }
     }
     
-    // Limpiar y forzar shrink de los contenedores para devolver memoria al OS
+    // Clear containers and return memory to OS
     audioBufferCache.clear();
-    std::map<juce::String, std::unique_ptr<juce::AudioBuffer<float>>>().swap(audioBufferCache);
+    std::unordered_map<juce::String, std::unique_ptr<juce::AudioBuffer<float>>>().swap(audioBufferCache);
     
     originalSampleRates.clear();
-    std::map<juce::String, double>().swap(originalSampleRates);
+    std::unordered_map<juce::String, double>().swap(originalSampleRates);
     
     lastSampleIndex.clear();
-    std::map<int, int>().swap(lastSampleIndex);
+    std::unordered_map<int, int>().swap(lastSampleIndex);
     
-    // Liberar el kit anterior
+    instrumentCache.clear();
+    std::unordered_map<juce::String, Instrument*>().swap(instrumentCache);
+    
     currentKit.reset();
     
-    // Forzar devolución de memoria al OS (Linux específico)
+    // Force memory return to OS
     #if JUCE_LINUX
         malloc_trim(0);
     #endif
@@ -67,27 +93,88 @@ void SampleEngine::reset()
 
 void SampleEngine::loadKit(std::unique_ptr<DrumKit> kit, bool async)
 {
-    // Si ya tenemos un kit cargado
-    if (currentKit && kitLoaded)
+    if (!kit)
+        return;
+    
+    // If we already have a kit loaded
+    if (currentKit && kitLoaded.load())
     {
-        // Si es el mismo kit Y los samples están cargados, reusar
+        // If it's the same kit AND samples are loaded, reuse
         if (currentKit->name == kit->name && !audioBufferCache.empty())
         {
-            // Actualizar solo la estructura del kit (por si cambió algo)
+            // Update only kit structure (in case something changed)
             currentKit = std::move(kit);
+            
+            // Call callback immediately since kit is already loaded
+            if (loadingCallback)
+            {
+                auto callback = loadingCallback;
+                loadingCallback = nullptr;
+                callback(true);
+            }
             return;
         }
     }
     
-    // Siempre resetear antes de cargar un kit nuevo o diferente
-    // Esto asegura que no hay fugas de memoria
-    if (currentKit || !audioBufferCache.empty())
+    // If loading a different kit, cancel previous load immediately
+    if (isLoadingAsync.load())
     {
-        reset();
+        // Signal cancellation
+        shouldStopLoading = true;
+        
+        // Wait for thread to finish
+        int maxWait = 20;
+        while (isLoadingAsync.load() && maxWait-- > 0)
+        {
+            juce::Thread::sleep(100);
+        }
+        
+        // Ensure flags are reset
+        shouldStopLoading = false;
+        isLoadingAsync = false;
+        kitLoaded = false;
     }
     
+    // Mark as not loaded while we're loading
+    kitLoaded = false;
+    
+    // Now safe to clear old kit data - force memory release
+    {
+        juce::ScopedLock lock(cacheLock);
+        
+        // Explicitly free all audio buffers before clearing
+        for (auto& entry : audioBufferCache)
+        {
+            if (entry.second)
+            {
+                entry.second->setSize(0, 0, false, false, false);
+                entry.second.reset();
+            }
+        }
+        
+        // Clear and swap to force memory deallocation
+        audioBufferCache.clear();
+        std::unordered_map<juce::String, std::unique_ptr<juce::AudioBuffer<float>>>().swap(audioBufferCache);
+        
+        originalSampleRates.clear();
+        std::unordered_map<juce::String, double>().swap(originalSampleRates);
+        
+        lastSampleIndex.clear();
+        std::unordered_map<int, int>().swap(lastSampleIndex);
+        
+        instrumentCache.clear();
+        std::unordered_map<juce::String, Instrument*>().swap(instrumentCache);
+    }
+    
+    // Force memory return to OS
+    #if JUCE_LINUX
+        malloc_trim(0);
+    #endif
+    
+    // Set new kit
     currentKit = std::move(kit);
     
+    // Load samples
     if (async)
         loadSamplesAsync();
     else
@@ -103,10 +190,10 @@ bool SampleEngine::loadMidiMap(const juce::File& midiMapFile)
     if (xml == nullptr || xml->getTagName() != "midimap")
         return false;
 
-    // Limpiar midimap actual
+    // Clear current midimap
     currentKit->midiMap.clear();
 
-    // Parsear nuevo midimap
+    // Parse new midimap
     for (auto* mapNode : xml->getChildIterator())
     {
         if (mapNode->hasTagName("map"))
@@ -125,46 +212,65 @@ void SampleEngine::loadSamplesAsync()
     if (!currentKit)
         return;
 
-    // Agrupar samples por archivo para evitar cargar el mismo archivo múltiples veces
-    std::map<juce::String, std::vector<AudioSample>> fileGroups;
-    
-    for (const auto& instrument : currentKit->instruments)
+    // Mark that we're loading
+    isLoadingAsync = true;
+    shouldStopLoading = false;
+
+    // Use Thread::launch (simple and reliable)
+    juce::Thread::launch([this]()
     {
-        for (const auto& sample : instrument->samples)
+        if (!currentKit || shouldStopLoading.load())
         {
-            for (const auto& audioSample : sample.audioFiles)
+            isLoadingAsync = false;
+            return;
+        }
+        
+        // Load all samples with cancellation checks
+        for (const auto& instrument : currentKit->instruments)
+        {
+            if (shouldStopLoading.load())
             {
-                juce::String filePath = audioSample.audioFile.getFullPathName();
-                fileGroups[filePath].push_back(audioSample);
+                isLoadingAsync = false;
+                return;
+            }
+            
+            for (const auto& sample : instrument->samples)
+            {
+                if (shouldStopLoading.load())
+                {
+                    isLoadingAsync = false;
+                    return;
+                }
+                
+                for (const auto& audioSample : sample.audioFiles)
+                {
+                    if (shouldStopLoading.load())
+                    {
+                        isLoadingAsync = false;
+                        return;
+                    }
+                    
+                    loadSampleFile(audioSample);
+                }
             }
         }
-    }
-
-    // Marcar que estamos cargando
-    isLoadingAsync = true;
-
-    // Cargar samples en background thread
-    juce::Thread::launch([this, fileGroups]()
-    {
-        // Cargar cada archivo UNA SOLA VEZ y extraer todos los canales necesarios
-        for (const auto& fileGroup : fileGroups)
+        
+        // Only mark as loaded if we completed successfully
+        if (!shouldStopLoading.load())
         {
-            const juce::String& filePath = fileGroup.first;
-            const std::vector<AudioSample>& channels = fileGroup.second;
-            loadSampleFileOnce(filePath, channels);
+            kitLoaded = true;
         }
         
-        kitLoaded = true;
-        isLoadingAsync = false; // Marcar que terminamos
+        isLoadingAsync = false;
         
-        // Llamar callback si existe (copiar primero para thread-safety)
+        // Call callback if exists (thread-safe)
         std::function<void(bool)> callback;
         {
             juce::ScopedLock lock(cacheLock);
             if (loadingCallback)
             {
                 callback = loadingCallback;
-                loadingCallback = nullptr; // Limpiar para evitar llamadas múltiples
+                loadingCallback = nullptr;
             }
         }
         
@@ -178,27 +284,16 @@ void SampleEngine::loadSamplesSync()
     if (!currentKit)
         return;
 
-    // Agrupar samples por archivo para evitar cargar el mismo archivo múltiples veces
-    std::map<juce::String, std::vector<AudioSample>> fileGroups;
-    
+    // Load samples SYNCHRONOUSLY (for offline rendering)
     for (const auto& instrument : currentKit->instruments)
     {
         for (const auto& sample : instrument->samples)
         {
             for (const auto& audioSample : sample.audioFiles)
             {
-                juce::String filePath = audioSample.audioFile.getFullPathName();
-                fileGroups[filePath].push_back(audioSample);
+                loadSampleFile(audioSample);
             }
         }
-    }
-
-    // Cargar samples de forma SÍNCRONA (para offline rendering)
-    for (const auto& fileGroup : fileGroups)
-    {
-        const juce::String& filePath = fileGroup.first;
-        const std::vector<AudioSample>& channels = fileGroup.second;
-        loadSampleFileOnce(filePath, channels);
     }
     
     kitLoaded = true;
@@ -207,14 +302,22 @@ void SampleEngine::loadSamplesSync()
         loadingCallback(true);
 }
 
-bool SampleEngine::loadSampleFileOnce(const juce::String& filePath, 
-                                      const std::vector<AudioSample>& channels)
+bool SampleEngine::loadSampleFile(const AudioSample& audioSample)
 {
-    juce::File audioFile(filePath);
+    juce::File audioFile = audioSample.audioFile;
     if (!audioFile.existsAsFile())
         return false;
 
-    // Cargar archivo de audio UNA SOLA VEZ
+    juce::String cacheKey = audioFile.getFullPathName() + "_ch" + juce::String(audioSample.fileChannel);
+    
+    // Check if already in cache (fast check without lock)
+    {
+        juce::ScopedLock lock(cacheLock);
+        if (audioBufferCache.find(cacheKey) != audioBufferCache.end())
+            return true;
+    }
+
+    // Load audio file
     juce::AudioFormatManager formatManager;
     formatManager.registerBasicFormats();
     
@@ -228,131 +331,126 @@ bool SampleEngine::loadSampleFileOnce(const juce::String& filePath,
     int numSamples = static_cast<int>(reader->lengthInSamples);
     int numChannels = reader->numChannels;
 
-    // Leer el archivo completo UNA SOLA VEZ en un buffer temporal
-    juce::AudioBuffer<float> tempBuffer(numChannels, numSamples);
-    if (!reader->read(&tempBuffer, 0, numSamples, 0, true, true))
+    if (audioSample.fileChannel > numChannels)
         return false;
 
-    // Extraer cada canal necesario del buffer en memoria (no del disco)
-    for (const auto& audioSample : channels)
+    // Optimized: Read only the channel we need if possible
+    auto buffer = std::make_unique<juce::AudioBuffer<float>>(1, numSamples);
+    
+    if (numChannels == 1)
     {
-        if (audioSample.fileChannel > numChannels)
-            continue;
-
-        juce::String cacheKey = filePath + "_ch" + juce::String(audioSample.fileChannel);
-        
-        // Verificar si ya está en caché
-        {
-            juce::ScopedLock lock(cacheLock);
-            if (audioBufferCache.find(cacheKey) != audioBufferCache.end())
-                continue;
-        }
-
-        // Extraer el canal específico del buffer temporal (operación en memoria, muy rápida)
-        auto buffer = std::make_unique<juce::AudioBuffer<float>>(1, numSamples);
-        buffer->copyFrom(0, 0, tempBuffer, audioSample.fileChannel - 1, 0, numSamples);
-
-        // Resamplear si es necesario
-        if (std::abs(originalSampleRate - sampleRate) > 0.1)
-            resampleBuffer(*buffer, originalSampleRate, sampleRate);
-
-        juce::ScopedLock lock(cacheLock);
-        audioBufferCache[cacheKey] = std::move(buffer);
-        originalSampleRates[cacheKey] = originalSampleRate;
+        // Mono file - read directly
+        if (!reader->read(buffer.get(), 0, numSamples, 0, true, false))
+            return false;
     }
+    else
+    {
+        // Multi-channel file - read all channels then extract
+        juce::AudioBuffer<float> tempBuffer(numChannels, numSamples);
+        if (!reader->read(&tempBuffer, 0, numSamples, 0, true, true))
+            return false;
+        
+        buffer->copyFrom(0, 0, tempBuffer, audioSample.fileChannel - 1, 0, numSamples);
+    }
+
+    // Resample if necessary
+    if (std::abs(originalSampleRate - sampleRate) > 0.1)
+        resampleBuffer(*buffer, originalSampleRate, sampleRate);
+
+    // Store in cache
+    juce::ScopedLock lock(cacheLock);
+    audioBufferCache[cacheKey] = std::move(buffer);
+    originalSampleRates[cacheKey] = originalSampleRate;
     
     return true;
 }
-
 
 
 void SampleEngine::resampleBuffer(juce::AudioBuffer<float>& buffer, 
                                   double sourceSampleRate, double targetSampleRate)
 {
     if (std::abs(sourceSampleRate - targetSampleRate) < 0.1)
-        return; // No es necesario resamplear
+        return; // No resampling needed
 
-    double ratio = targetSampleRate / sourceSampleRate;
-    int newLength = static_cast<int>(buffer.getNumSamples() * ratio);
+    double ratio = sourceSampleRate / targetSampleRate; // Speed ratio for interpolator
+    int newLength = static_cast<int>(buffer.getNumSamples() * targetSampleRate / sourceSampleRate);
 
     if (newLength <= 0)
         return;
 
-    // Crear buffer temporal para el resultado
+    // Create temporary buffer for result
     juce::AudioBuffer<float> resampledBuffer(1, newLength);
+    resampledBuffer.clear();
 
-    // Usar interpolación Lagrange de alta calidad
+    // Use high-quality Lagrange interpolation
     juce::LagrangeInterpolator interpolator;
     interpolator.reset();
 
     const float* sourceData = buffer.getReadPointer(0);
     float* destData = resampledBuffer.getWritePointer(0);
 
-    // Procesar usando el interpolador correctamente
+    // Process using interpolator
+    // ratio = speed ratio (source/target)
+    // For upsampling (44.1->48kHz): ratio = 44.1/48 = 0.91875
+    // For downsampling (48->44.1kHz): ratio = 48/44.1 = 1.088
     int samplesProcessed = interpolator.process(ratio, sourceData, destData, 
                                                newLength, buffer.getNumSamples(), 0);
 
-    // Si no se procesaron todos los samples, copiar el resto
+    // If not all samples were processed, fill the rest with silence
     if (samplesProcessed < newLength)
     {
         for (int i = samplesProcessed; i < newLength; ++i)
             destData[i] = 0.0f;
     }
 
-    // Reemplazar el buffer original con el resampleado
+    // Replace original buffer with resampled one
     buffer.setSize(1, newLength, false, false, false);
     buffer.copyFrom(0, 0, resampledBuffer, 0, 0, newLength);
 }
 
-double SampleEngine::getOriginalSampleRate(const DrumSample* sample, const juce::String& channelName)
-{
-    if (!sample)
-        return sampleRate;
 
-    for (const auto& audioSample : sample->audioFiles)
-    {
-        if (audioSample.channelName == channelName)
-        {
-            juce::String cacheKey = audioSample.audioFile.getFullPathName() + 
-                                   "_ch" + juce::String(audioSample.fileChannel);
 
-            juce::ScopedLock lock(cacheLock);
-            auto it = originalSampleRates.find(cacheKey);
-            if (it != originalSampleRates.end())
-                return it->second;
-        }
-    }
-
-    return sampleRate;
-}
-
-const DrumSample* SampleEngine::getSampleForNote(int midiNote, float velocity, float roundRobinAmount)
+const DrumSample* SampleEngine::getSampleForNote(int midiNote, float velocity, float roundRobinAmount, juce::String* outInstrumentName)
 {
     if (!currentKit)
         return nullptr;
 
-    // Buscar instrumento para esta nota MIDI
+    // Find instrument for this MIDI note
     auto it = currentKit->midiMap.find(midiNote);
     if (it == currentKit->midiMap.end())
         return nullptr;
 
     const juce::String& instrumentName = it->second;
     
-    // Encontrar el instrumento
+    // Return instrument name if requested
+    if (outInstrumentName)
+        *outInstrumentName = instrumentName;
+    
+    // Use cached instrument lookup for performance
     Instrument* targetInstrument = nullptr;
-    for (const auto& instrument : currentKit->instruments)
+    auto cacheIt = instrumentCache.find(instrumentName);
+    if (cacheIt != instrumentCache.end())
     {
-        if (instrument->name == instrumentName)
+        targetInstrument = cacheIt->second;
+    }
+    else
+    {
+        // Find and cache the instrument
+        for (const auto& instrument : currentKit->instruments)
         {
-            targetInstrument = instrument.get();
-            break;
+            if (instrument->name == instrumentName)
+            {
+                targetInstrument = instrument.get();
+                instrumentCache[instrumentName] = targetInstrument;
+                break;
+            }
         }
     }
 
     if (!targetInstrument || targetInstrument->samples.empty())
         return nullptr;
 
-    // Normalizar power values para encontrar el rango
+    // Normalize power values to find range
     float minPower = targetInstrument->samples[0].power;
     float maxPower = targetInstrument->samples[0].power;
     
@@ -362,12 +460,12 @@ const DrumSample* SampleEngine::getSampleForNote(int midiNote, float velocity, f
         maxPower = std::max(maxPower, sample.power);
     }
     
-    // Normalizar velocity al rango de power
+    // Normalize velocity to power range
     float normalizedVelocity = minPower + (velocity * (maxPower - minPower));
     
-    // Encontrar samples candidatos basados en velocity (power)
+    // Find candidate samples based on velocity (power)
     std::vector<const DrumSample*> candidates;
-    float tolerance = (maxPower - minPower) * 0.25f; // 25% del rango total para más variedad
+    float tolerance = (maxPower - minPower) * 0.25f; // 25% of total range for more variety
 
     for (const auto& sample : targetInstrument->samples)
     {
@@ -376,10 +474,10 @@ const DrumSample* SampleEngine::getSampleForNote(int midiNote, float velocity, f
             candidates.push_back(&sample);
     }
 
-    // Si no hay candidatos en el rango, ampliar búsqueda
+    // If no candidates in range, expand search
     if (candidates.empty())
     {
-        // Buscar los 3-5 samples más cercanos para tener pool de round robin
+        // Find 3-5 closest samples to have round robin pool
         std::vector<std::pair<const DrumSample*, float>> samplesWithDiff;
         
         for (const auto& sample : targetInstrument->samples)
@@ -388,11 +486,11 @@ const DrumSample* SampleEngine::getSampleForNote(int midiNote, float velocity, f
             samplesWithDiff.push_back({&sample, diff});
         }
         
-        // Ordenar por cercanía
+        // Sort by proximity
         std::sort(samplesWithDiff.begin(), samplesWithDiff.end(),
                  [](const auto& a, const auto& b) { return a.second < b.second; });
         
-        // Tomar los 4 más cercanos (o todos si hay menos)
+        // Take 4 closest (or all if less)
         int numCandidates = std::min(4, static_cast<int>(samplesWithDiff.size()));
         for (int i = 0; i < numCandidates; ++i)
         {
@@ -400,25 +498,25 @@ const DrumSample* SampleEngine::getSampleForNote(int midiNote, float velocity, f
         }
     }
     
-    // Asegurar que siempre hay al menos un candidato
+    // Ensure there's always at least one candidate
     if (candidates.empty())
     {
         return &targetInstrument->samples[0];
     }
 
-    // ROUND ROBIN ANTI-METRALLETA
-    // Evita repetir el mismo sample consecutivamente
+    // ROUND ROBIN ANTI-MACHINE GUN
+    // Avoids repeating same sample consecutively
     int lastIndex = lastSampleIndex[midiNote];
     int selectedIndex = 0;
 
     if (candidates.size() == 1)
     {
-        // Solo hay un candidato, usarlo
+        // Only one candidate, use it
         selectedIndex = 0;
     }
     else if (roundRobinAmount < 0.01f)
     {
-        // Modo velocity puro: siempre el más cercano
+        // Pure velocity mode: always closest
         float minDiff = std::abs(normalizedVelocity - candidates[0]->power);
         for (size_t i = 1; i < candidates.size(); ++i)
         {
@@ -432,8 +530,8 @@ const DrumSample* SampleEngine::getSampleForNote(int midiNote, float velocity, f
     }
     else if (roundRobinAmount > 0.99f)
     {
-        // Modo rotación pura: siguiente sample diferente al último
-        // Ordenar por cercanía a velocity
+        // Pure rotation mode: next sample different from last
+        // Sort by proximity to velocity
         std::vector<std::pair<int, float>> indexedCandidates;
         for (size_t i = 0; i < candidates.size(); ++i)
         {
@@ -444,14 +542,14 @@ const DrumSample* SampleEngine::getSampleForNote(int midiNote, float velocity, f
         std::sort(indexedCandidates.begin(), indexedCandidates.end(),
                  [](const auto& a, const auto& b) { return a.second < b.second; });
         
-        // Rotar entre los mejores candidatos, evitando el último usado
+        // Rotate among best candidates, avoiding last used
         int poolSize = std::min(4, static_cast<int>(indexedCandidates.size()));
         int nextIndex = (lastIndex + 1) % poolSize;
         selectedIndex = indexedCandidates[nextIndex].first;
     }
     else
     {
-        // Modo híbrido inteligente: weighted random con penalización al último usado
+        // Smart hybrid mode: weighted random with penalty to last used
         std::vector<std::pair<int, float>> weightedCandidates;
         float totalWeight = 0.0f;
         
@@ -459,18 +557,18 @@ const DrumSample* SampleEngine::getSampleForNote(int midiNote, float velocity, f
         {
             float diff = std::abs(normalizedVelocity - candidates[i]->power);
             
-            // Peso base: inversamente proporcional a la diferencia de velocity
+            // Base weight: inversely proportional to velocity difference
             float weight = 1.0f / (1.0f + diff * 5.0f);
             
-            // PENALIZACIÓN MUY FUERTE al último sample usado (evita metralleta)
+            // VERY STRONG PENALTY to last used sample (avoids machine gun)
             if (static_cast<int>(i) == lastIndex)
             {
-                // Penalización escalada por roundRobinAmount
-                // Con 0.7 default: penalización del 93%
+                // Penalty scaled by roundRobinAmount
+                // With 0.7 default: 93% penalty
                 float penalty = 0.1f - (roundRobinAmount * 0.08f);
                 weight *= juce::jmax(0.01f, penalty);
             }
-            // Bonus al siguiente en rotación (más fuerte con roundRobinAmount alto)
+            // Bonus to next in rotation (stronger with high roundRobinAmount)
             else if (static_cast<int>(i) == (lastIndex + 1) % static_cast<int>(candidates.size()))
             {
                 weight *= (1.0f + roundRobinAmount * 1.5f);
@@ -480,7 +578,7 @@ const DrumSample* SampleEngine::getSampleForNote(int midiNote, float velocity, f
             totalWeight += weight;
         }
         
-        // Selección weighted random
+        // Weighted random selection
         float randomValue = juce::Random::getSystemRandom().nextFloat() * totalWeight;
         float cumulative = 0.0f;
         
@@ -505,7 +603,7 @@ juce::AudioBuffer<float>* SampleEngine::getAudioBuffer(const DrumSample* sample,
     if (!sample)
         return nullptr;
 
-    // Buscar el audio file para este canal
+    // Find audio file for this channel
     for (const auto& audioSample : sample->audioFiles)
     {
         if (audioSample.channelName == channelName)
@@ -522,6 +620,6 @@ juce::AudioBuffer<float>* SampleEngine::getAudioBuffer(const DrumSample* sample,
         }
     }
 
-    // El canal no existe en este sample
+    // Channel doesn't exist in this sample
     return nullptr;
 }

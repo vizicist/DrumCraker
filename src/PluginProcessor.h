@@ -32,17 +32,29 @@ public:
 
     void getStateInformation(juce::MemoryBlock& destData) override;
     void setStateInformation(const void* data, int sizeInBytes) override;
+    
+    // Force plugin to be destroyed/recreated when switching projects
+    bool supportsDoublePrecisionProcessing() const override { return false; }
+    
+    // Support for multiple output buses
+    bool isBusesLayoutSupported(const BusesLayout& layouts) const override;
+    bool canAddBus(bool isInput) const override;
+    bool canRemoveBus(bool isInput) const override;
 
     bool loadDrumKit(const juce::File& kitFile, bool async = true);
     bool loadMidiMap(const juce::File& midiMapFile);
     juce::String getCurrentKitName() const { return currentKitName; }
     juce::String getCurrentMidiMapName() const { return currentMidiMapName; }
-    int getNumChannels() const { return numOutputChannels; }
     bool isKitFullyLoaded() const { return sampleEngine->isLoaded(); }
     bool getIsLoadingKit() const { return isLoadingKit.load(); }
     bool getIsLoadingMidiMap() const { return isLoadingMidiMap.load(); }
+    
+    // Multi-channel routing
+    void setupInstrumentRouting();
+    const std::map<juce::String, int>& getInstrumentToBusMap() const { return instrumentToBusMap; }
+    const std::vector<juce::String>& getInstrumentGroups() const { return instrumentGroups; }
 
-    // Parámetros
+    // Parameters
     juce::AudioParameterFloat* masterVolume;
     juce::AudioParameterFloat* velocityRandomness;
     juce::AudioParameterFloat* timingRandomness;
@@ -55,11 +67,19 @@ private:
     
     juce::String currentKitName;
     juce::String currentMidiMapName;
-    juce::String currentKitPath;      // Ruta completa del kit XML
-    juce::String currentMidiMapPath;  // Ruta completa del midimap XML
+    juce::String currentKitPath;      // Full path to kit XML
+    juce::String currentMidiMapPath;  // Full path to midimap XML
     std::atomic<bool> isLoadingKit{false};
     std::atomic<bool> isLoadingMidiMap{false};
     int numOutputChannels = 2;
+    
+    // Unique ID to detect project changes
+    juce::String stateId;
+    
+    // Multi-channel routing
+    std::map<juce::String, int> instrumentToBusMap;  // instrument name -> bus index
+    std::vector<juce::String> instrumentGroups;      // Ordered list of instrument groups
+    
     double currentSampleRate = 44100.0;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DrumSamplerProcessor)

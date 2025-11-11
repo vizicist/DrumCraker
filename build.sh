@@ -4,49 +4,49 @@ set -e
 
 echo "=== DrumCraker VST3 Build Script ==="
 
-# Verificar si JUCE está clonado
+# Check if JUCE is cloned
 if [ ! -d "JUCE" ]; then
-    echo "Clonando JUCE Framework..."
+    echo "Cloning JUCE Framework..."
     git clone --depth 1 --branch 7.0.12 https://github.com/juce-framework/JUCE.git
 fi
 
-# Limpiar build anterior
-echo "Limpiando directorio de compilación..."
+# Clean previous build
+echo "Cleaning build directory..."
 rm -rf build
 
-# Crear directorio de build
+# Create build directory
 mkdir -p build
 cd build
 
-# Configurar con CMake
-echo "Configurando proyecto..."
+# Configure with CMake
+echo "Configuring project..."
 cmake .. -DCMAKE_BUILD_TYPE=Release
 
-# Compilar
-echo "Compilando..."
+# Compile
+echo "Compiling..."
 make -j$(nproc)
 
-# Crear directorio releases
-echo "Creando directorio releases..."
+# Create releases directory
+echo "Creating releases directory..."
 cd ..
 mkdir -p releases
 
-# Mover el plugin a releases
-echo "Moviendo plugin a releases..."
+# Move plugin to releases
+echo "Moving plugin to releases..."
 cp -r build/DrumCrakerVST_artefacts/Release/VST3/DrumCraker.vst3 releases/
 
-# Copiar assets al bundle VST3
-echo "Copiando recursos..."
+# Copy assets to VST3 bundle
+echo "Copying resources..."
 mkdir -p releases/DrumCraker.vst3/Contents/Resources
 cp assets/background.png releases/DrumCraker.vst3/Contents/Resources/
 
-# Limpiar solo directorio de compilación (mantener JUCE para builds futuros)
-echo "Limpiando directorio temporal..."
+# Clean only build directory (keep JUCE for future builds)
+echo "Cleaning temporary directory..."
 rm -rf build
 
 echo ""
-echo "=== Compilación completada ==="
-echo "Plugin ubicado en: $(pwd)/releases/DrumCraker.vst3"
+echo "=== Build completed ==="
+echo "Plugin located at: $(pwd)/releases/DrumCraker.vst3"
 echo ""
-echo "Para instalar, ejecuta:"
+echo "To install, run:"
 echo "  cp -r releases/DrumCraker.vst3 ~/.vst3/"

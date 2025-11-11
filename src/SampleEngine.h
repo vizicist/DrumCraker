@@ -5,6 +5,7 @@
 #include <juce_dsp/juce_dsp.h>
 #include "DrumKitLoader.h"
 #include <atomic>
+#include <unordered_map>
 
 class SampleEngine
 {
@@ -19,11 +20,11 @@ public:
     bool loadMidiMap(const juce::File& midiMapFile);
     bool isLoaded() const { return kitLoaded.load(); }
     
-    const DrumSample* getSampleForNote(int midiNote, float velocity, float roundRobinAmount = 0.5f);
-    juce::AudioBuffer<float>* getAudioBuffer(const DrumSample* sample, 
-                                             const juce::String& channelName);
+    const DrumSample* getSampleForNote(int midiNote, float velocity, float roundRobinAmount, juce::String* outInstrumentName = nullptr);
+    juce::AudioBuffer<float>* getAudioBuffer(const DrumSample* sample, const juce::String& channelName);
     
-    double getOriginalSampleRate(const DrumSample* sample, const juce::String& channelName);
+    // Access to current kit for routing configuration
+    const DrumKit* getCurrentKit() const { return currentKit.get(); }
     
     // Callback para notificar cuando termina la carga
     std::function<void(bool)> loadingCallback;
@@ -31,20 +32,24 @@ public:
 private:
     void loadSamplesAsync();
     void loadSamplesSync();
-    bool loadSampleFileOnce(const juce::String& filePath, const std::vector<AudioSample>& channels);
+    bool loadSampleFile(const AudioSample& audioSample);
     void resampleBuffer(juce::AudioBuffer<float>& buffer, double sourceSampleRate, double targetSampleRate);
     
     std::unique_ptr<DrumKit> currentKit;
     std::atomic<bool> kitLoaded{false};
     std::atomic<bool> isLoadingAsync{false};
+    std::atomic<bool> shouldStopLoading{false};
     
-    // Cache de buffers de audio cargados
-    std::map<juce::String, std::unique_ptr<juce::AudioBuffer<float>>> audioBufferCache;
-    std::map<juce::String, double> originalSampleRates; // Guardar sample rate original
+    // Cache de buffers de audio cargados (optimized with unordered_map)
+    std::unordered_map<juce::String, std::unique_ptr<juce::AudioBuffer<float>>> audioBufferCache;
+    std::unordered_map<juce::String, double> originalSampleRates; // Guardar sample rate original
     juce::CriticalSection cacheLock;
     
-    // Round robin tracking
-    std::map<int, int> lastSampleIndex; // midiNote -> último índice usado
+    // Round robin tracking (optimized with unordered_map)
+    std::unordered_map<int, int> lastSampleIndex; // midiNote -> last used index
+    
+    // Instrument cache for faster lookups
+    std::unordered_map<juce::String, Instrument*> instrumentCache;
     
     double sampleRate = 44100.0;
     
