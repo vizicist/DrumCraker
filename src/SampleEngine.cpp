@@ -10,23 +10,25 @@ SampleEngine::SampleEngine() {}
 
 SampleEngine::~SampleEngine()
 {
-    // Signal all threads to stop
+    // CRITICAL: Signal all threads to stop IMMEDIATELY
     shouldStopLoading = true;
-    isLoadingAsync = false;
     kitLoaded = false;
-    
-    // Wait for async loading to finish
-    int maxWait = 50;
-    while (isLoadingAsync.load() && maxWait-- > 0)
-    {
-        juce::Thread::sleep(100);
-    }
     
     // Clear callback immediately to prevent use-after-free
     {
         juce::ScopedLock lock(cacheLock);
         loadingCallback = nullptr;
     }
+    
+    // Wait for async loading to finish (with longer timeout for thread pool)
+    int maxWait = 100; // Increased timeout for thread pool cleanup
+    while (isLoadingAsync.load() && maxWait-- > 0)
+    {
+        juce::Thread::sleep(50);
+    }
+    
+    // Force flag to false if timeout
+    isLoadingAsync = false;
     
     // Ensure all memory is freed on destruction
     reset();
@@ -39,23 +41,25 @@ void SampleEngine::prepare(double sr, int samplesPerBlock)
 
 void SampleEngine::reset()
 {
-    // Signal cancellation
+    // Signal cancellation FIRST
     shouldStopLoading = true;
     kitLoaded = false;
-    isLoadingAsync = false;
     
-    // Wait for async thread to finish
-    int maxWait = 20;
-    while (isLoadingAsync.load() && maxWait-- > 0)
-    {
-        juce::Thread::sleep(100);
-    }
-    
-    // Clear callback safely
+    // Clear callback safely BEFORE waiting
     {
         juce::ScopedLock lock(cacheLock);
         loadingCallback = nullptr;
     }
+    
+    // Wait for async thread to finish (longer timeout for thread pool)
+    int maxWait = 50;
+    while (isLoadingAsync.load() && maxWait-- > 0)
+    {
+        juce::Thread::sleep(50);
+    }
+    
+    // Force flag to false if timeout
+    isLoadingAsync = false;
     
     // Lock for cleanup operations
     juce::ScopedLock lock(cacheLock);
@@ -116,22 +120,30 @@ void SampleEngine::loadKit(std::unique_ptr<DrumKit> kit, bool async)
         }
     }
     
-    // If loading a different kit, cancel previous load immediately
+    // CRITICAL: If loading a different kit, cancel previous load SAFELY
     if (isLoadingAsync.load())
     {
         // Signal cancellation
         shouldStopLoading = true;
         
-        // Wait for thread to finish
-        int maxWait = 20;
-        while (isLoadingAsync.load() && maxWait-- > 0)
+        // Clear callback to prevent use-after-free
         {
-            juce::Thread::sleep(100);
+            juce::ScopedLock lock(cacheLock);
+            loadingCallback = nullptr;
         }
         
-        // Ensure flags are reset
-        shouldStopLoading = false;
+        // Wait for thread pool to finish (longer timeout)
+        int maxWait = 50;
+        while (isLoadingAsync.load() && maxWait-- > 0)
+        {
+            juce::Thread::sleep(50);
+        }
+        
+        // Force flag to false if timeout
         isLoadingAsync = false;
+        
+        // Reset flags for new load
+        shouldStopLoading = false;
         kitLoaded = false;
     }
     
@@ -216,7 +228,7 @@ void SampleEngine::loadSamplesAsync()
     isLoadingAsync = true;
     shouldStopLoading = false;
 
-    // Use Thread::launch (simple and reliable)
+    // OPTIMIZED: Multi-threaded loading with thread pool (SAFE)
     juce::Thread::launch([this]()
     {
         if (!currentKit || shouldStopLoading.load())
@@ -225,7 +237,8 @@ void SampleEngine::loadSamplesAsync()
             return;
         }
         
-        // Load all samples with cancellation checks
+        // Collect all audio samples to load
+        std::vector<AudioSample> samplesToLoad;
         for (const auto& instrument : currentKit->instruments)
         {
             if (shouldStopLoading.load())
@@ -236,27 +249,62 @@ void SampleEngine::loadSamplesAsync()
             
             for (const auto& sample : instrument->samples)
             {
-                if (shouldStopLoading.load())
-                {
-                    isLoadingAsync = false;
-                    return;
-                }
-                
                 for (const auto& audioSample : sample.audioFiles)
                 {
-                    if (shouldStopLoading.load())
-                    {
-                        isLoadingAsync = false;
-                        return;
-                    }
-                    
-                    loadSampleFile(audioSample);
+                    samplesToLoad.push_back(audioSample);
                 }
             }
         }
         
+        // Use thread pool for parallel loading (90% of available cores)
+        const int numCpus = juce::SystemStats::getNumCpus();
+        const int numThreads = juce::jmax(2, static_cast<int>(numCpus * 0.9f));
+        juce::ThreadPool pool(numThreads);
+        std::atomic<int> loadedCount{0};
+        std::atomic<bool> hasError{false};
+        
+        for (const auto& audioSample : samplesToLoad)
+        {
+            if (shouldStopLoading.load())
+                break;
+            
+            // CRITICAL: Capture by value to avoid use-after-free
+            pool.addJob([this, audioSample, &loadedCount, &hasError]()
+            {
+                // Double-check we're still valid
+                if (!shouldStopLoading.load() && !hasError.load())
+                {
+                    try
+                    {
+                        loadSampleFile(audioSample);
+                        loadedCount++;
+                    }
+                    catch (...)
+                    {
+                        hasError = true;
+                    }
+                }
+            });
+        }
+        
+        // CRITICAL: Wait for ALL jobs to complete before exiting
+        // This ensures no job is accessing 'this' after destruction
+        while (pool.getNumJobs() > 0)
+        {
+            if (shouldStopLoading.load())
+            {
+                // Cancel remaining jobs but wait for active ones
+                pool.removeAllJobs(true, 5000); // Wait up to 5 seconds
+                break;
+            }
+            juce::Thread::sleep(5);
+        }
+        
+        // Ensure pool is fully stopped before continuing
+        pool.removeAllJobs(true, 2000);
+        
         // Only mark as loaded if we completed successfully
-        if (!shouldStopLoading.load())
+        if (!shouldStopLoading.load() && !hasError.load())
         {
             kitLoaded = true;
         }
@@ -274,8 +322,8 @@ void SampleEngine::loadSamplesAsync()
             }
         }
         
-        if (callback)
-            callback(true);
+        if (callback && !shouldStopLoading.load())
+            callback(!hasError.load());
     });
 }
 
@@ -353,9 +401,12 @@ bool SampleEngine::loadSampleFile(const AudioSample& audioSample)
         buffer->copyFrom(0, 0, tempBuffer, audioSample.fileChannel - 1, 0, numSamples);
     }
 
-    // Resample if necessary
-    if (std::abs(originalSampleRate - sampleRate) > 0.1)
+    // Resample if necessary (only if sample rates don't match)
+    // Use the current project sample rate (may be 0 if not initialized yet)
+    if (sampleRate > 0.0 && std::abs(originalSampleRate - sampleRate) > 0.1)
+    {
         resampleBuffer(*buffer, originalSampleRate, sampleRate);
+    }
 
     // Store in cache
     juce::ScopedLock lock(cacheLock);
@@ -369,38 +420,60 @@ bool SampleEngine::loadSampleFile(const AudioSample& audioSample)
 void SampleEngine::resampleBuffer(juce::AudioBuffer<float>& buffer, 
                                   double sourceSampleRate, double targetSampleRate)
 {
+    // Validate sample rates
+    if (sourceSampleRate <= 0.0 || targetSampleRate <= 0.0)
+        return;
+    
     if (std::abs(sourceSampleRate - targetSampleRate) < 0.1)
         return; // No resampling needed
 
-    double ratio = sourceSampleRate / targetSampleRate; // Speed ratio for interpolator
-    int newLength = static_cast<int>(buffer.getNumSamples() * targetSampleRate / sourceSampleRate);
+    // Calculate speed ratio for interpolator (source/target)
+    // For upsampling (44.1->48kHz): ratio = 44100/48000 = 0.91875
+    // For downsampling (48->44.1kHz): ratio = 48000/44100 = 1.08843
+    const double speedRatio = sourceSampleRate / targetSampleRate;
+    
+    // Calculate new buffer length
+    const int originalLength = buffer.getNumSamples();
+    const int newLength = static_cast<int>(std::ceil(originalLength / speedRatio));
 
-    if (newLength <= 0)
+    if (newLength <= 0 || newLength > originalLength * 4) // Sanity check
         return;
 
     // Create temporary buffer for result
     juce::AudioBuffer<float> resampledBuffer(1, newLength);
     resampledBuffer.clear();
 
-    // Use high-quality Lagrange interpolation
-    juce::LagrangeInterpolator interpolator;
-    interpolator.reset();
-
     const float* sourceData = buffer.getReadPointer(0);
     float* destData = resampledBuffer.getWritePointer(0);
-
-    // Process using interpolator
-    // ratio = speed ratio (source/target)
-    // For upsampling (44.1->48kHz): ratio = 44.1/48 = 0.91875
-    // For downsampling (48->44.1kHz): ratio = 48/44.1 = 1.088
-    int samplesProcessed = interpolator.process(ratio, sourceData, destData, 
-                                               newLength, buffer.getNumSamples(), 0);
-
-    // If not all samples were processed, fill the rest with silence
-    if (samplesProcessed < newLength)
+    
+    // Determine which interpolator to use based on ratio difference
+    const double ratioError = std::abs(speedRatio - 1.0);
+    
+    if (ratioError < 0.15) // Common conversions: 44.1<->48kHz
     {
-        for (int i = samplesProcessed; i < newLength; ++i)
-            destData[i] = 0.0f;
+        // Fast linear interpolation for common sample rate conversions
+        juce::LinearInterpolator interpolator;
+        interpolator.reset();
+        
+        int samplesProcessed = interpolator.process(speedRatio, sourceData, destData, 
+                                                   newLength, originalLength, 0);
+        
+        // Fill rest with silence if needed
+        if (samplesProcessed < newLength)
+            juce::FloatVectorOperations::clear(destData + samplesProcessed, newLength - samplesProcessed);
+    }
+    else
+    {
+        // High-quality Lagrange for larger differences
+        juce::LagrangeInterpolator interpolator;
+        interpolator.reset();
+        
+        int samplesProcessed = interpolator.process(speedRatio, sourceData, destData, 
+                                                   newLength, originalLength, 0);
+        
+        // Fill rest with silence if needed
+        if (samplesProcessed < newLength)
+            juce::FloatVectorOperations::clear(destData + samplesProcessed, newLength - samplesProcessed);
     }
 
     // Replace original buffer with resampled one
@@ -458,6 +531,28 @@ const DrumSample* SampleEngine::getSampleForNote(int midiNote, float velocity, f
     {
         minPower = std::min(minPower, sample.power);
         maxPower = std::max(maxPower, sample.power);
+    }
+    
+    // Clamp power values to reasonable range (0-1)
+    // Some kits have incorrect power values outside this range
+    minPower = juce::jlimit(0.0f, 1.0f, minPower);
+    maxPower = juce::jlimit(0.0f, 1.0f, maxPower);
+    
+    // Handle edge case: single sample or all samples have same power
+    if (std::abs(maxPower - minPower) < 0.001f)
+    {
+        // All samples have same power - use round robin if multiple samples
+        // This happens with kits that don't have velocity layers
+        if (targetInstrument->samples.size() == 1)
+        {
+            return &targetInstrument->samples[0];
+        }
+        
+        // Multiple samples with same power - use round robin
+        int lastIndex = lastSampleIndex[midiNote];
+        int nextIndex = (lastIndex + 1) % static_cast<int>(targetInstrument->samples.size());
+        lastSampleIndex[midiNote] = nextIndex;
+        return &targetInstrument->samples[nextIndex];
     }
     
     // Normalize velocity to power range

@@ -76,8 +76,9 @@ void DrumSamplerProcessor::prepareToPlay(double sampleRate, int samplesPerBlock)
     sampleEngine->prepare(sampleRate, samplesPerBlock);
     voiceManager->prepare(sampleRate, samplesPerBlock);
     
-    // NOTE: This doesn't help because prepareToPlay is called BEFORE setStateInformation
-    // when loading a project, so we don't have the kit path yet
+    // NOTE: Sample rate is stored and used for resampling when kits are loaded
+    // Kit loading happens in setStateInformation or loadDrumKit, which both
+    // call prepare() again to ensure correct sample rate for resampling
 }
 
 void DrumSamplerProcessor::releaseResources()
@@ -101,53 +102,49 @@ void DrumSamplerProcessor::processBlock(juce::AudioBuffer<float>& buffer, juce::
     if (buffer.getNumSamples() <= 0 || buffer.getNumChannels() <= 0)
         return;
     
-    // Process MIDI events with humanization
+    // Pre-cache parameter values (avoid repeated atomic reads)
+    const float velocityHumanization = velocityRandomness->get();
+    const float timingHumanization = timingRandomness->get();
+    const float rrVariation = roundRobinVariation->get();
+    const bool hasVelocityHumanization = velocityHumanization > 0.001f;
+    const bool hasTimingHumanization = timingHumanization > 0.001f;
+    const int bufferSize = buffer.getNumSamples();
+    
+    // Process MIDI events with humanization (ultra-optimized)
+    auto& rng = juce::Random::getSystemRandom();
+    
     for (const auto metadata : midiMessages)
     {
         auto message = metadata.getMessage();
-        int sampleOffset = metadata.samplePosition;
         
-        if (message.isNoteOn())
+        if (message.isNoteOn()) [[likely]]
         {
             float velocity = message.getVelocity() / 127.0f;
-            int midiNote = message.getNoteNumber();
+            int sampleOffset = metadata.samplePosition;
             
-            // VELOCITY HUMANIZATION
-            float velocityHumanization = velocityRandomness->get();
-            if (velocityHumanization > 0.001f)
+            // VELOCITY HUMANIZATION (optimized Box-Muller)
+            if (hasVelocityHumanization)
             {
-                float u1 = juce::Random::getSystemRandom().nextFloat();
-                float u2 = juce::Random::getSystemRandom().nextFloat();
-                u1 = juce::jmax(0.0001f, u1);
-                
-                float gaussian = std::sqrt(-2.0f * std::log(u1)) * std::cos(2.0f * juce::MathConstants<float>::pi * u2);
-                float randomAmount = gaussian * velocityHumanization * 0.33f;
-                velocity = juce::jlimit(0.05f, 1.0f, velocity + randomAmount);
+                float u1 = rng.nextFloat() * 0.9999f + 0.0001f;
+                float u2 = rng.nextFloat();
+                float gaussian = std::sqrt(-2.0f * std::log(u1)) * std::cos(juce::MathConstants<float>::twoPi * u2);
+                // Apply variation: gaussian has σ=1, so multiply by parameter directly
+                // 68% of values will be within ±velocityHumanization
+                velocity = juce::jlimit(0.05f, 1.0f, velocity + gaussian * velocityHumanization);
             }
             
-            // TIMING HUMANIZATION
-            float timingHumanization = timingRandomness->get();
-            if (timingHumanization > 0.001f)
+            // TIMING HUMANIZATION (optimized)
+            if (hasTimingHumanization)
             {
-                float u1 = juce::Random::getSystemRandom().nextFloat();
-                float u2 = juce::Random::getSystemRandom().nextFloat();
-                u1 = juce::jmax(0.0001f, u1);
-                
-                float gaussian = std::sqrt(-2.0f * std::log(u1)) * std::sin(2.0f * juce::MathConstants<float>::pi * u2);
+                float u1 = rng.nextFloat() * 0.9999f + 0.0001f;
+                float u2 = rng.nextFloat();
+                float gaussian = std::sqrt(-2.0f * std::log(u1)) * std::sin(juce::MathConstants<float>::twoPi * u2);
                 float velocityBias = (velocity - 0.5f) * 0.4f;
-                float randomMs = (gaussian * 0.5f + velocityBias) * timingHumanization;
-                int sampleDelay = static_cast<int>((randomMs / 1000.0f) * currentSampleRate);
-                
-                int newOffset = sampleOffset + sampleDelay;
-                sampleOffset = juce::jlimit(0, buffer.getNumSamples() - 1, newOffset);
+                int sampleDelay = static_cast<int>(((gaussian * 0.5f + velocityBias) * timingHumanization / 1000.0f) * currentSampleRate);
+                sampleOffset = juce::jlimit(0, bufferSize - 1, sampleOffset + sampleDelay);
             }
             
-            float rrVariation = roundRobinVariation->get();
-            voiceManager->noteOn(midiNote, velocity, sampleEngine.get(), sampleOffset, rrVariation);
-        }
-        else if (message.isNoteOff())
-        {
-            voiceManager->noteOff(message.getNoteNumber());
+            voiceManager->noteOn(message.getNoteNumber(), velocity, sampleEngine.get(), sampleOffset, rrVariation);
         }
     }
     
@@ -160,31 +157,13 @@ void DrumSamplerProcessor::processBlock(juce::AudioBuffer<float>& buffer, juce::
             numEnabledBuses++;
     }
     
-    // MULTI-CHANNEL MODE: Render to separate buses if more than 1 enabled
+    float gainLinear = juce::Decibels::decibelsToGain(masterVolume->get());
+    
+    // MULTI-CHANNEL MODE: Render all voices once, routing to appropriate buses
     if (numEnabledBuses > 1 && !instrumentToBusMap.empty())
     {
-        float gainLinear = juce::Decibels::decibelsToGain(masterVolume->get());
-        
-        // Render each bus separately
-        for (int busIndex = 0; busIndex < 16; ++busIndex)
-        {
-            auto* bus = getBus(false, busIndex);
-            if (!bus || !bus->isEnabled())
-                continue;
-            
-            // Get the buffer for this bus - this creates a reference to the main buffer
-            auto busBuffer = getBusBuffer(buffer, false, busIndex);
-            
-            // Render voices assigned to this specific bus
-            voiceManager->renderNextBlockForBus(busBuffer, 0, buffer.getNumSamples(),
-                                               busIndex, instrumentToBusMap);
-            
-            // Apply master volume
-            busBuffer.applyGain(gainLinear);
-        }
-        
-        // Advance all voices after rendering all buses
-        voiceManager->advanceAllVoices(buffer.getNumSamples());
+        voiceManager->renderNextBlockMultiBus(buffer, 0, buffer.getNumSamples(),
+                                             gainLinear, this);
     }
     else
     {
@@ -194,8 +173,6 @@ void DrumSamplerProcessor::processBlock(juce::AudioBuffer<float>& buffer, juce::
         {
             auto mainBuffer = getBusBuffer(buffer, false, 0);
             voiceManager->renderNextBlock(mainBuffer, 0, buffer.getNumSamples());
-            
-            float gainLinear = juce::Decibels::decibelsToGain(masterVolume->get());
             mainBuffer.applyGain(gainLinear);
         }
     }
@@ -339,6 +316,9 @@ void DrumSamplerProcessor::setupInstrumentRouting()
     }
     
     numOutputChannels = busIndex;
+    
+    // Pass mapping to voice manager for pre-caching bus indices
+    voiceManager->setInstrumentToBusMap(instrumentToBusMap);
 }
 
 bool DrumSamplerProcessor::loadDrumKit(const juce::File& kitFile, bool async)
@@ -347,6 +327,19 @@ bool DrumSamplerProcessor::loadDrumKit(const juce::File& kitFile, bool async)
     
     // Stop all active voices before unloading previous kit
     voiceManager->reset();
+    
+    // CRITICAL: Clear old instrument routing IMMEDIATELY
+    // to prevent using stale mappings during async load
+    instrumentToBusMap.clear();
+    instrumentGroups.clear();
+    voiceManager->setInstrumentToBusMap(instrumentToBusMap);
+    
+    // CRITICAL: Ensure sampleEngine has correct project sample rate
+    // before loading kit (for proper resampling)
+    if (currentSampleRate > 0.0)
+    {
+        sampleEngine->prepare(currentSampleRate, 0);
+    }
     
     auto kit = drumKitLoader->loadKit(kitFile);
     if (kit == nullptr)
@@ -467,6 +460,11 @@ void DrumSamplerProcessor::setStateInformation(const void* data, int sizeInBytes
                 currentMidiMapName = savedMidiMapName;
                 stateId = savedStateId;
                 
+                // CRITICAL: Clear old instrument routing IMMEDIATELY
+                instrumentToBusMap.clear();
+                instrumentGroups.clear();
+                voiceManager->setInstrumentToBusMap(instrumentToBusMap);
+                
                 // Load ASYNCHRONOUSLY to not block Reaper
                 isLoadingKit = true;
                 
@@ -497,6 +495,14 @@ void DrumSamplerProcessor::setStateInformation(const void* data, int sizeInBytes
                 };
                 
                 voiceManager->reset();
+                
+                // CRITICAL: Ensure sampleEngine has correct project sample rate
+                // before loading kit (for proper resampling)
+                if (currentSampleRate > 0.0)
+                {
+                    sampleEngine->prepare(currentSampleRate, 0);
+                }
+                
                 auto kit = drumKitLoader->loadKit(kitFile);
                 if (kit != nullptr)
                 {

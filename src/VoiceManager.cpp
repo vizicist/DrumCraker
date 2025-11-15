@@ -1,8 +1,8 @@
 #include "VoiceManager.h"
-#include <set>
+#include <juce_audio_processors/juce_audio_processors.h>
 
 void Voice::start(const DrumSample* sample, float velocity, SampleEngine* engine, 
-                 int offset, double sampleRate, const juce::String& instrName)
+                 int offset, double sampleRate, const juce::String& instrName, int busIdx)
 {
     currentSample = sample;
     currentVelocity = velocity;
@@ -11,7 +11,61 @@ void Voice::start(const DrumSample* sample, float velocity, SampleEngine* engine
     startOffset = offset;
     playbackSampleRate = sampleRate;
     instrumentName = instrName;
+    busIndex = busIdx;
     active = true;
+    
+    // Pre-cache channel routing and gain for ultra-fast rendering
+    if (sample && !sample->audioFiles.empty())
+    {
+        const int numChannels = static_cast<int>(sample->audioFiles.size());
+        
+        // Pre-determine channel routing (avoid string operations in audio thread)
+        cachedChannelRouting.resize(numChannels);
+        int numLeftChannels = 0;
+        int numRightChannels = 0;
+        int numBothChannels = 0;
+        
+        for (int i = 0; i < numChannels; ++i)
+        {
+            const juce::String& channelName = sample->audioFiles[i].channelName;
+            const juce::juce_wchar lastChar = channelName.getLastCharacter();
+            
+            // Check last character first (fastest), then full string if needed
+            if (lastChar == 'L' || channelName.containsIgnoreCase("Left"))
+            {
+                cachedChannelRouting[i] = 0; // Left
+                numLeftChannels++;
+            }
+            else if (lastChar == 'R' || channelName.containsIgnoreCase("Right"))
+            {
+                cachedChannelRouting[i] = 1; // Right
+                numRightChannels++;
+            }
+            else
+            {
+                cachedChannelRouting[i] = 2; // Both/Center (mono, ambience, etc.)
+                numBothChannels++;
+            }
+        }
+        
+        // Simple and universal gain compensation
+        // Rule: Only "Both" channels sum together (to both L+R outputs)
+        // L/R channels go to separate outputs and don't sum with each other
+        
+        float channelGain = 1.0f;
+        
+        // Only compensate for "Both" channels that actually sum
+        if (numBothChannels > 1)
+        {
+            // Use sqrt for proper RMS compensation
+            channelGain = 1.0f / std::sqrt(static_cast<float>(numBothChannels));
+        }
+        
+        // No additional compensation needed - L/R channels don't interfere
+        // This works universally for all drumkits
+        
+        finalGain = velocity * channelGain;
+    }
 }
 
 void Voice::stop()
@@ -33,76 +87,58 @@ void Voice::renderToBuffer(juce::AudioBuffer<float>& outputBuffer,
     if (startOffset > 0)
     {
         if (startOffset >= numSamples)
-            return; // Not time to sound yet
+            return;
         
         actualStartSample += startOffset;
         actualNumSamples -= startOffset;
     }
 
-    // Pre-calculate channel count and gain
-    int numChannels = 0;
-    for (const auto& audioFile : currentSample->audioFiles)
-    {
-        if (sampleEngine->getAudioBuffer(currentSample, audioFile.channelName))
-            numChannels++;
-    }
-    
-    if (numChannels == 0)
-        return;
-    
-    // Normalize gain by number of channels (cached calculation)
-    float channelGain = 2.0f / static_cast<float>(numChannels);
-    channelGain = juce::jlimit(0.1f, 1.0f, channelGain);
-    const float finalGain = currentVelocity * channelGain;
     const bool isStereoOutput = outputBuffer.getNumChannels() >= 2;
+    const int numChannels = static_cast<int>(currentSample->audioFiles.size());
     
-    // Render channels with proper stereo routing (optimized)
-    for (const auto& audioFile : currentSample->audioFiles)
+    // Get output pointers once (avoid repeated calls)
+    float* outL = outputBuffer.getWritePointer(0);
+    float* outR = isStereoOutput ? outputBuffer.getWritePointer(1) : nullptr;
+    
+    // Ultra-optimized rendering loop with pre-cached routing and SIMD operations
+    for (int i = 0; i < numChannels; ++i)
     {
-        auto* buffer = sampleEngine->getAudioBuffer(currentSample, audioFile.channelName);
-        if (!buffer)
+        auto* buffer = sampleEngine->getAudioBuffer(currentSample, currentSample->audioFiles[i].channelName);
+        if (!buffer) [[unlikely]]
             continue;
 
         const int samplesToRender = juce::jmin(actualNumSamples, 
                                               buffer->getNumSamples() - currentPosition,
                                               outputBuffer.getNumSamples() - actualStartSample);
 
-        if (samplesToRender <= 0)
+        if (samplesToRender <= 0) [[unlikely]]
             continue;
 
-        // Determine channel routing (cached string operations)
-        const juce::String& channelName = audioFile.channelName;
-        const bool isLeft = channelName.containsIgnoreCase("Left") || channelName.endsWithIgnoreCase("L");
-        const bool isRight = channelName.containsIgnoreCase("Right") || channelName.endsWithIgnoreCase("R");
-        const bool isCenter = channelName.containsIgnoreCase("Center") || channelName.containsIgnoreCase("Centre");
-
-        if (isStereoOutput)
+        const int routing = cachedChannelRouting[i];
+        const float* sourceData = buffer->getReadPointer(0) + currentPosition;
+        
+        if (isStereoOutput) [[likely]]
         {
-            // STEREO OUTPUT - optimized routing
-            if (isLeft)
+            if (routing == 0) [[unlikely]] // Left only
             {
-                outputBuffer.addFrom(0, actualStartSample, *buffer, 0, currentPosition, samplesToRender, finalGain);
+                juce::FloatVectorOperations::addWithMultiply(outL + actualStartSample, sourceData, finalGain, samplesToRender);
             }
-            else if (isRight)
+            else if (routing == 1) [[unlikely]] // Right only
             {
-                outputBuffer.addFrom(1, actualStartSample, *buffer, 0, currentPosition, samplesToRender, finalGain);
+                juce::FloatVectorOperations::addWithMultiply(outR + actualStartSample, sourceData, finalGain, samplesToRender);
             }
-            else
+            else [[likely]] // Both channels (most common case)
             {
-                // Center or mono channels → both L/R
-                outputBuffer.addFrom(0, actualStartSample, *buffer, 0, currentPosition, samplesToRender, finalGain);
-                outputBuffer.addFrom(1, actualStartSample, *buffer, 0, currentPosition, samplesToRender, finalGain);
+                juce::FloatVectorOperations::addWithMultiply(outL + actualStartSample, sourceData, finalGain, samplesToRender);
+                juce::FloatVectorOperations::addWithMultiply(outR + actualStartSample, sourceData, finalGain, samplesToRender);
             }
         }
         else
         {
-            // MONO OUTPUT
-            outputBuffer.addFrom(0, actualStartSample, *buffer, 0, currentPosition, samplesToRender, finalGain);
+            juce::FloatVectorOperations::addWithMultiply(outL + actualStartSample, sourceData, finalGain, samplesToRender);
         }
     }
 }
-
-
 
 void Voice::advancePosition(int numSamples)
 {
@@ -136,10 +172,7 @@ void Voice::advancePosition(int numSamples)
         return;
     }
 
-    int samplesToAdvance = juce::jmin(numSamples, 
-                                      buffer->getNumSamples() - currentPosition);
-
-    currentPosition += samplesToAdvance;
+    currentPosition += juce::jmin(numSamples, buffer->getNumSamples() - currentPosition);
 
     if (currentPosition >= buffer->getNumSamples())
         stop();
@@ -150,14 +183,13 @@ VoiceManager::VoiceManager()
     voices.resize(maxVoices);
 }
 
-void VoiceManager::prepare(double sr, int samplesPerBlock)
+void VoiceManager::prepare(double sr, int)
 {
     sampleRate = sr;
 }
 
 void VoiceManager::reset()
 {
-    // Stop all active voices
     for (auto& voice : voices)
     {
         if (voice.isActive())
@@ -173,12 +205,18 @@ void VoiceManager::noteOn(int midiNote, float velocity, SampleEngine* engine,
     if (!sample)
         return;
 
+    // Get bus index for this instrument
+    int busIdx = 0;
+    auto it = instrumentToBusMap.find(instrumentName);
+    if (it != instrumentToBusMap.end())
+        busIdx = it->second;
+
     // Find free voice
     for (auto& voice : voices)
     {
         if (!voice.isActive())
         {
-            voice.start(sample, velocity, engine, sampleOffset, sampleRate, instrumentName);
+            voice.start(sample, velocity, engine, sampleOffset, sampleRate, instrumentName, busIdx);
             return;
         }
     }
@@ -188,16 +226,15 @@ void VoiceManager::noteOn(int midiNote, float velocity, SampleEngine* engine,
     {
         if (voice.isActive())
         {
-            voice.start(sample, velocity, engine, sampleOffset, sampleRate, instrumentName);
+            voice.start(sample, velocity, engine, sampleOffset, sampleRate, instrumentName, busIdx);
             return;
         }
     }
 }
 
-void VoiceManager::noteOff(int midiNote)
+void VoiceManager::noteOff(int)
 {
-    // Drum samples normally don't respond to note off
-    // but we leave it just in case
+    // Drum samples don't respond to note off
 }
 
 void VoiceManager::renderNextBlock(juce::AudioBuffer<float>& outputBuffer,
@@ -206,54 +243,61 @@ void VoiceManager::renderNextBlock(juce::AudioBuffer<float>& outputBuffer,
     for (auto& voice : voices)
     {
         if (voice.isActive())
-        {
             voice.renderToBuffer(outputBuffer, startSample, numSamples);
-        }
     }
     
-    // Advance all voices after rendering
     advanceAllVoices(numSamples);
 }
 
-void VoiceManager::renderNextBlockForBus(juce::AudioBuffer<float>& busBuffer,
-                                        int startSample, int numSamples,
-                                        int targetBusIndex,
-                                        const std::map<juce::String, int>& instrumentToBusMap)
+void VoiceManager::renderNextBlockMultiBus(juce::AudioBuffer<float>& mainBuffer,
+                                           int startSample, int numSamples,
+                                           float gainLinear,
+                                           juce::AudioProcessor* processor)
 {
-    // Render only voices assigned to this specific bus
+    // Pre-cache enabled buses to avoid repeated virtual calls
+    bool busEnabled[16] = {false};
+    for (int i = 0; i < 16; ++i)
+    {
+        auto* bus = processor->getBus(false, i);
+        busEnabled[i] = (bus && bus->isEnabled());
+    }
+    
+    // Render each voice ONCE to its pre-assigned bus (ultra-fast)
     for (auto& voice : voices)
     {
         if (!voice.isActive())
             continue;
         
-        // Get instrument name for this voice
-        juce::String instrumentName = voice.getInstrumentName();
+        const int busIndex = voice.getBusIndex();
         
-        // Find bus assignment (default to bus 0 if not found)
-        int busIndex = 0;
-        auto it = instrumentToBusMap.find(instrumentName);
-        if (it != instrumentToBusMap.end())
-            busIndex = it->second;
+        // Check if bus is enabled (cached, no virtual call)
+        if (!busEnabled[busIndex])
+            continue;
         
-        // Only render if this voice belongs to the target bus
-        if (busIndex == targetBusIndex)
+        // Get buffer for this bus and render
+        auto busBuffer = processor->getBusBuffer(mainBuffer, false, busIndex);
+        voice.renderToBuffer(busBuffer, startSample, numSamples);
+    }
+    
+    // Apply gain to all enabled buses (using cached info)
+    for (int busIndex = 0; busIndex < 16; ++busIndex)
+    {
+        if (busEnabled[busIndex])
         {
-            voice.renderToBuffer(busBuffer, startSample, numSamples);
+            auto busBuffer = processor->getBusBuffer(mainBuffer, false, busIndex);
+            busBuffer.applyGain(gainLinear);
         }
     }
+    
+    advanceAllVoices(numSamples);
 }
 
 void VoiceManager::advanceAllVoices(int numSamples)
 {
+    // Optimized: process only active voices
     for (auto& voice : voices)
     {
-        if (voice.isActive())
-        {
+        if (voice.isActive()) [[likely]]
             voice.advancePosition(numSamples);
-        }
     }
 }
-
-
-
-
