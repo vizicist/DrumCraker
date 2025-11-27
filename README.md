@@ -1,9 +1,10 @@
 # DrumCraker VST3
 
-**DrumCraker** is a free drum sampler VST3 plugin optimized for Linux and PipeWire, fully compatible with DrumGizmo drum kits. Designed for low-latency performance and realistic drum sound reproduction.
+**DrumCraker** is a free drum sampler VST3 plugin optimized for Linux and macOS, fully compatible with DrumGizmo drum kits. Designed for low-latency performance and realistic drum sound reproduction.
 
-![Version](https://img.shields.io/badge/version-1.2.1-gold)
+![Version](https://img.shields.io/badge/version-1.2.2-gold)
 ![Platform](https://img.shields.io/badge/platform-Linux-blue)
+![Platform](https://img.shields.io/badge/platform-macOS-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
 [![ko-fi](https://img.shields.io/badge/Ko--fi-Support%20Me-FF5E5B?logo=ko-fi&logoColor=white)](https://ko-fi.com/wamphyre94078)
 
@@ -53,11 +54,20 @@ DrumCraker adds natural human feel to MIDI performances, working with both fixed
 
 ## System Requirements
 
+### Linux
 - **OS**: Linux (Debian, Ubuntu, Fedora, Arch, etc.)
 - **Audio**: ALSA, JACK, or PipeWire
 - **CPU**: x86_64 with SSE2 support
-- **RAM**: 2GB minimum (depends on drum kit size)
+- **RAM**: 4GB minimum (depends on drum kit size)
 - **Compiler**: GCC 9+ or Clang 10+ with C++17 support
+- **Build Tools**: CMake 3.15+, Git
+
+### macOS
+- **OS**: macOS 10.13 (High Sierra) or later
+- **Audio**: CoreAudio
+- **CPU**: Intel x86_64 or Apple Silicon (M1/M2/M3)
+- **RAM**: 4GB minimum (depends on drum kit size)
+- **Compiler**: Xcode Command Line Tools with C++17 support
 - **Build Tools**: CMake 3.15+, Git
 
 ## Installation
