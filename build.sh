@@ -4,10 +4,26 @@ set -e
 
 echo "=== DrumCraker VST3 Build Script ==="
 
+# Detect operating system
+if [[ "$OSTYPE" == "darwin"* ]]; then
+    OS_NAME="macOS"
+    echo "Detected OS: macOS"
+elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
+    OS_NAME="Linux"
+    echo "Detected OS: Linux"
+else
+    echo "Warning: Unknown OS type: $OSTYPE"
+    OS_NAME="Unknown"
+fi
+
 # Check if JUCE is cloned
 if [ ! -d "JUCE" ]; then
-    echo "Cloning JUCE Framework..."
-    git clone --depth 1 --branch 7.0.12 https://github.com/juce-framework/JUCE.git
+    echo "Cloning JUCE Framework for $OS_NAME..."
+    # JUCE is cross-platform, same version works for both Linux and macOS
+    git clone --depth 1 --branch 8.0.10 https://github.com/juce-framework/JUCE.git
+    echo "JUCE Framework cloned successfully"
+else
+    echo "JUCE Framework already exists, skipping download"
 fi
 
 # Clean previous build
@@ -23,8 +39,14 @@ echo "Configuring project..."
 cmake .. -DCMAKE_BUILD_TYPE=Release
 
 # Compile
+# Compile
 echo "Compiling..."
-make -j$(nproc)
+if [[ "$OSTYPE" == "darwin"* ]]; then
+    CPU_COUNT=$(sysctl -n hw.ncpu)
+else
+    CPU_COUNT=$(nproc)
+fi
+cmake --build . --config Release -j$CPU_COUNT
 
 # Create releases directory
 echo "Creating releases directory..."
