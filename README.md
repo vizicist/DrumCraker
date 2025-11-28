@@ -89,9 +89,11 @@ sudo cp -r DrumCraker.vst3 /usr/lib/vst3/
 
 ```bash
 # Install dependencies (Debian/Ubuntu)
-sudo apt install build-essential cmake git libasound2-dev \
-    libjack-jackd2-dev libfreetype-dev libx11-dev libxrandr-dev \
-    libxinerama-dev libxcursor-dev libgl1-mesa-dev
+sudo apt install build-essential cmake git pkg-config \
+    libasound2-dev libfreetype6-dev libfontconfig1-dev \
+    libx11-dev libxrandr-dev libxinerama-dev libxcursor-dev \
+    libcurl4-openssl-dev libwebkit2gtk-4.1-dev libgtk-3-dev \
+    libgl1-mesa-dev
 
 # Clone repository
 git clone https://github.com/Wamphyre/DrumCraker.git
@@ -103,11 +105,12 @@ cp -r releases/DrumCraker.vst3 ~/.vst3/
 ```
 
 The build script automatically:
-1. Clones JUCE framework (if not present)
-2. Compiles the plugin with optimizations (-O3 -march=native -flto)
-3. Copies the plugin to `releases/`
-4. Includes background image in VST3 bundle
-5. Cleans up temporary files (build/ and JUCE/)
+1. **Checks dependencies**: Verifies all required system libraries are installed
+2. **Clones JUCE framework**: Downloads JUCE 8.0.10 (if not present)
+3. **Compiles the plugin**: Optimizations enabled (-O3 -march=native -flto)
+4. **Copies to releases/**: Creates ready-to-install VST3 bundle
+5. **Includes resources**: Embeds background image in VST3 bundle
+6. **Cleans up**: Removes temporary build files (keeps JUCE for future builds)
 
 ## Usage
 

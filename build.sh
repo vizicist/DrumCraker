@@ -16,6 +16,56 @@ else
     OS_NAME="Unknown"
 fi
 
+# Check Linux dependencies
+if [[ "$OSTYPE" == "linux-gnu"* ]]; then
+    echo "Checking Linux dependencies..."
+    MISSING_DEPS=()
+    
+    # Check for required packages
+    if ! pkg-config --exists freetype2; then
+        MISSING_DEPS+=("libfreetype6-dev")
+    fi
+    if ! pkg-config --exists fontconfig; then
+        MISSING_DEPS+=("libfontconfig1-dev")
+    fi
+    if ! pkg-config --exists x11; then
+        MISSING_DEPS+=("libx11-dev")
+    fi
+    if ! pkg-config --exists xinerama; then
+        MISSING_DEPS+=("libxinerama-dev")
+    fi
+    if ! pkg-config --exists xrandr; then
+        MISSING_DEPS+=("libxrandr-dev")
+    fi
+    if ! pkg-config --exists xcursor; then
+        MISSING_DEPS+=("libxcursor-dev")
+    fi
+    if ! pkg-config --exists alsa; then
+        MISSING_DEPS+=("libasound2-dev")
+    fi
+    if ! pkg-config --exists libcurl; then
+        MISSING_DEPS+=("libcurl4-openssl-dev")
+    fi
+    if ! pkg-config --exists webkit2gtk-4.1; then
+        MISSING_DEPS+=("libwebkit2gtk-4.1-dev")
+    fi
+    if ! pkg-config --exists gtk+-3.0; then
+        MISSING_DEPS+=("libgtk-3-dev")
+    fi
+    
+    if [ ${#MISSING_DEPS[@]} -ne 0 ]; then
+        echo ""
+        echo "ERROR: Missing required dependencies for JUCE on Linux"
+        echo "Please install the following packages:"
+        echo ""
+        echo "  sudo apt-get install ${MISSING_DEPS[@]}"
+        echo ""
+        exit 1
+    fi
+    
+    echo "All dependencies found!"
+fi
+
 # Check if JUCE is cloned
 if [ ! -d "JUCE" ]; then
     echo "Cloning JUCE Framework for $OS_NAME..."
