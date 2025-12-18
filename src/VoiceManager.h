@@ -28,6 +28,10 @@ public:
     int getBusIndex() const { return busIndex; }
     const DrumSample* getCurrentSample() const { return currentSample; }
     juce::String getInstrumentName() const { return instrumentName; }
+    
+    // Helper for stealing logic
+    int getPlaybackPosition() const { return currentPosition; }
+    bool isPending() const { return active && startOffset > 0; }
 
 private:
     bool active = false;
@@ -43,6 +47,9 @@ private:
     
     // Pre-cached channel routing (0=left, 1=right, 2=both)
     std::vector<int> cachedChannelRouting;
+    
+    // OPTIMIZED: Direct pointers to buffers (no lookups in render loop)
+    std::vector<const juce::AudioBuffer<float>*> cachedAudioBuffers;
 };
 
 class VoiceManager
@@ -75,7 +82,7 @@ public:
     void advanceAllVoices(int numSamples);
 
 private:
-    static constexpr int maxVoices = 64;
+    static constexpr int maxVoices = 128; // Increased for high BPM/Fast rolls
     std::vector<Voice> voices;
     double sampleRate = 44100.0;
     std::map<juce::String, int> instrumentToBusMap;

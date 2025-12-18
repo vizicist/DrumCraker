@@ -21,6 +21,8 @@ void Voice::start(const DrumSample* sample, float velocity, SampleEngine* engine
         
         // Pre-determine channel routing (avoid string operations in audio thread)
         cachedChannelRouting.resize(numChannels);
+        cachedAudioBuffers.resize(numChannels); // Resize buffer cache
+        
         int numLeftChannels = 0;
         int numRightChannels = 0;
         int numBothChannels = 0;
@@ -46,6 +48,10 @@ void Voice::start(const DrumSample* sample, float velocity, SampleEngine* engine
                 cachedChannelRouting[i] = 2; // Both/Center (mono, ambience, etc.)
                 numBothChannels++;
             }
+            
+            // OPTIMIZATION: Cache buffer pointer NOW (one lock per note start)
+            // instead of per block (many locks per second)
+            cachedAudioBuffers[i] = sampleEngine->getAudioBuffer(sample, channelName);
         }
         
         // Simple and universal gain compensation
@@ -103,7 +109,9 @@ void Voice::renderToBuffer(juce::AudioBuffer<float>& outputBuffer,
     // Ultra-optimized rendering loop with pre-cached routing and SIMD operations
     for (int i = 0; i < numChannels; ++i)
     {
-        auto* buffer = sampleEngine->getAudioBuffer(currentSample, currentSample->audioFiles[i].channelName);
+        // USE CACHED POINTER (Lock-Free!)
+        const auto* buffer = cachedAudioBuffers[i];
+        
         if (!buffer) [[unlikely]]
             continue;
 
@@ -164,8 +172,11 @@ void Voice::advancePosition(int numSamples)
         return;
     }
 
-    auto* buffer = sampleEngine->getAudioBuffer(currentSample, 
-                                               currentSample->audioFiles[0].channelName);
+
+
+    // USE CACHED POINTER
+    const auto* buffer = cachedAudioBuffers.empty() ? nullptr : cachedAudioBuffers[0];
+                                               
     if (!buffer)
     {
         stop();
@@ -221,14 +232,44 @@ void VoiceManager::noteOn(int midiNote, float velocity, SampleEngine* engine,
         }
     }
 
-    // If no free voices, steal oldest (first active)
-    for (auto& voice : voices)
+    // If no free voices, use SMART STEALING logic
+    // We want to steal the "most finished" voice and Protect "fresh" voices
+    
+    int bestVoiceToSteal = -1;
+    int highestScore = -1;
+    
+    for (int i = 0; i < voices.size(); ++i)
     {
-        if (voice.isActive())
+        const auto& voice = voices[i];
+        if (!voice.isActive()) 
+            continue; // Should have been caught above, but safety first
+            
+        int score = 0;
+        
+        // BASE SCORE: How much has it played?
+        // Old voices >>> Fresh voices
+        score += voice.getPlaybackPosition();
+        
+        // PENALTY: Fresh voices (< 2000 samples ~ 45ms) should be protected
+        if (voice.getPlaybackPosition() < 2000)
+            score -= 1000000; // Huge penalty
+            
+        // CRITICAL PENALTY: Pending voices (haven't even started!)
+        // ABSOLUTELY DO NOT STEAL unless catastrophic
+        if (voice.isPending())
+            score -= 10000000;
+            
+        if (score > highestScore)
         {
-            voice.start(sample, velocity, engine, sampleOffset, sampleRate, instrumentName, busIdx);
-            return;
+            highestScore = score;
+            bestVoiceToSteal = i;
         }
+    }
+    
+    // Steal the best candidate
+    if (bestVoiceToSteal >= 0)
+    {
+        voices[bestVoiceToSteal].start(sample, velocity, engine, sampleOffset, sampleRate, instrumentName, busIdx);
     }
 }
 

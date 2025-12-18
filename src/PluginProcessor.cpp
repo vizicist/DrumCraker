@@ -141,7 +141,16 @@ void DrumSamplerProcessor::processBlock(juce::AudioBuffer<float>& buffer, juce::
                 float gaussian = std::sqrt(-2.0f * std::log(u1)) * std::sin(juce::MathConstants<float>::twoPi * u2);
                 float velocityBias = (velocity - 0.5f) * 0.4f;
                 int sampleDelay = static_cast<int>(((gaussian * 0.5f + velocityBias) * timingHumanization / 1000.0f) * currentSampleRate);
-                sampleOffset = juce::jlimit(0, bufferSize - 1, sampleOffset + sampleDelay);
+                // CRITICAL FIX: Do NOT clamp to buffer size!
+                // Let the offset be larger than buffer size - VoiceManager handles this
+                // by counting down startOffset until it's time to play.
+                // Clamping here causes "bunching" at the end of the buffer (machine gun effect).
+                sampleOffset = sampleOffset + sampleDelay;
+                
+                // CRITICAL FIX 2: Prevent negative offsets (heap corruption)
+                // If humanization "rushes" too much, clamp to 0 (play immediately)
+                if (sampleOffset < 0)
+                    sampleOffset = 0;
             }
             
             voiceManager->noteOn(message.getNoteNumber(), velocity, sampleEngine.get(), sampleOffset, rrVariation);

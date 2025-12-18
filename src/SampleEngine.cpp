@@ -36,6 +36,29 @@ SampleEngine::~SampleEngine()
 
 void SampleEngine::prepare(double sr, int samplesPerBlock)
 {
+    if (sr <= 0.0)
+        return;
+        
+    // If sample rate changes and we have samples loaded, we MUST resample
+    // Otherwise render speed will be wrong (pitch shift + sync loss)
+    if (sampleRate > 0.0 && sr != sampleRate && !audioBufferCache.empty())
+    {
+        juce::ScopedLock lock(cacheLock);
+        
+        // Iterate all buffers and resample in place
+        // This is expensive but necessary for Offline Render
+        for (auto& entry : audioBufferCache)
+        {
+            if (entry.second)
+            {
+                double originalRate = originalSampleRates[entry.first];
+                // Reuse buffer: resample from original rate to NEW target rate
+                // (Always resample from original to avoid quality loss)
+                resampleBuffer(*entry.second, originalRate, sr);
+            }
+        }
+    }
+
     sampleRate = sr;
 }
 
