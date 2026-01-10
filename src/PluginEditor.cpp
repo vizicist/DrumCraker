@@ -5,14 +5,21 @@ DrumSamplerEditor::DrumSamplerEditor(DrumSamplerProcessor& p)
 {
     
     // Load background image from VST3 bundle resources
-    juce::File backgroundFile = juce::File::getSpecialLocation(juce::File::currentExecutableFile)
-        .getParentDirectory().getParentDirectory().getChildFile("Resources").getChildFile("background.png");
+    juce::File exeFile = juce::File::getSpecialLocation(juce::File::currentExecutableFile);
+    juce::File backgroundFile = exeFile.getParentDirectory().getParentDirectory().getChildFile("Resources").getChildFile("background.png");
     
     if (!backgroundFile.existsAsFile())
     {
-        // Fallback: try from working directory
-        backgroundFile = juce::File::getCurrentWorkingDirectory()
-            .getChildFile("assets").getChildFile("background.png");
+        // Try Windows flat bundle structure: binary is in Contents/x86_64-win/
+        // Resources should be in bundle root: ../../Resources/
+        backgroundFile = exeFile.getParentDirectory().getParentDirectory().getChildFile("Resources").getChildFile("background.png");
+        
+        if (!backgroundFile.existsAsFile())
+        {
+            // Fallback: try from working directory
+            backgroundFile = juce::File::getCurrentWorkingDirectory()
+                .getChildFile("assets").getChildFile("background.png");
+        }
     }
     
     if (backgroundFile.existsAsFile())
