@@ -10,15 +10,19 @@ set(PLUGIN_VERSION "${PLUGIN_VERSION_MAJOR}.${PLUGIN_VERSION_MINOR}.${PLUGIN_VER
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# Performance optimizations (conservative for DAW compatibility)
-set(CMAKE_CXX_FLAGS_RELEASE "-O3 -march=native -mtune=native -funroll-loops -fomit-frame-pointer -DNDEBUG")
-if(CMAKE_SYSTEM_NAME MATCHES "Linux")
-    set(CMAKE_EXE_LINKER_FLAGS_RELEASE "-s")
-    set(CMAKE_SHARED_LINKER_FLAGS_RELEASE "-s")
-endif()
-
 # JUCE
-add_subdirectory(JUCE)
+if (NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/JUCE/CMakeLists.txt")
+    message(STATUS "JUCE not found. Downloading...")
+    include(FetchContent)
+    FetchContent_Declare(
+        juce
+        GIT_REPOSITORY https://github.com/juce-framework/JUCE.git
+        GIT_TAG 8.0.10
+    )
+    FetchContent_MakeAvailable(juce)
+else()
+    add_subdirectory(JUCE)
+endif()
 
 juce_add_plugin(DrumCrakerVST
     COMPANY_NAME "Wamphyre"
@@ -61,3 +65,22 @@ target_link_libraries(DrumCrakerVST
         juce::juce_recommended_lto_flags
         juce::juce_recommended_warning_flags
 )
+
+# Platform-specific compiler and linker options
+if(MSVC)
+    target_compile_options(DrumCrakerVST PRIVATE /O2 /arch:AVX2 /DNDEBUG)
+
+    # Automatic cleanup and release organization for Windows
+    add_custom_command(TARGET DrumCrakerVST_VST3 POST_BUILD
+        COMMAND powershell -Command "$bundle = (Get-Item '$<TARGET_FILE:DrumCrakerVST_VST3>').Directory.Parent.Parent.FullName; New-Item -ItemType Directory -Path '${CMAKE_CURRENT_SOURCE_DIR}/releases' -Force; Copy-Item -Path $bundle -Destination '${CMAKE_CURRENT_SOURCE_DIR}/releases/DrumCraker.vst3' -Recurse -Force; New-Item -ItemType Directory -Path '${CMAKE_CURRENT_SOURCE_DIR}/releases/DrumCraker.vst3/Contents/Resources' -Force; Copy-Item -Path '${CMAKE_CURRENT_SOURCE_DIR}/assets/background.png' -Destination '${CMAKE_CURRENT_SOURCE_DIR}/releases/DrumCraker.vst3/Contents/Resources/background.png' -Force"
+        VERBATIM
+        COMMENT "Organizing Windows release in /releases folder..."
+    )
+else()
+    target_compile_options(DrumCrakerVST PRIVATE -O3 -march=native -mtune=native -funroll-loops -fomit-frame-pointer -DNDEBUG)
+    if(APPLE)
+        # Add macOS specific options if necessary
+    elseif(LINUX)
+        target_link_options(DrumCrakerVST PRIVATE -s)
+    endif()
+endif()

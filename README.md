@@ -1,8 +1,9 @@
 # DrumCraker VST3
 
-**DrumCraker** is a free drum sampler VST3 plugin optimized for Linux and macOS, fully compatible with DrumGizmo drum kits. Designed for low-latency performance and realistic drum sound reproduction.
+**DrumCraker** is a free drum sampler VST3 plugin for Windows, Linux, and macOS, fully compatible with DrumGizmo drum kits. Designed for low-latency performance and realistic drum sound reproduction.
 
 ![Version](https://img.shields.io/badge/version-1.2.3-gold)
+![Platform](https://img.shields.io/badge/platform-Windows-blue)
 ![Platform](https://img.shields.io/badge/platform-Linux-blue)
 ![Platform](https://img.shields.io/badge/platform-macOS-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
@@ -54,6 +55,14 @@ DrumCraker adds natural human feel to MIDI performances, working with both fixed
 
 ## System Requirements
 
+### Windows
+- **OS**: Windows 10 or 11 (64-bit)
+- **Audio**: ASIO, WASAPI, or DirectSound
+- **CPU**: x64 with SSE2 support
+- **RAM**: 4GB minimum (depends on drum kit size)
+- **Compiler**: Visual Studio 2022 with C++ support
+- **Build Tools**: CMake 3.15+, Git
+
 ### Linux
 - **OS**: Linux (Debian, Ubuntu, Fedora, Arch, etc.)
 - **Audio**: ALSA, JACK, or PipeWire
@@ -87,30 +96,35 @@ sudo cp -r DrumCraker.vst3 /usr/lib/vst3/
 
 ### Option 2: Build from Source
 
-```bash
-# Install dependencies (Debian/Ubuntu)
-sudo apt install build-essential cmake git pkg-config \
-    libasound2-dev libfreetype6-dev libfontconfig1-dev \
-    libx11-dev libxrandr-dev libxinerama-dev libxcursor-dev \
-    libcurl4-openssl-dev libwebkit2gtk-4.1-dev libgtk-3-dev \
-    libgl1-mesa-dev
+#### Windows
+1. Install **Visual Studio 2022** (with C++ Desktop development).
+2. Clone the repository and build:
+```powershell
+git clone https://github.com/Wamphyre/DrumCraker.git
+cd DrumCraker
+cmake -B build -DCMAKE_BUILD_TYPE=Release
+cmake --build build --config Release
+```
+The plugin will be automatically placed in the `releases/` folder.
 
+#### Linux / macOS
+```bash
 # Clone repository
 git clone https://github.com/Wamphyre/DrumCraker.git
 cd DrumCraker
 
-# Build and install
+# Build and install (automatically handles JUCE)
 ./build.sh
 cp -r releases/DrumCraker.vst3 ~/.vst3/
 ```
 
-The build script automatically:
-1. **Checks dependencies**: Verifies all required system libraries are installed
+The build process automatically:
+1. **Checks dependencies**: (Linux/macOS) Verifies required system libraries
 2. **Clones JUCE framework**: Downloads JUCE 8.0.10 (if not present)
-3. **Compiles the plugin**: Optimizations enabled (-O3 -march=native -flto)
-4. **Copies to releases/**: Creates ready-to-install VST3 bundle
+3. **Compiles the plugin**: Optimizations enabled for your specific CPU
+4. **Organizes output**: Creates ready-to-install VST3 bundle in `releases/`
 5. **Includes resources**: Embeds background image in VST3 bundle
-6. **Cleans up**: Removes temporary build files (keeps JUCE for future builds)
+6. **Cleanup**: Removes temporary build files
 
 ## Usage
 
@@ -241,4 +255,4 @@ If you find DrumCraker useful and want to support its development, consider buyi
 
 ---
 
-**Made with ❤️ for the Linux audio community**
+**Made with ❤️ for the audio community**
