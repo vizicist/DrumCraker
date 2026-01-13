@@ -2,7 +2,7 @@
 
 **DrumCraker** is a free drum sampler VST3 plugin for Windows, Linux, and macOS, fully compatible with DrumGizmo drum kits. Designed for low-latency performance and realistic drum sound reproduction.
 
-![Version](https://img.shields.io/badge/version-1.2.3-gold)
+![Version](https://img.shields.io/badge/version-1.2.4-gold)
 ![Platform](https://img.shields.io/badge/platform-Windows-blue)
 ![Platform](https://img.shields.io/badge/platform-Linux-blue)
 ![Platform](https://img.shields.io/badge/platform-macOS-blue)
@@ -16,8 +16,8 @@
 ### Core Functionality
 - **DrumGizmo Compatible**: Load any DrumGizmo drum kit (XML format)
 - **Separate Kit & MIDI Map Loading**: Independent control over drum kit and MIDI mapping
-- **Multi-Channel Output**: Up to 16 stereo buses with intelligent instrument routing
-- **Smart Routing**: Automatic grouping by instrument type (Kick→Bus1, Snare→Bus2, etc.)
+- **Multi-Channel Output**: 16 Fixed Stereo Buses (Kick, Snare, HH, Toms, Ride, Crash, SFX, Amb...)
+- **DAW Integration**: Buses are named ("Kick", "Snare") for easy mixing in Reaper/Ardour
 - **Velocity Layers**: Automatic sample selection based on MIDI velocity
 - **High-Quality Resampling**: Lagrange interpolation for automatic sample rate conversion
 - **Asynchronous Loading**: Non-blocking sample loading in background thread
@@ -148,23 +148,21 @@ Popular kits include:
 
 ### Multi-Channel Routing
 
-DrumCraker automatically routes instruments to separate buses for advanced mixing:
+DrumCraker uses a **Fixed Routing** strategy to ensure consistent mixing across different drum kits. Buses are explicitly named in your DAW (if supported, e.g., Reaper, Ardour) for easy identification.
 
-- **Automatic Grouping**: Instruments are grouped by type (Kick, Snare, HiHat, Tom, Cymbal, etc.)
-- **Up to 16 Buses**: Each group gets its own stereo bus for independent processing
-- **Intelligent Assignment**: Based on DrumGizmo kit's instrument groups
-- **Stereo Fallback**: If only one bus is enabled, all instruments mix to main output
-- **DAW Integration**: Enable/disable buses in your DAW's mixer for flexible routing
+**Fixed Bus Map:**
+- **Bus 1**: "Kick" (Main Kick + Kick Sub)
+- **Bus 2**: "Snare" (Top, Bottom, Trigger)
+- **Bus 3**: "HiHat" (Closed, Open, Pedal)
+- **Bus 4**: "Toms" (All Toms mixed to stereo)
+- **Bus 5**: "Ride" (Bow, Bell)
+- **Bus 6**: "Crash" (All Crashes mixed to stereo)
+- **Bus 7**: "China/Splash" (Effect cymbals)
+- **Bus 8**: "Ambience" (Room/Overhead mics if exposed as separate instruments)
+- **Bus 9-16**: "Aux" (Percussion and unclassified instruments)
 
-**Example Routing:**
-- Bus 1: Kick drums
-- Bus 2: Snare drums  
-- Bus 3: Hi-hats
-- Bus 4: Toms
-- Bus 5: Cymbals
-- Bus 6+: Additional percussion
+This allows you to create a SINGLE template in your DAW that works with ANY DrumGizmo kit, without channels shifting around when you change kits.
 
-This allows you to apply separate EQ, compression, reverb, and effects to each drum group directly in your DAW.
 
 ### Parameters
 

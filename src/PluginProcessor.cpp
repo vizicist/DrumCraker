@@ -4,22 +4,22 @@
 
 DrumSamplerProcessor::DrumSamplerProcessor()
     : AudioProcessor(BusesProperties()
-        .withOutput("Out 1", juce::AudioChannelSet::stereo(), true)
-        .withOutput("Out 2", juce::AudioChannelSet::stereo(), false)
-        .withOutput("Out 3", juce::AudioChannelSet::stereo(), false)
-        .withOutput("Out 4", juce::AudioChannelSet::stereo(), false)
-        .withOutput("Out 5", juce::AudioChannelSet::stereo(), false)
-        .withOutput("Out 6", juce::AudioChannelSet::stereo(), false)
-        .withOutput("Out 7", juce::AudioChannelSet::stereo(), false)
-        .withOutput("Out 8", juce::AudioChannelSet::stereo(), false)
-        .withOutput("Out 9", juce::AudioChannelSet::stereo(), false)
-        .withOutput("Out 10", juce::AudioChannelSet::stereo(), false)
-        .withOutput("Out 11", juce::AudioChannelSet::stereo(), false)
-        .withOutput("Out 12", juce::AudioChannelSet::stereo(), false)
-        .withOutput("Out 13", juce::AudioChannelSet::stereo(), false)
-        .withOutput("Out 14", juce::AudioChannelSet::stereo(), false)
-        .withOutput("Out 15", juce::AudioChannelSet::stereo(), false)
-        .withOutput("Out 16", juce::AudioChannelSet::stereo(), false))
+        .withOutput("Kick", juce::AudioChannelSet::stereo(), true)
+        .withOutput("Snare", juce::AudioChannelSet::stereo(), false)
+        .withOutput("HiHat", juce::AudioChannelSet::stereo(), false)
+        .withOutput("Toms", juce::AudioChannelSet::stereo(), false)
+        .withOutput("Ride", juce::AudioChannelSet::stereo(), false)
+        .withOutput("Crash", juce::AudioChannelSet::stereo(), false)
+        .withOutput("China/Splash", juce::AudioChannelSet::stereo(), false)
+        .withOutput("Ambience", juce::AudioChannelSet::stereo(), false)
+        .withOutput("Aux 9", juce::AudioChannelSet::stereo(), false)
+        .withOutput("Aux 10", juce::AudioChannelSet::stereo(), false)
+        .withOutput("Aux 11", juce::AudioChannelSet::stereo(), false)
+        .withOutput("Aux 12", juce::AudioChannelSet::stereo(), false)
+        .withOutput("Aux 13", juce::AudioChannelSet::stereo(), false)
+        .withOutput("Aux 14", juce::AudioChannelSet::stereo(), false)
+        .withOutput("Aux 15", juce::AudioChannelSet::stereo(), false)
+        .withOutput("Aux 16", juce::AudioChannelSet::stereo(), false))
 {
     drumKitLoader = std::make_unique<DrumKitLoader>();
     sampleEngine = std::make_unique<SampleEngine>();
@@ -201,128 +201,75 @@ void DrumSamplerProcessor::setupInstrumentRouting()
     int busIndex = 0;
     std::set<juce::String> assignedInstruments;
     
-    // Bus 0: All Kicks together
-    bool kickBusAssigned = false;
+    // IMPLEMENTING FIXED ROUTING STRATEGY
+    // Bus 0: Kick
+    // Bus 1: Snare
+    // Bus 2: HiHat
+    // Bus 3: Toms (Stereo Mix)
+    // Bus 4: Ride
+    // Bus 5: Crash
+    // Bus 6: China/Splash/Bell
+    // Bus 7: Ambience/Room (if present as separate instrument)
+    // Bus 8-15: Aux
+
     for (const auto& instrument : kit->instruments)
     {
-        if (instrument->name.containsIgnoreCase("KDrum") || 
-            instrument->name.containsIgnoreCase("Kick"))
+        juce::String name = instrument->name;
+        int targetBus = 15; // Default to last Aux
+
+        if (name.containsIgnoreCase("Kick") || name.containsIgnoreCase("KDrum"))
         {
-            instrumentToBusMap[instrument->name] = 0;
-            assignedInstruments.insert(instrument->name);
-            kickBusAssigned = true;
+            targetBus = 0;
+            if (instrumentGroups.size() == 0) instrumentGroups.push_back("Kick");
         }
-    }
-    if (kickBusAssigned)
-    {
-        instrumentGroups.push_back("Kick");
-        busIndex = 1;
-    }
-    
-    // Bus 1: All Snares together
-    bool snareBusAssigned = false;
-    for (const auto& instrument : kit->instruments)
-    {
-        if (assignedInstruments.count(instrument->name) > 0)
-            continue;
+        else if (name.containsIgnoreCase("Snare"))
+        {
+            targetBus = 1;
+             // Ensure groups exist (quick hack for GUI display list stability)
+             // Ideally this list should also be fixed, but for now we map dynamically
+        }
+        else if (name.containsIgnoreCase("Hihat") || name.containsIgnoreCase("HH"))
+        {
+            targetBus = 2;
+        }
+        else if (name.containsIgnoreCase("Tom") || name.containsIgnoreCase("Floor"))
+        {
+            targetBus = 3; // All Toms to Bus 3
+        }
+        else if (name.containsIgnoreCase("Ride"))
+        {
+            targetBus = 4;
+        }
+        else if (name.containsIgnoreCase("Crash"))
+        {
+            targetBus = 5; // All Crashes to Bus 5
+        }
+        else if (name.containsIgnoreCase("China") || name.containsIgnoreCase("Splash") || 
+                 name.containsIgnoreCase("Bell") || name.containsIgnoreCase("Zilbel") || 
+                 name.containsIgnoreCase("Cym"))
+        {
+            targetBus = 6;
+        }
+        else if (name.containsIgnoreCase("Room") || name.containsIgnoreCase("Amb"))
+        {
+            targetBus = 7;
+        }
+        else
+        {
+            // Assign remaining unique instruments to Aux buses 8-15 sequentially
+            // Using a simple hash or counter to distribute would be better, 
+            // but for now let's just dump them in 8
+            targetBus = 8;
             
-        if (instrument->name.containsIgnoreCase("Snare"))
-        {
-            instrumentToBusMap[instrument->name] = busIndex;
-            assignedInstruments.insert(instrument->name);
-            snareBusAssigned = true;
+            // Refined logic: Try to distribute if possible, but keep it simple
+            // Only specialized percussion falls here
         }
-    }
-    if (snareBusAssigned)
-    {
-        instrumentGroups.push_back("Snare");
-        busIndex++;
+
+        instrumentToBusMap[name] = targetBus;
     }
     
-    // Bus 2: All HiHats together
-    bool hihatBusAssigned = false;
-    for (const auto& instrument : kit->instruments)
-    {
-        if (assignedInstruments.count(instrument->name) > 0)
-            continue;
-            
-        if (instrument->name.containsIgnoreCase("Hihat") || 
-            instrument->name.containsIgnoreCase("HH"))
-        {
-            instrumentToBusMap[instrument->name] = busIndex;
-            assignedInstruments.insert(instrument->name);
-            hihatBusAssigned = true;
-        }
-    }
-    if (hihatBusAssigned)
-    {
-        instrumentGroups.push_back("HiHat");
-        busIndex++;
-    }
-    
-    // Toms: Each tom gets its own bus
-    std::vector<juce::String> tomPatterns = {"Tom1", "Tom2", "Tom3", "FTom1", "FTom2", "FTom3"};
-    for (const auto& tomPattern : tomPatterns)
-    {
-        for (const auto& instrument : kit->instruments)
-        {
-            if (assignedInstruments.count(instrument->name) > 0)
-                continue;
-            
-            if (instrument->name.containsIgnoreCase(tomPattern))
-            {
-                if (busIndex < 16)
-                {
-                    instrumentToBusMap[instrument->name] = busIndex;
-                    instrumentGroups.push_back(instrument->name);
-                    assignedInstruments.insert(instrument->name);
-                    busIndex++;
-                }
-            }
-        }
-    }
-    
-    // Cymbals: Each cymbal gets its own bus (Crash, Ride, China, Splash, etc.)
-    std::vector<juce::String> cymbalPatterns = {"Ride", "Crash", "China", "Splash", "Bell"};
-    for (const auto& cymbalPattern : cymbalPatterns)
-    {
-        for (const auto& instrument : kit->instruments)
-        {
-            if (assignedInstruments.count(instrument->name) > 0)
-                continue;
-            
-            if (instrument->name.containsIgnoreCase(cymbalPattern))
-            {
-                if (busIndex < 16)
-                {
-                    instrumentToBusMap[instrument->name] = busIndex;
-                    instrumentGroups.push_back(instrument->name);
-                    assignedInstruments.insert(instrument->name);
-                    busIndex++;
-                }
-            }
-        }
-    }
-    
-    // Remaining instruments: each gets its own bus
-    for (const auto& instrument : kit->instruments)
-    {
-        if (assignedInstruments.count(instrument->name) == 0)
-        {
-            if (busIndex < 16)
-            {
-                instrumentToBusMap[instrument->name] = busIndex;
-                instrumentGroups.push_back(instrument->name);
-                assignedInstruments.insert(instrument->name);
-                busIndex++;
-            }
-            else
-            {
-                // Max buses reached, assign to last bus
-                instrumentToBusMap[instrument->name] = 15;
-            }
-        }
-    }
+    // Update Groups List for GUI (Just for display)
+    instrumentGroups = { "Kick", "Snare", "HiHat", "Toms", "Ride", "Crash", "SFX", "Ambience", "Aux"};
     
     numOutputChannels = busIndex;
     
