@@ -13,7 +13,8 @@ public:
     Voice() = default;
     
     void start(const DrumSample* sample, float velocity, SampleEngine* engine, 
-               int offset = 0, double sampleRate = 44100.0, const juce::String& instrumentName = "", int busIdx = 0);
+               int offset = 0, double sampleRate = 44100.0, const juce::String& instrumentName = "", 
+               int busIdx = 0);
     void stop();
     bool isActive() const { return active; }
     

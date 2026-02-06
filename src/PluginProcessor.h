@@ -48,6 +48,7 @@ public:
     bool isKitFullyLoaded() const { return sampleEngine->isLoaded(); }
     bool getIsLoadingKit() const { return isLoadingKit.load(); }
     bool getIsLoadingMidiMap() const { return isLoadingMidiMap.load(); }
+    float getLoadingProgress() const { return sampleEngine->getLoadingProgress(); }
     
     // Multi-channel routing
     void setupInstrumentRouting();

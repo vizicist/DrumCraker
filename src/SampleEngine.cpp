@@ -250,6 +250,10 @@ void SampleEngine::loadSamplesAsync()
     // Mark that we're loading
     isLoadingAsync = true;
     shouldStopLoading = false;
+    
+    // Reset progress counters
+    loadedSampleCount = 0;
+    totalSampleCount = 0;
 
     // OPTIMIZED: Multi-threaded loading with thread pool (SAFE)
     juce::Thread::launch([this]()
@@ -279,6 +283,9 @@ void SampleEngine::loadSamplesAsync()
             }
         }
         
+        // Set total count for progress bar
+        totalSampleCount = static_cast<int>(samplesToLoad.size());
+        
         // Use thread pool for parallel loading (90% of available cores)
         const int numCpus = juce::SystemStats::getNumCpus();
         const int numThreads = juce::jmax(2, static_cast<int>(numCpus * 0.9f));
@@ -301,6 +308,7 @@ void SampleEngine::loadSamplesAsync()
                     {
                         loadSampleFile(audioSample);
                         loadedCount++;
+                        loadedSampleCount++;  // Update progress counter
                     }
                     catch (...)
                     {

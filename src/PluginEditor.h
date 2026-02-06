@@ -41,6 +41,9 @@ private:
     juce::Label timingRandomnessLabel;
     juce::Slider roundRobinSlider;
     juce::Label roundRobinLabel;
+    
+    // Loading progress bar
+    double loadingProgress = 0.0;  // Value for ProgressBar (0.0 - 1.0)
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DrumSamplerEditor)
 };

@@ -26,6 +26,14 @@ public:
     // Access to current kit for routing configuration
     const DrumKit* getCurrentKit() const { return currentKit.get(); }
     
+    // Loading progress (for UI progress bar)
+    int getLoadedSampleCount() const { return loadedSampleCount.load(); }
+    int getTotalSampleCount() const { return totalSampleCount.load(); }
+    float getLoadingProgress() const { 
+        int total = totalSampleCount.load();
+        return total > 0 ? static_cast<float>(loadedSampleCount.load()) / total : 0.0f;
+    }
+    
     // Callback para notificar cuando termina la carga
     std::function<void(bool)> loadingCallback;
 
@@ -50,6 +58,10 @@ private:
     
     // Instrument cache for faster lookups
     std::unordered_map<juce::String, Instrument*> instrumentCache;
+    
+    // Loading progress counters
+    std::atomic<int> loadedSampleCount{0};
+    std::atomic<int> totalSampleCount{0};
     
     double sampleRate = 44100.0;
     

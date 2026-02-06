@@ -2,7 +2,7 @@
 
 **DrumCraker** is a free drum sampler VST3 plugin for Windows, Linux, and macOS, fully compatible with DrumGizmo drum kits. Designed for low-latency performance and realistic drum sound reproduction.
 
-![Version](https://img.shields.io/badge/version-1.2.4-gold)
+![Version](https://img.shields.io/badge/version-1.2.5-gold)
 ![Platform](https://img.shields.io/badge/platform-Windows-blue)
 ![Platform](https://img.shields.io/badge/platform-Linux-blue)
 ![Platform](https://img.shields.io/badge/platform-macOS-blue)

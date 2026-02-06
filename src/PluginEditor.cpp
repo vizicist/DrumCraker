@@ -38,14 +38,15 @@ DrumSamplerEditor::DrumSamplerEditor(DrumSamplerProcessor& p)
     versionLabel.setColour(juce::Label::textColourId, juce::Colour(0xFFFFD700)); // Gold
     addAndMakeVisible(versionLabel);
 
-    // Load buttons with modern style and more opaque shadow
+    // Load buttons with MODERN style - gradient look, subtle glow
     auto setupButton = [](juce::TextButton& button, const juce::String& text) {
         button.setButtonText(text);
-        button.setColour(juce::TextButton::buttonColourId, juce::Colour(0xD0151515));  // More opaque
-        button.setColour(juce::TextButton::buttonOnColourId, juce::Colour(0xE0252525));
-        button.setColour(juce::TextButton::textColourOffId, juce::Colours::white);
-        button.setColour(juce::TextButton::textColourOnId, juce::Colour(0xFFFFD700));
-        button.setColour(juce::ComboBox::outlineColourId, juce::Colour(0xFF808080));
+        // Darker base with slight transparency for glass effect
+        button.setColour(juce::TextButton::buttonColourId, juce::Colour(0xE8181818));
+        button.setColour(juce::TextButton::buttonOnColourId, juce::Colour(0xF03A3A3A));
+        button.setColour(juce::TextButton::textColourOffId, juce::Colour(0xFFE0E0E0));  // Soft white
+        button.setColour(juce::TextButton::textColourOnId, juce::Colour(0xFFFFD700));   // Gold on press
+        button.setColour(juce::ComboBox::outlineColourId, juce::Colour(0xFF606060));    // Subtle border
     };
     
     setupButton(loadKitButton, "LOAD DRUMKIT");
@@ -56,12 +57,13 @@ DrumSamplerEditor::DrumSamplerEditor(DrumSamplerProcessor& p)
     loadMidiMapButton.onClick = [this] { loadMidiMapButtonClicked(); };
     addAndMakeVisible(loadMidiMapButton);
 
-    // Status labels with more opaque shadow for better visibility
+    // Status labels with MODERN frosted glass effect
     auto setupStatusLabel = [](juce::Label& label, const juce::String& text, juce::Colour textColour) {
         label.setText(text, juce::dontSendNotification);
         label.setFont(juce::Font(17.0f, juce::Font::bold));
         label.setColour(juce::Label::textColourId, textColour);
-        label.setColour(juce::Label::backgroundColourId, juce::Colour(0xC0000000));  // More opaque
+        // Frosted glass: semi-transparent dark with slight blur simulation
+        label.setColour(juce::Label::backgroundColourId, juce::Colour(0xB8101018));
         label.setJustificationType(juce::Justification::centred);
     };
     
@@ -75,22 +77,27 @@ DrumSamplerEditor::DrumSamplerEditor(DrumSamplerProcessor& p)
     statusLabel.setFont(juce::Font(16.0f, juce::Font::italic));
     addAndMakeVisible(statusLabel);
 
-    // Sliders with modern style and more opaque shadow
+    // Sliders with MODERN premium style - gold accent, soft shadows
     auto setupSlider = [](juce::Slider& slider, juce::Label& label, const juce::String& labelText) {
         label.setText(labelText, juce::dontSendNotification);
         label.setFont(juce::Font(18.0f, juce::Font::bold));
-        label.setColour(juce::Label::textColourId, juce::Colours::white);
-        label.setColour(juce::Label::backgroundColourId, juce::Colour(0xB0000000));  // More opaque
+        label.setColour(juce::Label::textColourId, juce::Colour(0xFFE8E8E8));  // Soft white
+        label.setColour(juce::Label::backgroundColourId, juce::Colour(0xA0101018));  // Frosted
         label.setJustificationType(juce::Justification::centred);
         
         slider.setSliderStyle(juce::Slider::RotaryHorizontalVerticalDrag);
         slider.setTextBoxStyle(juce::Slider::TextBoxBelow, false, 90, 24);
+        // Gold fill arc
         slider.setColour(juce::Slider::rotarySliderFillColourId, juce::Colour(0xFFFFD700));
-        slider.setColour(juce::Slider::rotarySliderOutlineColourId, juce::Colour(0xFF707070));
-        slider.setColour(juce::Slider::thumbColourId, juce::Colour(0xFFFFD700));
-        slider.setColour(juce::Slider::textBoxTextColourId, juce::Colours::white);
-        slider.setColour(juce::Slider::textBoxBackgroundColourId, juce::Colour(0xC0000000));  // More opaque
-        slider.setColour(juce::Slider::textBoxOutlineColourId, juce::Colour(0xFF505050));
+        // Darker outline for depth
+        slider.setColour(juce::Slider::rotarySliderOutlineColourId, juce::Colour(0xFF404040));
+        // Golden thumb
+        slider.setColour(juce::Slider::thumbColourId, juce::Colour(0xFFFFB800));
+        // Soft white text
+        slider.setColour(juce::Slider::textBoxTextColourId, juce::Colour(0xFFE0E0E0));
+        // Frosted textbox
+        slider.setColour(juce::Slider::textBoxBackgroundColourId, juce::Colour(0xB8101018));
+        slider.setColour(juce::Slider::textBoxOutlineColourId, juce::Colour(0xFF383838));
     };
 
     // Master Volume
@@ -160,9 +167,15 @@ void DrumSamplerEditor::timerCallback()
     
     if (loadingKit || loadingMidiMap)
     {
+        // Update progress bar value
+        loadingProgress = processor.getLoadingProgress();
+        
         juce::String loadingText = "Loading";
         if (loadingKit)
-            loadingText += " drumkit";
+        {
+            int percent = static_cast<int>(loadingProgress * 100);
+            loadingText += " drumkit (" + juce::String(percent) + "%)";
+        }
         if (loadingMidiMap)
             loadingText += (loadingKit ? " and" : "") + juce::String(" MIDI map");
         loadingText += "...";
@@ -172,11 +185,16 @@ void DrumSamplerEditor::timerCallback()
             statusLabel.setText(loadingText, juce::dontSendNotification);
             statusLabel.setColour(juce::Label::textColourId, juce::Colour(0xFFFFAA00)); // Orange
         }
+        
+        // Force repaint to update progress bar
+        repaint();
     }
     else if (processor.isKitFullyLoaded() && statusLabel.getText() != "Ready")
     {
+        loadingProgress = 0.0;  // Reset progress
         statusLabel.setText("Ready", juce::dontSendNotification);
         statusLabel.setColour(juce::Label::textColourId, juce::Colour(0xFF00FF00)); // Green
+        repaint();
     }
 }
 
@@ -213,6 +231,39 @@ void DrumSamplerEditor::paint(juce::Graphics& g)
                                      juce::Colour(0xFF0A0A0A), 0, static_cast<float>(getHeight()), false);
         g.setGradientFill(gradient);
         g.fillAll();
+    }
+    
+    // Draw loading progress bar (only when loading)
+    if (loadingProgress > 0.01 && loadingProgress < 0.99)
+    {
+        auto bounds = getLocalBounds();
+        int barWidth = 400;
+        int barHeight = 12;
+        int barX = (bounds.getWidth() - barWidth) / 2;
+        int barY = 850;  // Near bottom
+        
+        // Background (dark, rounded)
+        g.setColour(juce::Colour(0xC0000000));
+        g.fillRoundedRectangle(static_cast<float>(barX), static_cast<float>(barY), 
+                               static_cast<float>(barWidth), static_cast<float>(barHeight), 6.0f);
+        
+        // Progress fill (gold gradient with shimmer effect)
+        int fillWidth = static_cast<int>(barWidth * loadingProgress);
+        if (fillWidth > 0)
+        {
+            juce::ColourGradient progressGradient(
+                juce::Colour(0xFFFFD700), static_cast<float>(barX), static_cast<float>(barY),
+                juce::Colour(0xFFFF8C00), static_cast<float>(barX + fillWidth), static_cast<float>(barY + barHeight),
+                false);
+            g.setGradientFill(progressGradient);
+            g.fillRoundedRectangle(static_cast<float>(barX + 2), static_cast<float>(barY + 2), 
+                                   static_cast<float>(fillWidth - 4), static_cast<float>(barHeight - 4), 4.0f);
+        }
+        
+        // Border
+        g.setColour(juce::Colour(0xFF505050));
+        g.drawRoundedRectangle(static_cast<float>(barX), static_cast<float>(barY), 
+                               static_cast<float>(barWidth), static_cast<float>(barHeight), 6.0f, 1.0f);
     }
 }
 
