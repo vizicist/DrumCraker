@@ -70,7 +70,7 @@ DrumCraker adds natural human feel to MIDI performances, working with both fixed
 - **CPU**: x86_64 with SSE2 support
 - **RAM**: 4GB minimum (depends on drum kit size)
 - **Compiler**: GCC 9+ or Clang 10+ with C++17 support
-- **Build Tools**: CMake 3.15+, Git
+- **Build Tools**: CMake 3.15+, Git, pkg-config
 
 ### macOS
 - **OS**: macOS 10.13 (High Sierra) or later
@@ -121,10 +121,17 @@ The plugin will be automatically placed in the `releases/` folder.
 git clone https://github.com/Wamphyre/DrumCraker.git
 cd DrumCraker
 
-# Install dependencies (FreeBSD only)
-pkg install cmake pkgconf alsa-lib freetype2 libX11 libXext \
-  libXinerama libXrandr libXcursor mesa-libs libglvnd \
-  libxkbcommon jackit lv2
+# Install dependencies (Debian/Ubuntu)
+sudo apt install build-essential cmake git pkg-config \
+    libasound2-dev libfreetype6-dev libfontconfig1-dev \
+    libx11-dev libxrandr-dev libxinerama-dev libxcursor-dev \
+    libcurl4-openssl-dev libwebkit2gtk-4.1-dev libgtk-3-dev \
+    libgl1-mesa-dev
+
+# Install dependencies (FreeBSD)
+sudo pkg install cmake pkgconf alsa-lib freetype2 libX11 libXext \
+    libXinerama libXrandr libXcursor mesa-libs libglvnd libxkbcommon \
+    jackit lv2
 
 # Build and install (automatically handles JUCE)
 ./build.sh

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 set -e
 
@@ -135,19 +135,34 @@ echo "Creating releases directory..."
 cd ..
 mkdir -p releases
 
-# Move plugin to releases
-echo "Moving plugin to releases..."
-cp -r build/DrumCrakerVST_artefacts/Release/VST3/DrumCraker.vst3 releases/
+# Find and move artifacts (handle variable CMake output paths)
+echo "Locating and moving artifacts..."
 
-# Copy assets to VST3 bundle
-echo "Copying resources..."
-mkdir -p releases/DrumCraker.vst3/Contents/Resources
-cp assets/background.png releases/DrumCraker.vst3/Contents/Resources/
+# Find generated VST3
+VST3_PATH=$(find build -name "DrumCraker.vst3" -type d | head -n 1)
 
-# Move LV2 plugin to releases if it exists
-if [ -d "build/DrumCrakerVST_artefacts/Release/LV2" ]; then
-    echo "Moving LV2 plugin to releases..."
-    cp -r build/DrumCrakerVST_artefacts/Release/LV2/DrumCraker.lv2 releases/
+if [ -n "$VST3_PATH" ]; then
+    echo "Found VST3 at: $VST3_PATH"
+    cp -r "$VST3_PATH" releases/
+    
+    # Copy assets to VST3 bundle
+    echo "Copying resources to VST3..."
+    mkdir -p releases/DrumCraker.vst3/Contents/Resources
+    cp -r assets/background.png releases/DrumCraker.vst3/Contents/Resources/
+else
+    echo "ERROR: Could not find generated VST3 plugin!"
+    exit 1
+fi
+
+# Find generated LV2
+LV2_PATH=$(find build -name "DrumCraker.lv2" -type d | head -n 1)
+
+if [ -n "$LV2_PATH" ]; then
+    echo "Found LV2 at: $LV2_PATH"
+    cp -r "$LV2_PATH" releases/
+    echo "Moved LV2 to releases/"
+else
+    echo "WARNING: Could not find generated LV2 plugin. Check if LV2 dependencies were met during configuration."
 fi
 
 # Clean only build directory (keep JUCE for future builds)
