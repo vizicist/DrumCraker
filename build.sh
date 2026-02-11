@@ -74,25 +74,14 @@ if [[ "$OSTYPE" == "freebsd"* ]]; then
     echo "Checking FreeBSD dependencies..."
     MISSING_DEPS=()
     
-    # Check for required packages using pkg-config
-    if ! pkg-config --exists freetype2; then
-        MISSING_DEPS+=("freetype2")
-    fi
-    if ! pkg-config --exists x11; then
-        MISSING_DEPS+=("libX11")
-    fi
-    if ! pkg-config --exists xinerama; then
-        MISSING_DEPS+=("libXinerama")
-    fi
-    if ! pkg-config --exists xrandr; then
-        MISSING_DEPS+=("libXrandr")
-    fi
-    if ! pkg-config --exists xcursor; then
-        MISSING_DEPS+=("libXcursor")
-    fi
-    if ! pkg-config --exists alsa; then
-        MISSING_DEPS+=("alsa-lib")
-    fi
+    # Check for required packages using pkg info (more reliable than pkg-config on FreeBSD)
+    REQUIRED_PKGS=("cmake" "pkgconf" "alsa-lib" "freetype2" "libX11" "libXext" "libXinerama" "libXrandr" "libXcursor" "mesa-libs" "libglvnd" "libxkbcommon" "jackit" "lv2")
+    
+    for pkg in "${REQUIRED_PKGS[@]}"; do
+        if ! pkg info -e "$pkg" > /dev/null 2>&1; then
+            MISSING_DEPS+=("$pkg")
+        fi
+    done
     
     if [ ${#MISSING_DEPS[@]} -ne 0 ]; then
         echo ""
