@@ -11,6 +11,9 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
 elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
     OS_NAME="Linux"
     echo "Detected OS: Linux"
+elif [[ "$OSTYPE" == "freebsd"* ]]; then
+    OS_NAME="FreeBSD"
+    echo "Detected OS: FreeBSD"
 else
     echo "Warning: Unknown OS type: $OSTYPE"
     OS_NAME="Unknown"
@@ -66,6 +69,44 @@ if [[ "$OSTYPE" == "linux-gnu"* ]]; then
     echo "All dependencies found!"
 fi
 
+# Check FreeBSD dependencies
+if [[ "$OSTYPE" == "freebsd"* ]]; then
+    echo "Checking FreeBSD dependencies..."
+    MISSING_DEPS=()
+    
+    # Check for required packages using pkg-config
+    if ! pkg-config --exists freetype2; then
+        MISSING_DEPS+=("freetype2")
+    fi
+    if ! pkg-config --exists x11; then
+        MISSING_DEPS+=("libX11")
+    fi
+    if ! pkg-config --exists xinerama; then
+        MISSING_DEPS+=("libXinerama")
+    fi
+    if ! pkg-config --exists xrandr; then
+        MISSING_DEPS+=("libXrandr")
+    fi
+    if ! pkg-config --exists xcursor; then
+        MISSING_DEPS+=("libXcursor")
+    fi
+    if ! pkg-config --exists alsa; then
+        MISSING_DEPS+=("alsa-lib")
+    fi
+    
+    if [ ${#MISSING_DEPS[@]} -ne 0 ]; then
+        echo ""
+        echo "ERROR: Missing required dependencies for JUCE on FreeBSD"
+        echo "Please install the following packages:"
+        echo ""
+        echo "  pkg install ${MISSING_DEPS[@]}"
+        echo ""
+        exit 1
+    fi
+    
+    echo "All dependencies found!"
+fi
+
 # Check if JUCE is cloned
 if [ ! -d "JUCE" ]; then
     echo "Cloning JUCE Framework for $OS_NAME..."
@@ -93,6 +134,8 @@ cmake .. -DCMAKE_BUILD_TYPE=Release
 echo "Compiling..."
 if [[ "$OSTYPE" == "darwin"* ]]; then
     CPU_COUNT=$(sysctl -n hw.ncpu)
+elif [[ "$OSTYPE" == "freebsd"* ]]; then
+    CPU_COUNT=$(sysctl -n hw.ncpu)
 else
     CPU_COUNT=$(nproc)
 fi
@@ -112,6 +155,12 @@ echo "Copying resources..."
 mkdir -p releases/DrumCraker.vst3/Contents/Resources
 cp assets/background.png releases/DrumCraker.vst3/Contents/Resources/
 
+# Move LV2 plugin to releases if it exists
+if [ -d "build/DrumCrakerVST_artefacts/Release/LV2" ]; then
+    echo "Moving LV2 plugin to releases..."
+    cp -r build/DrumCrakerVST_artefacts/Release/LV2/DrumCraker.lv2 releases/
+fi
+
 # Clean only build directory (keep JUCE for future builds)
 echo "Cleaning temporary directory..."
 rm -rf build
@@ -121,4 +170,19 @@ echo "=== Build completed ==="
 echo "Plugin located at: $(pwd)/releases/DrumCraker.vst3"
 echo ""
 echo "To install, run:"
-echo "  cp -r releases/DrumCraker.vst3 ~/.vst3/"
+if [[ "$OSTYPE" == "darwin"* ]]; then
+    echo "  cp -r releases/DrumCraker.vst3 ~/Library/Audio/Plug-Ins/VST3/"
+    if [ -d "releases/DrumCraker.lv2" ]; then
+        echo "  cp -r releases/DrumCraker.lv2 ~/Library/Audio/Plug-Ins/LV2/"
+    fi
+elif [[ "$OSTYPE" == "freebsd"* ]]; then
+    echo "  cp -r releases/DrumCraker.vst3 ~/.vst3/"
+    if [ -d "releases/DrumCraker.lv2" ]; then
+        echo "  cp -r releases/DrumCraker.lv2 ~/.lv2/"
+    fi
+else
+    echo "  cp -r releases/DrumCraker.vst3 ~/.vst3/"
+    if [ -d "releases/DrumCraker.lv2" ]; then
+        echo "  cp -r releases/DrumCraker.lv2 ~/.lv2/"
+    fi
+fi

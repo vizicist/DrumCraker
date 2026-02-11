@@ -1,11 +1,12 @@
 # DrumCraker VST3
 
-**DrumCraker** is a free drum sampler VST3 plugin for Windows, Linux, and macOS, fully compatible with DrumGizmo drum kits. Designed for low-latency performance and realistic drum sound reproduction.
+**DrumCraker** is a free drum sampler VST3 plugin for Windows, Linux, macOS, and FreeBSD, fully compatible with DrumGizmo drum kits. Designed for low-latency performance and realistic drum sound reproduction.
 
-![Version](https://img.shields.io/badge/version-1.2.5-gold)
+![Version](https://img.shields.io/badge/version-1.3.0-gold)
 ![Platform](https://img.shields.io/badge/platform-Windows-blue)
 ![Platform](https://img.shields.io/badge/platform-Linux-blue)
 ![Platform](https://img.shields.io/badge/platform-macOS-blue)
+![Platform](https://img.shields.io/badge/platform-FreeBSD-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
 [![ko-fi](https://img.shields.io/badge/Ko--fi-Support%20Me-FF5E5B?logo=ko-fi&logoColor=white)](https://ko-fi.com/wamphyre94078)
 
@@ -39,13 +40,13 @@ DrumCraker adds natural human feel to MIDI performances, working with both fixed
   - Works on ANY input velocity (fixed or variable)
   - With 8%: each note varies ±8% from its original velocity
   - Prevents mechanical "machine gun" effect on repeated notes
-  
+
 - **Timing Humanization** (0-20ms, default 5ms): Adds natural timing groove
   - Gaussian distribution for realistic human timing
   - Velocity-adaptive bias: loud notes rush slightly, soft notes drag
   - Works on perfectly quantized MIDI
   - Creates natural groove even on programmed drums
-  
+
 - **Round Robin Mix** (0-1, default 0.7): Anti-repetition sample rotation
   - 0.0 = Pure velocity matching (most consistent dynamics)
   - 0.7 = Hybrid intelligent (recommended): 93% penalty on last sample, velocity-aware
@@ -79,10 +80,18 @@ DrumCraker adds natural human feel to MIDI performances, working with both fixed
 - **Compiler**: Xcode Command Line Tools with C++17 support
 - **Build Tools**: CMake 3.15+, Git
 
+### FreeBSD
+- **OS**: FreeBSD 13.0 or later
+- **Audio**: OSS, ALSA (via alsa-lib), or JACK
+- **CPU**: x86_64 with SSE2 support
+- **RAM**: 4GB minimum (depends on drum kit size)
+- **Compiler**: Clang 10+ with C++17 support
+- **Build Tools**: CMake 3.15+, Git, pkg
+- **Note**: LV2 format only (VST3 not currently supported on FreeBSD)
+
 ## Installation
 
 ### Option 1: Download Pre-built Release (Recommended)
-
 1. Download the latest `.vst3` from [GitHub Releases](https://github.com/Wamphyre/DrumCraker/releases)
 2. Extract and install:
 
@@ -95,7 +104,6 @@ sudo cp -r DrumCraker.vst3 /usr/lib/vst3/
 ```
 
 ### Option 2: Build from Source
-
 #### Windows
 1. Install **Visual Studio 2022** (with C++ Desktop development).
 2. Clone the repository and build:
@@ -107,29 +115,38 @@ cmake --build build --config Release
 ```
 The plugin will be automatically placed in the `releases/` folder.
 
-#### Linux / macOS
+#### Linux / macOS / FreeBSD
 ```bash
 # Clone repository
 git clone https://github.com/Wamphyre/DrumCraker.git
 cd DrumCraker
 
+# Install dependencies (FreeBSD only)
+pkg install cmake pkgconf alsa-lib freetype2 libX11 libXext \
+  libXinerama libXrandr libXcursor mesa-libs libglvnd \
+  libxkbcommon jackit lv2
+
 # Build and install (automatically handles JUCE)
 ./build.sh
+
+# Install VST3 (Linux/macOS)
 cp -r releases/DrumCraker.vst3 ~/.vst3/
+
+# Install LV2 (Linux/macOS/FreeBSD)
+cp -r releases/DrumCraker.lv2 ~/.lv2/
 ```
 
 The build process automatically:
-1. **Checks dependencies**: (Linux/macOS) Verifies required system libraries
+1. **Checks dependencies**: (Linux/macOS/FreeBSD) Verifies required system libraries
 2. **Clones JUCE framework**: Downloads JUCE 8.0.10 (if not present)
 3. **Compiles the plugin**: Optimizations enabled for your specific CPU
-4. **Organizes output**: Creates ready-to-install VST3 bundle in `releases/`
-5. **Includes resources**: Embeds background image in VST3 bundle
+4. **Organizes output**: Creates ready-to-install VST3/LV2 bundle in `releases/`
+5. **Includes resources**: Embeds background image in plugin bundle
 6. **Cleanup**: Removes temporary build files
 
 ## Usage
 
 ### Loading a Drum Kit
-
 1. **Open your DAW** (Reaper, Ardour, Bitwig, etc.)
 2. **Create a MIDI track** and load DrumCraker as an instrument
 3. **Click "LOAD DRUMKIT"** and select the drum kit XML file
@@ -137,7 +154,6 @@ The build process automatically:
 5. **Adjust Master Volume** to your preferred level (default: 0dB)
 
 ### DrumGizmo Kits
-
 DrumCraker is compatible with all DrumGizmo drum kits. You can download free kits from:
 - [DrumGizmo Official Kits](https://www.drumgizmo.org/wiki/doku.php?id=kits)
 
@@ -147,7 +163,6 @@ Popular kits include:
 - **MuldjordKit**: All-purpose kit
 
 ### Multi-Channel Routing
-
 DrumCraker uses a **Fixed Routing** strategy to ensure consistent mixing across different drum kits. Buses are explicitly named in your DAW (if supported, e.g., Reaper, Ardour) for easy identification.
 
 **Fixed Bus Map:**
@@ -163,9 +178,7 @@ DrumCraker uses a **Fixed Routing** strategy to ensure consistent mixing across 
 
 This allows you to create a SINGLE template in your DAW that works with ANY DrumGizmo kit, without channels shifting around when you change kits.
 
-
 ### Parameters
-
 #### Master Volume
 - **Range**: -60dB to +12dB
 - **Default**: 0dB
@@ -235,18 +248,15 @@ This allows you to create a SINGLE template in your DAW that works with ANY Drum
 - **Supported Rates**: Any source rate (44.1kHz, 48kHz, 88.2kHz, 96kHz, etc.)
 
 ## Roadmap
-
 - [ ] Add compatibility for Hydrogen drumkits (too hard but possible)
 - [ ] MIDI learn for parameter automation
 
 ## Credits
-
 - **Compatible with**: [DrumGizmo](https://www.drumgizmo.org/) drum kits
 - **Framework**: [JUCE](https://juce.com/)
 - **Optimization**: Designed for Linux and PipeWire
 
 ## Support & Donations
-
 If you find DrumCraker useful and want to support its development, consider buying me a beer! ☕
 
 [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/wamphyre94078)

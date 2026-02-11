@@ -3,8 +3,8 @@ project(DrumCrakerVST VERSION 1.2.2)
 
 # Define plugin version
 set(PLUGIN_VERSION_MAJOR 1)
-set(PLUGIN_VERSION_MINOR 2)
-set(PLUGIN_VERSION_PATCH 5)
+set(PLUGIN_VERSION_MINOR 3)
+set(PLUGIN_VERSION_PATCH 0)
 set(PLUGIN_VERSION "${PLUGIN_VERSION_MAJOR}.${PLUGIN_VERSION_MINOR}.${PLUGIN_VERSION_PATCH}")
 
 set(CMAKE_CXX_STANDARD 17)
@@ -28,7 +28,8 @@ juce_add_plugin(DrumCrakerVST
     COMPANY_NAME "Wamphyre"
     PLUGIN_MANUFACTURER_CODE Wamp
     PLUGIN_CODE Dcvt
-    FORMATS VST3
+    FORMATS VST3 LV2
+    LV2URI https://github.com/Wamphyre/DrumCraker
     PRODUCT_NAME "DrumCraker"
     VST3_CATEGORIES Instrument Sampler
     NEEDS_MIDI_INPUT TRUE
@@ -80,7 +81,13 @@ else()
     target_compile_options(DrumCrakerVST PRIVATE -O3 -march=native -mtune=native -funroll-loops -fomit-frame-pointer -DNDEBUG)
     if(APPLE)
         # Add macOS specific options if necessary
-    elseif(LINUX)
+    elseif(UNIX AND NOT APPLE)
+        # Linux and FreeBSD
         target_link_options(DrumCrakerVST PRIVATE -s)
+        
+        if(CMAKE_SYSTEM_NAME STREQUAL "FreeBSD")
+            # FreeBSD-specific configurations
+            target_link_libraries(DrumCrakerVST PRIVATE execinfo)
+        endif()
     endif()
 endif()
