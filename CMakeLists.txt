@@ -1,14 +1,16 @@
 cmake_minimum_required(VERSION 3.15)
-project(DrumCrakerVST VERSION 1.2.2)
+project(DrumCrakerVST VERSION 1.3.1)
 
 # Define plugin version
 set(PLUGIN_VERSION_MAJOR 1)
 set(PLUGIN_VERSION_MINOR 3)
-set(PLUGIN_VERSION_PATCH 0)
+set(PLUGIN_VERSION_PATCH 1)
 set(PLUGIN_VERSION "${PLUGIN_VERSION_MAJOR}.${PLUGIN_VERSION_MINOR}.${PLUGIN_VERSION_PATCH}")
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+option(DRUMCRAKER_ENABLE_NATIVE_OPTIMIZATIONS "Enable CPU-specific optimizations (-march=native, AVX2, etc.)" OFF)
 
 # JUCE
 if (NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/JUCE/CMakeLists.txt")
@@ -69,7 +71,10 @@ target_link_libraries(DrumCrakerVST
 
 # Platform-specific compiler and linker options
 if(MSVC)
-    target_compile_options(DrumCrakerVST PRIVATE /O2 /arch:AVX2 /DNDEBUG)
+    target_compile_options(DrumCrakerVST PRIVATE /O2 /DNDEBUG)
+    if(DRUMCRAKER_ENABLE_NATIVE_OPTIMIZATIONS)
+        target_compile_options(DrumCrakerVST PRIVATE /arch:AVX2)
+    endif()
 
     # Automatic cleanup and release organization for Windows
     add_custom_command(TARGET DrumCrakerVST_VST3 POST_BUILD
@@ -78,7 +83,10 @@ if(MSVC)
         COMMENT "Organizing Windows release in /releases folder..."
     )
 else()
-    target_compile_options(DrumCrakerVST PRIVATE -O3 -march=native -mtune=native -funroll-loops -fomit-frame-pointer -DNDEBUG)
+    target_compile_options(DrumCrakerVST PRIVATE -O3 -funroll-loops -fomit-frame-pointer -DNDEBUG)
+    if(DRUMCRAKER_ENABLE_NATIVE_OPTIMIZATIONS)
+        target_compile_options(DrumCrakerVST PRIVATE -march=native -mtune=native)
+    endif()
     if(APPLE)
         # Add macOS specific options if necessary
     elseif(UNIX AND NOT APPLE)

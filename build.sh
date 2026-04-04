@@ -116,7 +116,9 @@ cd build
 
 # Configure with CMake
 echo "Configuring project..."
-cmake .. -DCMAKE_BUILD_TYPE=Release
+NATIVE_OPTIMIZATIONS="${NATIVE_OPTIMIZATIONS:-OFF}"
+echo "Native CPU optimizations: $NATIVE_OPTIMIZATIONS"
+cmake .. -DCMAKE_BUILD_TYPE=Release -DDRUMCRAKER_ENABLE_NATIVE_OPTIMIZATIONS="$NATIVE_OPTIMIZATIONS"
 
 # Compile
 # Compile

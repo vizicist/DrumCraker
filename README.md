@@ -2,7 +2,7 @@
 
 **DrumCraker** is a free drum sampler VST3 plugin for Windows, Linux, macOS, and FreeBSD, fully compatible with DrumGizmo drum kits. Designed for low-latency performance and realistic drum sound reproduction.
 
-![Version](https://img.shields.io/badge/version-1.3.0-gold)
+![Version](https://img.shields.io/badge/version-1.3.1-gold)
 ![Platform](https://img.shields.io/badge/platform-Windows-blue)
 ![Platform](https://img.shields.io/badge/platform-Linux-blue)
 ![Platform](https://img.shields.io/badge/platform-macOS-blue)
@@ -136,6 +136,9 @@ sudo pkg install cmake pkgconf alsa-lib freetype2 libX11 libXext \
 # Build and install (automatically handles JUCE)
 ./build.sh
 
+# Optional: enable CPU-specific optimizations (faster, less portable)
+# NATIVE_OPTIMIZATIONS=ON ./build.sh
+
 # Install VST3 (Linux/macOS)
 cp -r releases/DrumCraker.vst3 ~/.vst3/
 
@@ -146,7 +149,7 @@ cp -r releases/DrumCraker.lv2 ~/.lv2/
 The build process automatically:
 1. **Checks dependencies**: (Linux/macOS/FreeBSD) Verifies required system libraries
 2. **Clones JUCE framework**: Downloads JUCE 8.0.10 (if not present)
-3. **Compiles the plugin**: Optimizations enabled for your specific CPU
+3. **Compiles the plugin**: Portable optimizations by default (works across different CPUs)
 4. **Organizes output**: Creates ready-to-install VST3/LV2 bundle in `releases/`
 5. **Includes resources**: Embeds background image in plugin bundle
 6. **Cleanup**: Removes temporary build files
