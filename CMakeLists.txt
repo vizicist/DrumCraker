@@ -11,6 +11,7 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 option(DRUMCRAKER_ENABLE_NATIVE_OPTIMIZATIONS "Enable CPU-specific optimizations (-march=native, AVX2, etc.)" OFF)
+set(DRUMCRAKER_MACOS_DEPLOYMENT_TARGET "12.0" CACHE STRING "Minimum macOS version for compatibility builds")
 
 # JUCE
 if (NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/JUCE/CMakeLists.txt")
@@ -88,7 +89,10 @@ else()
         target_compile_options(DrumCrakerVST PRIVATE -march=native -mtune=native)
     endif()
     if(APPLE)
-        # Add macOS specific options if necessary
+        if(NOT DEFINED CMAKE_OSX_DEPLOYMENT_TARGET OR CMAKE_OSX_DEPLOYMENT_TARGET STREQUAL "")
+            set(CMAKE_OSX_DEPLOYMENT_TARGET "${DRUMCRAKER_MACOS_DEPLOYMENT_TARGET}" CACHE STRING "macOS deployment target" FORCE)
+        endif()
+        message(STATUS "macOS deployment target: ${CMAKE_OSX_DEPLOYMENT_TARGET}")
     elseif(UNIX AND NOT APPLE)
         # Linux and FreeBSD
         target_link_options(DrumCrakerVST PRIVATE -s)

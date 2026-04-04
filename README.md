@@ -73,7 +73,7 @@ DrumCraker adds natural human feel to MIDI performances, working with both fixed
 - **Build Tools**: CMake 3.15+, Git, pkg-config
 
 ### macOS
-- **OS**: macOS 10.13 (High Sierra) or later
+- **OS**: macOS 12 (Monterey) or later
 - **Audio**: CoreAudio
 - **CPU**: Intel x86_64 or Apple Silicon (M1/M2/M3)
 - **RAM**: 4GB minimum (depends on drum kit size)
@@ -138,6 +138,9 @@ sudo pkg install cmake pkgconf alsa-lib freetype2 libX11 libXext \
 
 # Optional: enable CPU-specific optimizations (faster, less portable)
 # NATIVE_OPTIMIZATIONS=ON ./build.sh
+
+# Optional (macOS): override minimum supported macOS version for release compatibility
+# MACOS_DEPLOYMENT_TARGET=12.0 ./build.sh
 
 # Install VST3 (Linux/macOS)
 cp -r releases/DrumCraker.vst3 ~/.vst3/
