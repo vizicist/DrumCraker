@@ -38,6 +38,12 @@ void SampleEngine::prepare(double sr, int samplesPerBlock)
 {
     if (sr <= 0.0)
         return;
+
+    // Seed the round-robin RNG per-instance so duplicated kits don't pick
+    // identical sequences. Cheap and idempotent.
+    const uint64_t seedMix = static_cast<uint64_t>(juce::Time::getHighResolutionTicks())
+                           ^ static_cast<uint64_t>(reinterpret_cast<uintptr_t>(this));
+    rrRng.seed(static_cast<uint32_t>(seedMix ^ (seedMix >> 32)));
         
     // If sample rate changes and we have samples loaded, we MUST resample
     // Otherwise render speed will be wrong (pitch shift + sync loss)
@@ -704,8 +710,8 @@ const DrumSample* SampleEngine::getSampleForNote(int midiNote, float velocity, f
             totalWeight += weight;
         }
         
-        // Weighted random selection
-        float randomValue = juce::Random::getSystemRandom().nextFloat() * totalWeight;
+        // Weighted random selection (lock-free RNG, safe on audio thread)
+        float randomValue = rrRng.nextFloat() * totalWeight;
         float cumulative = 0.0f;
         
         for (const auto& wc : weightedCandidates)

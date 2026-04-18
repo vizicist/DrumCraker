@@ -31,13 +31,6 @@ DrumSamplerEditor::DrumSamplerEditor(DrumSamplerProcessor& p)
     // Timer to update UI
     startTimer(100);
 
-    // Version label
-    versionLabel.setText("v" PLUGIN_VERSION, juce::dontSendNotification);
-    versionLabel.setJustificationType(juce::Justification::centredRight);
-    versionLabel.setFont(juce::Font(14.0f, juce::Font::bold));
-    versionLabel.setColour(juce::Label::textColourId, juce::Colour(0xFFFFD700)); // Gold
-    addAndMakeVisible(versionLabel);
-
     // Load buttons with MODERN style - gradient look, subtle glow
     auto setupButton = [](juce::TextButton& button, const juce::String& text) {
         button.setButtonText(text);
@@ -270,10 +263,7 @@ void DrumSamplerEditor::paint(juce::Graphics& g)
 void DrumSamplerEditor::resized()
 {
     auto bounds = getLocalBounds();
-    
-    // Version label in top right corner
-    versionLabel.setBounds(bounds.getWidth() - 100, 95, 80, 25);
-    
+
     // Load buttons HIGHER UP - above "drumcraker" text in background
     int buttonWidth = 280;
     int buttonHeight = 45;

@@ -4,6 +4,7 @@
 #include <juce_audio_formats/juce_audio_formats.h>
 #include <juce_dsp/juce_dsp.h>
 #include "DrumKitLoader.h"
+#include "LockFreeRandom.h"
 #include <atomic>
 #include <unordered_map>
 
@@ -64,6 +65,9 @@ private:
     std::atomic<int> totalSampleCount{0};
     
     double sampleRate = 44100.0;
-    
+
+    // Audio-thread RNG for round-robin sample selection (see LockFreeRandom.h).
+    LockFreeRandom rrRng;
+
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SampleEngine)
 };

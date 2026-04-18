@@ -1,6 +1,5 @@
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
-#include <set>
 
 DrumSamplerProcessor::DrumSamplerProcessor()
     : AudioProcessor(BusesProperties()
@@ -75,10 +74,12 @@ void DrumSamplerProcessor::prepareToPlay(double sampleRate, int samplesPerBlock)
     currentSampleRate = sampleRate;
     sampleEngine->prepare(sampleRate, samplesPerBlock);
     voiceManager->prepare(sampleRate, samplesPerBlock);
-    
-    // NOTE: Sample rate is stored and used for resampling when kits are loaded
-    // Kit loading happens in setStateInformation or loadDrumKit, which both
-    // call prepare() again to ensure correct sample rate for resampling
+
+    // Seed the audio-thread RNG per-instance so two instances of the plugin
+    // don't humanize in lockstep.
+    const uint64_t seedMix = static_cast<uint64_t>(juce::Time::getHighResolutionTicks())
+                           ^ static_cast<uint64_t>(reinterpret_cast<uintptr_t>(this));
+    humanizeRng.seed(static_cast<uint32_t>(seedMix ^ (seedMix >> 32)));
 }
 
 void DrumSamplerProcessor::releaseResources()
@@ -94,50 +95,46 @@ void DrumSamplerProcessor::processBlock(juce::AudioBuffer<float>& buffer, juce::
     juce::ScopedNoDenormals noDenormals;
     buffer.clear();
 
-    // If kit is not loaded, don't process
-    if (!sampleEngine->isLoaded())
+    // Acquire-load the gate: the paired release-store in setupInstrumentRouting()
+    // guarantees that, if we see kitReady==true, the instrument-to-bus map and
+    // all sample buffers are fully published to this thread.
+    if (!kitReady.load(std::memory_order_acquire))
         return;
 
     // Verify valid buffer size
     if (buffer.getNumSamples() <= 0 || buffer.getNumChannels() <= 0)
         return;
-    
+
     // Pre-cache parameter values (avoid repeated atomic reads)
     const float velocityHumanization = velocityRandomness->get();
     const float timingHumanization = timingRandomness->get();
     const float rrVariation = roundRobinVariation->get();
     const bool hasVelocityHumanization = velocityHumanization > 0.001f;
     const bool hasTimingHumanization = timingHumanization > 0.001f;
-    const int bufferSize = buffer.getNumSamples();
-    
-    // Process MIDI events with humanization (ultra-optimized)
-    auto& rng = juce::Random::getSystemRandom();
-    
+
     for (const auto metadata : midiMessages)
     {
         auto message = metadata.getMessage();
-        
+
         if (message.isNoteOn()) [[likely]]
         {
             float velocity = message.getVelocity() / 127.0f;
             int sampleOffset = metadata.samplePosition;
-            
+
             // VELOCITY HUMANIZATION (optimized Box-Muller)
             if (hasVelocityHumanization)
             {
-                float u1 = rng.nextFloat() * 0.9999f + 0.0001f;
-                float u2 = rng.nextFloat();
+                float u1 = humanizeRng.nextFloat() * 0.9999f + 0.0001f;
+                float u2 = humanizeRng.nextFloat();
                 float gaussian = std::sqrt(-2.0f * std::log(u1)) * std::cos(juce::MathConstants<float>::twoPi * u2);
-                // Apply variation: gaussian has σ=1, so multiply by parameter directly
-                // 68% of values will be within ±velocityHumanization
                 velocity = juce::jlimit(0.05f, 1.0f, velocity + gaussian * velocityHumanization);
             }
-            
+
             // TIMING HUMANIZATION (optimized)
             if (hasTimingHumanization)
             {
-                float u1 = rng.nextFloat() * 0.9999f + 0.0001f;
-                float u2 = rng.nextFloat();
+                float u1 = humanizeRng.nextFloat() * 0.9999f + 0.0001f;
+                float u2 = humanizeRng.nextFloat();
                 float gaussian = std::sqrt(-2.0f * std::log(u1)) * std::sin(juce::MathConstants<float>::twoPi * u2);
                 float velocityBias = (velocity - 0.5f) * 0.4f;
                 int sampleDelay = static_cast<int>(((gaussian * 0.5f + velocityBias) * timingHumanization / 1000.0f) * currentSampleRate);
@@ -197,10 +194,7 @@ void DrumSamplerProcessor::setupInstrumentRouting()
     
     instrumentToBusMap.clear();
     instrumentGroups.clear();
-    
-    int busIndex = 0;
-    std::set<juce::String> assignedInstruments;
-    
+
     // IMPLEMENTING FIXED ROUTING STRATEGY
     // Bus 0: Kick
     // Bus 1: Snare
@@ -225,8 +219,6 @@ void DrumSamplerProcessor::setupInstrumentRouting()
         else if (name.containsIgnoreCase("Snare"))
         {
             targetBus = 1;
-             // Ensure groups exist (quick hack for GUI display list stability)
-             // Ideally this list should also be fixed, but for now we map dynamically
         }
         else if (name.containsIgnoreCase("Hihat") || name.containsIgnoreCase("HH"))
         {
@@ -256,36 +248,33 @@ void DrumSamplerProcessor::setupInstrumentRouting()
         }
         else
         {
-            // Assign remaining unique instruments to Aux buses 8-15 sequentially
-            // Using a simple hash or counter to distribute would be better, 
-            // but for now let's just dump them in 8
             targetBus = 8;
-            
-            // Refined logic: Try to distribute if possible, but keep it simple
-            // Only specialized percussion falls here
         }
 
         instrumentToBusMap[name] = targetBus;
     }
-    
-    // Update Groups List for GUI (Just for display)
+
     instrumentGroups = { "Kick", "Snare", "HiHat", "Toms", "Ride", "Crash", "SFX", "Ambience", "Aux"};
-    
-    numOutputChannels = busIndex;
-    
+
     // Pass mapping to voice manager for pre-caching bus indices
     voiceManager->setInstrumentToBusMap(instrumentToBusMap);
+
+    // Release-store the gate: every write above is now visible to any thread
+    // that acquire-loads kitReady and sees true.
+    kitReady.store(true, std::memory_order_release);
 }
 
 bool DrumSamplerProcessor::loadDrumKit(const juce::File& kitFile, bool async)
 {
     isLoadingKit = true;
-    
+
+    // Close the audio-thread gate before touching any state it reads.
+    kitReady.store(false, std::memory_order_release);
+
     // Stop all active voices before unloading previous kit
     voiceManager->reset();
-    
-    // CRITICAL: Clear old instrument routing IMMEDIATELY
-    // to prevent using stale mappings during async load
+
+    // Clear old instrument routing so stale mappings can't be used during load
     instrumentToBusMap.clear();
     instrumentGroups.clear();
     voiceManager->setInstrumentToBusMap(instrumentToBusMap);
@@ -416,11 +405,12 @@ void DrumSamplerProcessor::setStateInformation(const void* data, int sizeInBytes
                 currentMidiMapName = savedMidiMapName;
                 stateId = savedStateId;
                 
-                // CRITICAL: Clear old instrument routing IMMEDIATELY
+                // Close the audio-thread gate and clear routing before reloading.
+                kitReady.store(false, std::memory_order_release);
                 instrumentToBusMap.clear();
                 instrumentGroups.clear();
                 voiceManager->setInstrumentToBusMap(instrumentToBusMap);
-                
+
                 // Load ASYNCHRONOUSLY to not block Reaper
                 isLoadingKit = true;
                 

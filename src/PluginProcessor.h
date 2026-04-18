@@ -4,6 +4,7 @@
 #include "DrumKitLoader.h"
 #include "SampleEngine.h"
 #include "VoiceManager.h"
+#include "LockFreeRandom.h"
 
 class DrumSamplerProcessor : public juce::AudioProcessor
 {
@@ -72,16 +73,22 @@ private:
     juce::String currentMidiMapPath;  // Full path to midimap XML
     std::atomic<bool> isLoadingKit{false};
     std::atomic<bool> isLoadingMidiMap{false};
-    int numOutputChannels = 2;
-    
+
+    // Gate for the audio thread: true only when samples AND routing are ready.
+    // Written with release after setupInstrumentRouting(); read with acquire in processBlock.
+    std::atomic<bool> kitReady{false};
+
     // Unique ID to detect project changes
     juce::String stateId;
-    
+
     // Multi-channel routing
     std::map<juce::String, int> instrumentToBusMap;  // instrument name -> bus index
     std::vector<juce::String> instrumentGroups;      // Ordered list of instrument groups
-    
+
     double currentSampleRate = 44100.0;
+
+    // Audio-thread RNG for humanization (see LockFreeRandom.h).
+    LockFreeRandom humanizeRng;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DrumSamplerProcessor)
 };

@@ -28,8 +28,8 @@ private:
     juce::Label kitNameLabel;
     juce::Label midiMapLabel;
     juce::Label statusLabel;
-    juce::Label versionLabel;
-    
+
+
     // Master Volume
     juce::Slider masterVolumeSlider;
     juce::Label masterVolumeLabel;
