@@ -1,10 +1,10 @@
 cmake_minimum_required(VERSION 3.15)
-project(DrumCrakerVST VERSION 1.3.2)
+project(DrumCrakerVST VERSION 1.3.3)
 
 # Define plugin version
 set(PLUGIN_VERSION_MAJOR 1)
 set(PLUGIN_VERSION_MINOR 3)
-set(PLUGIN_VERSION_PATCH 2)
+set(PLUGIN_VERSION_PATCH 3)
 set(PLUGIN_VERSION "${PLUGIN_VERSION_MAJOR}.${PLUGIN_VERSION_MINOR}.${PLUGIN_VERSION_PATCH}")
 
 set(CMAKE_CXX_STANDARD 17)
@@ -79,7 +79,7 @@ if(MSVC)
 
     # Automatic cleanup and release organization for Windows
     add_custom_command(TARGET DrumCrakerVST_VST3 POST_BUILD
-        COMMAND powershell -Command "$bundle = (Get-Item '$<TARGET_FILE:DrumCrakerVST_VST3>').Directory.Parent.Parent.FullName; New-Item -ItemType Directory -Path '${CMAKE_CURRENT_SOURCE_DIR}/releases' -Force; Copy-Item -Path $bundle -Destination '${CMAKE_CURRENT_SOURCE_DIR}/releases/DrumCraker.vst3' -Recurse -Force; New-Item -ItemType Directory -Path '${CMAKE_CURRENT_SOURCE_DIR}/releases/DrumCraker.vst3/Contents/Resources' -Force; Copy-Item -Path '${CMAKE_CURRENT_SOURCE_DIR}/assets/background.png' -Destination '${CMAKE_CURRENT_SOURCE_DIR}/releases/DrumCraker.vst3/Contents/Resources/background.png' -Force"
+        COMMAND powershell -Command "$bundle = (Get-Item '$<TARGET_FILE:DrumCrakerVST_VST3>').Directory.Parent.Parent.FullName; New-Item -ItemType Directory -Path '${CMAKE_CURRENT_SOURCE_DIR}/releases' -Force; Copy-Item -Path $bundle -Destination '${CMAKE_CURRENT_SOURCE_DIR}/releases/DrumCraker.vst3' -Recurse -Force; New-Item -ItemType Directory -Path '${CMAKE_CURRENT_SOURCE_DIR}/releases/DrumCraker.vst3/Contents/Resources' -Force; Copy-Item -Path '${CMAKE_CURRENT_SOURCE_DIR}/assets/background.png' -Destination '${CMAKE_CURRENT_SOURCE_DIR}/releases/DrumCraker.vst3/Contents/Resources/background.png' -Force; Write-Host 'Background image copied successfully'"
         VERBATIM
         COMMENT "Organizing Windows release in /releases folder..."
     )

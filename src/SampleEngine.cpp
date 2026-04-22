@@ -1,6 +1,7 @@
 #include "SampleEngine.h"
 #include <set>
 #include <algorithm>
+#include <utility>
 
 #if JUCE_LINUX
     #include <malloc.h>
@@ -106,19 +107,38 @@ void SampleEngine::reset()
     // Clear containers and return memory to OS
     audioBufferCache.clear();
     std::unordered_map<juce::String, std::unique_ptr<juce::AudioBuffer<float>>>().swap(audioBufferCache);
-    
+
     originalSampleRates.clear();
     std::unordered_map<juce::String, double>().swap(originalSampleRates);
-    
-    lastSampleIndex.clear();
-    std::unordered_map<int, int>().swap(lastSampleIndex);
-    
+
+    // Clear lock-free cache
+    for (auto& entry : lockFreeBufferCache)
+    {
+        if (entry.second)
+        {
+            entry.second->ready.store(false, std::memory_order_release);
+            entry.second->bufferPtr.store(nullptr, std::memory_order_release);
+        }
+    }
+    lockFreeBufferCache.clear();
+    std::unordered_map<juce::String, std::unique_ptr<LockFreeBufferEntry>>().swap(lockFreeBufferCache);
+
+    // Reset lastSampleIndex array (atomic values)
+    for (auto& idx : lastSampleIndex)
+        idx.store(0, std::memory_order_relaxed);
+
     instrumentCache.clear();
     std::unordered_map<juce::String, Instrument*>().swap(instrumentCache);
-    
+
+    // CRITICAL: Clear instrument cache to prevent dangling pointers
+    // When kit changes, old Instrument* pointers become invalid
+    // This ensures audio thread never accesses stale data
+    instrumentCache.clear();
+
     currentKit.reset();
-    
-    // Force memory return to OS
+
+    // Force memory return to OS (Linux-specific)
+    // On macOS/Windows, this does nothing but is harmless
     #if JUCE_LINUX
         malloc_trim(0);
     #endif
@@ -196,18 +216,37 @@ void SampleEngine::loadKit(std::unique_ptr<DrumKit> kit, bool async)
         // Clear and swap to force memory deallocation
         audioBufferCache.clear();
         std::unordered_map<juce::String, std::unique_ptr<juce::AudioBuffer<float>>>().swap(audioBufferCache);
-        
+
         originalSampleRates.clear();
         std::unordered_map<juce::String, double>().swap(originalSampleRates);
-        
-        lastSampleIndex.clear();
-        std::unordered_map<int, int>().swap(lastSampleIndex);
-        
+
+        // Clear lock-free cache
+        for (auto& entry : lockFreeBufferCache)
+        {
+            if (entry.second)
+            {
+                entry.second->ready.store(false, std::memory_order_release);
+                entry.second->bufferPtr.store(nullptr, std::memory_order_release);
+            }
+        }
+        lockFreeBufferCache.clear();
+        std::unordered_map<juce::String, std::unique_ptr<LockFreeBufferEntry>>().swap(lockFreeBufferCache);
+
+        // Reset lastSampleIndex array (atomic values)
+        for (auto& idx : lastSampleIndex)
+            idx.store(0, std::memory_order_relaxed);
+
         instrumentCache.clear();
         std::unordered_map<juce::String, Instrument*>().swap(instrumentCache);
+
+        // CRITICAL: Clear instrument cache to prevent dangling pointers
+        // When kit changes, old Instrument* pointers become invalid
+        // This ensures audio thread never accesses stale data
+        instrumentCache.clear();
     }
-    
-    // Force memory return to OS
+
+    // Force memory return to OS (Linux-specific)
+    // On macOS/Windows, this does nothing but is harmless
     #if JUCE_LINUX
         malloc_trim(0);
     #endif
@@ -449,7 +488,17 @@ bool SampleEngine::loadSampleFile(const AudioSample& audioSample)
     juce::ScopedLock lock(cacheLock);
     audioBufferCache[cacheKey] = std::move(buffer);
     originalSampleRates[cacheKey] = originalSampleRate;
-    
+
+    // Publish to lock-free cache for audio thread
+    auto& lfEntry = lockFreeBufferCache[cacheKey];
+    if (!lfEntry)
+        lfEntry = std::make_unique<LockFreeBufferEntry>();
+
+    // Acquire buffer pointer and publish atomically
+    juce::AudioBuffer<float>* bufPtr = audioBufferCache[cacheKey].get();
+    lfEntry->bufferPtr.store(bufPtr, std::memory_order_release);
+    lfEntry->ready.store(true, std::memory_order_release);
+
     return true;
 }
 
@@ -531,11 +580,11 @@ const DrumSample* SampleEngine::getSampleForNote(int midiNote, float velocity, f
         return nullptr;
 
     const juce::String& instrumentName = it->second;
-    
+
     // Return instrument name if requested
     if (outInstrumentName)
         *outInstrumentName = instrumentName;
-    
+
     // Use cached instrument lookup for performance
     Instrument* targetInstrument = nullptr;
     auto cacheIt = instrumentCache.find(instrumentName);
@@ -563,18 +612,18 @@ const DrumSample* SampleEngine::getSampleForNote(int midiNote, float velocity, f
     // Normalize power values to find range
     float minPower = targetInstrument->samples[0].power;
     float maxPower = targetInstrument->samples[0].power;
-    
+
     for (const auto& sample : targetInstrument->samples)
     {
         minPower = std::min(minPower, sample.power);
         maxPower = std::max(maxPower, sample.power);
     }
-    
+
     // Clamp power values to reasonable range (0-1)
     // Some kits have incorrect power values outside this range
     minPower = juce::jlimit(0.0f, 1.0f, minPower);
     maxPower = juce::jlimit(0.0f, 1.0f, maxPower);
-    
+
     // Handle edge case: single sample or all samples have same power
     if (std::abs(maxPower - minPower) < 0.001f)
     {
@@ -584,64 +633,76 @@ const DrumSample* SampleEngine::getSampleForNote(int midiNote, float velocity, f
         {
             return &targetInstrument->samples[0];
         }
-        
+
         // Multiple samples with same power - use round robin
-        int lastIndex = lastSampleIndex[midiNote];
+        int noteIndex = midiNote % 128;  // Clamp to array size
+        int lastIndex = lastSampleIndex[noteIndex].load(std::memory_order_relaxed);
         int nextIndex = (lastIndex + 1) % static_cast<int>(targetInstrument->samples.size());
-        lastSampleIndex[midiNote] = nextIndex;
+        lastSampleIndex[noteIndex].store(nextIndex, std::memory_order_relaxed);
         return &targetInstrument->samples[nextIndex];
     }
-    
+
     // Normalize velocity to power range
     float normalizedVelocity = minPower + (velocity * (maxPower - minPower));
-    
-    // Find candidate samples based on velocity (power)
-    std::vector<const DrumSample*> candidates;
+
+    // Find candidate samples based on velocity (power) - using pre-allocated array
+    int numCandidates = 0;
     float tolerance = (maxPower - minPower) * 0.25f; // 25% of total range for more variety
 
     for (const auto& sample : targetInstrument->samples)
     {
         float diff = std::abs(normalizedVelocity - sample.power);
-        if (diff < tolerance)
-            candidates.push_back(&sample);
+        if (diff < tolerance && numCandidates < maxCandidates)
+        {
+            candidatePool[numCandidates++] = &sample;
+        }
     }
 
     // If no candidates in range, expand search
-    if (candidates.empty())
+    if (numCandidates == 0)
     {
-        // Find 3-5 closest samples to have round robin pool
-        std::vector<std::pair<const DrumSample*, float>> samplesWithDiff;
-        
+        // Find 3-5 closest samples to have round robin pool - using pre-allocated array
+        int numSamplesWithDiff = 0;
+
         for (const auto& sample : targetInstrument->samples)
         {
-            float diff = std::abs(normalizedVelocity - sample.power);
-            samplesWithDiff.push_back({&sample, diff});
+            if (numSamplesWithDiff < maxSamplesPerInstrument)
+            {
+                float diff = std::abs(normalizedVelocity - sample.power);
+                samplesWithDiffPool[numSamplesWithDiff++] = {&sample, diff};
+            }
         }
-        
-        // Sort by proximity
-        std::sort(samplesWithDiff.begin(), samplesWithDiff.end(),
-                 [](const auto& a, const auto& b) { return a.second < b.second; });
-        
+
+        // Sort by proximity (simple insertion sort for small arrays)
+        for (int i = 1; i < numSamplesWithDiff; ++i)
+        {
+            for (int j = i; j > 0 && samplesWithDiffPool[j].second < samplesWithDiffPool[j - 1].second; --j)
+            {
+                std::swap(samplesWithDiffPool[j], samplesWithDiffPool[j - 1]);
+            }
+        }
+
         // Take 4 closest (or all if less)
-        int numCandidates = std::min(4, static_cast<int>(samplesWithDiff.size()));
+        numCandidates = std::min(4, numSamplesWithDiff);
         for (int i = 0; i < numCandidates; ++i)
         {
-            candidates.push_back(samplesWithDiff[i].first);
+            candidatePool[i] = samplesWithDiffPool[i].first;
         }
     }
-    
+
     // Ensure there's always at least one candidate
-    if (candidates.empty())
+    if (numCandidates == 0)
     {
         return &targetInstrument->samples[0];
     }
 
     // ROUND ROBIN ANTI-MACHINE GUN
     // Avoids repeating same sample consecutively
-    int lastIndex = lastSampleIndex[midiNote];
+    int noteIndex = midiNote % 128;  // Clamp to array size
+    int lastIndex = lastSampleIndex[noteIndex].load(std::memory_order_relaxed);
     int selectedIndex = 0;
 
-    if (candidates.size() == 1)
+    if (numCandidates == 1)
     {
         // Only one candidate, use it
         selectedIndex = 0;
@@ -649,51 +710,57 @@ const DrumSample* SampleEngine::getSampleForNote(int midiNote, float velocity, f
     else if (roundRobinAmount < 0.01f)
     {
         // Pure velocity mode: always closest
-        float minDiff = std::abs(normalizedVelocity - candidates[0]->power);
-        for (size_t i = 1; i < candidates.size(); ++i)
+        float minDiff = std::abs(normalizedVelocity - candidatePool[0]->power);
+        for (int i = 1; i < numCandidates; ++i)
         {
-            float diff = std::abs(normalizedVelocity - candidates[i]->power);
+            float diff = std::abs(normalizedVelocity - candidatePool[i]->power);
             if (diff < minDiff)
             {
                 minDiff = diff;
-                selectedIndex = static_cast<int>(i);
+                selectedIndex = i;
             }
         }
     }
     else if (roundRobinAmount > 0.99f)
     {
         // Pure rotation mode: next sample different from last
-        // Sort by proximity to velocity
-        std::vector<std::pair<int, float>> indexedCandidates;
-        for (size_t i = 0; i < candidates.size(); ++i)
+        // Sort by proximity to velocity - using pre-allocated array
+        int numIndexedCandidates = 0;
+        for (int i = 0; i < numCandidates; ++i)
         {
-            float diff = std::abs(normalizedVelocity - candidates[i]->power);
-            indexedCandidates.push_back({static_cast<int>(i), diff});
+            float diff = std::abs(normalizedVelocity - candidatePool[i]->power);
+            indexedCandidatesPool[numIndexedCandidates++] = {i, diff};
         }
-        
-        std::sort(indexedCandidates.begin(), indexedCandidates.end(),
-                 [](const auto& a, const auto& b) { return a.second < b.second; });
-        
+
+        // Simple insertion sort
+        for (int i = 1; i < numIndexedCandidates; ++i)
+        {
+            for (int j = i; j > 0 && indexedCandidatesPool[j].second < indexedCandidatesPool[j - 1].second; --j)
+            {
+                std::swap(indexedCandidatesPool[j], indexedCandidatesPool[j - 1]);
+            }
+        }
+
         // Rotate among best candidates, avoiding last used
-        int poolSize = std::min(4, static_cast<int>(indexedCandidates.size()));
+        int poolSize = std::min(4, numIndexedCandidates);
         int nextIndex = (lastIndex + 1) % poolSize;
-        selectedIndex = indexedCandidates[nextIndex].first;
+        selectedIndex = indexedCandidatesPool[nextIndex].first;
     }
     else
     {
-        // Smart hybrid mode: weighted random with penalty to last used
-        std::vector<std::pair<int, float>> weightedCandidates;
+        // Smart hybrid mode: weighted random with penalty to last used - using pre-allocated array
+        int numWeightedCandidates = 0;
         float totalWeight = 0.0f;
-        
-        for (size_t i = 0; i < candidates.size(); ++i)
+
+        for (int i = 0; i < numCandidates; ++i)
         {
-            float diff = std::abs(normalizedVelocity - candidates[i]->power);
-            
+            float diff = std::abs(normalizedVelocity - candidatePool[i]->power);
+
             // Base weight: inversely proportional to velocity difference
             float weight = 1.0f / (1.0f + diff * 5.0f);
-            
+
             // VERY STRONG PENALTY to last used sample (avoids machine gun)
-            if (static_cast<int>(i) == lastIndex)
+            if (i == lastIndex)
             {
                 // Penalty scaled by roundRobinAmount
                 // With 0.7 default: 93% penalty
@@ -701,32 +768,32 @@ const DrumSample* SampleEngine::getSampleForNote(int midiNote, float velocity, f
                 weight *= juce::jmax(0.01f, penalty);
             }
             // Bonus to next in rotation (stronger with high roundRobinAmount)
-            else if (static_cast<int>(i) == (lastIndex + 1) % static_cast<int>(candidates.size()))
+            else if (i == (lastIndex + 1) % numCandidates)
             {
                 weight *= (1.0f + roundRobinAmount * 1.5f);
             }
-            
-            weightedCandidates.push_back({static_cast<int>(i), weight});
+
+            weightedCandidatesPool[numWeightedCandidates++] = {i, weight};
             totalWeight += weight;
         }
-        
+
         // Weighted random selection (lock-free RNG, safe on audio thread)
         float randomValue = rrRng.nextFloat() * totalWeight;
         float cumulative = 0.0f;
-        
-        for (const auto& wc : weightedCandidates)
+
+        for (int i = 0; i < numWeightedCandidates; ++i)
         {
-            cumulative += wc.second;
+            cumulative += weightedCandidatesPool[i].second;
             if (randomValue <= cumulative)
             {
-                selectedIndex = wc.first;
+                selectedIndex = weightedCandidatesPool[i].first;
                 break;
             }
         }
     }
 
-    lastSampleIndex[midiNote] = selectedIndex;
-    return candidates[selectedIndex];
+    lastSampleIndex[noteIndex].store(selectedIndex, std::memory_order_relaxed);
+    return candidatePool[selectedIndex];
 }
 
 juce::AudioBuffer<float>* SampleEngine::getAudioBuffer(const DrumSample* sample,
@@ -740,14 +807,20 @@ juce::AudioBuffer<float>* SampleEngine::getAudioBuffer(const DrumSample* sample,
     {
         if (audioSample.channelName == channelName)
         {
-            juce::String cacheKey = audioSample.audioFile.getFullPathName() + 
+            juce::String cacheKey = audioSample.audioFile.getFullPathName() +
                                    "_ch" + juce::String(audioSample.fileChannel);
 
-            juce::ScopedLock lock(cacheLock);
-            auto it = audioBufferCache.find(cacheKey);
-            if (it != audioBufferCache.end())
-                return it->second.get();
-            
+            // Lock-free access: check if ready and get pointer atomically
+            auto it = lockFreeBufferCache.find(cacheKey);
+            if (it != lockFreeBufferCache.end())
+            {
+                auto* entry = it->second.get();
+                if (entry && entry->ready.load(std::memory_order_acquire))
+                {
+                    return entry->bufferPtr.load(std::memory_order_acquire);
+                }
+            }
+
             return nullptr;
         }
     }

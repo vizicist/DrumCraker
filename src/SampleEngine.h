@@ -7,6 +7,8 @@
 #include "LockFreeRandom.h"
 #include <atomic>
 #include <unordered_map>
+#include <utility>
+#include <array>
 
 class SampleEngine
 {
@@ -53,9 +55,18 @@ private:
     std::unordered_map<juce::String, std::unique_ptr<juce::AudioBuffer<float>>> audioBufferCache;
     std::unordered_map<juce::String, double> originalSampleRates; // Guardar sample rate original
     juce::CriticalSection cacheLock;
+
+    // Lock-free buffer access: atomic pointers for audio thread
+    struct LockFreeBufferEntry {
+        std::atomic<juce::AudioBuffer<float>*> bufferPtr{nullptr};
+        std::atomic<bool> ready{false};
+    };
+    std::unordered_map<juce::String, std::unique_ptr<LockFreeBufferEntry>> lockFreeBufferCache;
     
     // Round robin tracking (optimized with unordered_map)
-    std::unordered_map<int, int> lastSampleIndex; // midiNote -> last used index
+    // Using atomic<int> for thread-safe access from audio thread
+    // NOTE: Using array instead of unordered_map<atomic> because atomic is not movable in C++17
+    std::array<std::atomic<int>, 128> lastSampleIndex; // midiNote -> last used index
     
     // Instrument cache for faster lookups
     std::unordered_map<juce::String, Instrument*> instrumentCache;
@@ -68,6 +79,14 @@ private:
 
     // Audio-thread RNG for round-robin sample selection (see LockFreeRandom.h).
     LockFreeRandom rrRng;
+
+    // Pre-allocated arrays to avoid allocations in audio thread (getSampleForNote)
+    static constexpr int maxCandidates = 8;
+    static constexpr int maxSamplesPerInstrument = 32;
+    const DrumSample* candidatePool[maxCandidates];
+    std::pair<const DrumSample*, float> samplesWithDiffPool[maxSamplesPerInstrument];
+    std::pair<int, float> weightedCandidatesPool[maxCandidates];
+    std::pair<int, float> indexedCandidatesPool[maxCandidates];
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SampleEngine)
 };
