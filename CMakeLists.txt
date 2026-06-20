@@ -20,7 +20,7 @@ if (NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/JUCE/CMakeLists.txt")
     FetchContent_Declare(
         juce
         GIT_REPOSITORY https://github.com/juce-framework/JUCE.git
-        GIT_TAG 8.0.10
+        GIT_TAG 8.0.13
     )
     FetchContent_MakeAvailable(juce)
 else()
