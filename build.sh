@@ -100,7 +100,7 @@ fi
 if [ ! -d "JUCE" ]; then
     echo "Cloning JUCE Framework for $OS_NAME..."
     # JUCE is cross-platform, same version works for both Linux and macOS
-    git clone --depth 1 --branch 8.0.10 https://github.com/juce-framework/JUCE.git
+    git clone --depth 1 --branch 8.0.13 https://github.com/juce-framework/JUCE.git
     echo "JUCE Framework cloned successfully"
 else
     echo "JUCE Framework already exists, skipping download"

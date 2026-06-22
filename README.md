@@ -151,7 +151,7 @@ cp -r releases/DrumCraker.lv2 ~/.lv2/
 
 The build process automatically:
 1. **Checks dependencies**: (Linux/macOS/FreeBSD) Verifies required system libraries
-2. **Clones JUCE framework**: Downloads JUCE 8.0.10 (if not present)
+2. **Clones JUCE framework**: Downloads JUCE 8.0.13 (if not present)
 3. **Compiles the plugin**: Portable optimizations by default (works across different CPUs)
 4. **Organizes output**: Creates ready-to-install VST3/LV2 bundle in `releases/`
 5. **Includes resources**: Embeds background image in plugin bundle
