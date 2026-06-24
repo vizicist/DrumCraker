@@ -84,7 +84,7 @@ private:
     // Round robin tracking (optimized with unordered_map)
     // Using atomic<int> for thread-safe access from audio thread
     // NOTE: Using array instead of unordered_map<atomic> because atomic is not movable in C++17
-    std::array<std::atomic<int>, 128> lastSampleIndex; // midiNote -> last used index
+    std::array<std::atomic<int>, 128> lastSampleIndex; // midiNote -> last used index, -1 before first hit
     
     // Instrument cache for faster lookups
     std::unordered_map<juce::String, Instrument*> instrumentCache;

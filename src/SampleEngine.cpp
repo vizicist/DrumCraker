@@ -8,7 +8,11 @@
     #include <malloc.h>
 #endif
 
-SampleEngine::SampleEngine() {}
+SampleEngine::SampleEngine()
+{
+    for (auto& idx : lastSampleIndex)
+        idx.store(-1, std::memory_order_relaxed);
+}
 
 SampleEngine::~SampleEngine()
 {
@@ -133,7 +137,7 @@ void SampleEngine::reset()
 
     // Reset lastSampleIndex array (atomic values)
     for (auto& idx : lastSampleIndex)
-        idx.store(0, std::memory_order_relaxed);
+        idx.store(-1, std::memory_order_relaxed);
 
     instrumentCache.clear();
     std::unordered_map<juce::String, Instrument*>().swap(instrumentCache);
@@ -242,7 +246,7 @@ void SampleEngine::loadKit(std::unique_ptr<DrumKit> kit, bool async)
 
         // Reset lastSampleIndex array (atomic values)
         for (auto& idx : lastSampleIndex)
-            idx.store(0, std::memory_order_relaxed);
+            idx.store(-1, std::memory_order_relaxed);
 
         instrumentCache.clear();
         std::unordered_map<juce::String, Instrument*>().swap(instrumentCache);
@@ -1126,12 +1130,77 @@ const DrumSample* SampleEngine::getSampleForNote(int midiNote, float velocity, f
             return &targetInstrument->samples[0];
         }
 
-        // Multiple samples with same power - use round robin
-        int noteIndex = midiNote % 128;  // Clamp to array size
-        int lastIndex = lastSampleIndex[noteIndex].load(std::memory_order_relaxed);
-        int nextIndex = (lastIndex + 1) % static_cast<int>(targetInstrument->samples.size());
-        lastSampleIndex[noteIndex].store(nextIndex, std::memory_order_relaxed);
-        return &targetInstrument->samples[nextIndex];
+        const int noteIndex = midiNote % 128;  // Clamp to array size
+        const int numSamples = static_cast<int>(targetInstrument->samples.size());
+        const int lastIndex = lastSampleIndex[noteIndex].load(std::memory_order_relaxed);
+        int selectedIndex = 0;
+
+        if (roundRobinAmount < 0.01f)
+        {
+            // Stable mode: keep repeated notes on the same sample.
+            selectedIndex = 0;
+        }
+        else if (roundRobinAmount > 0.99f)
+        {
+            // Full rotation mode: step through samples predictably.
+            selectedIndex = (lastIndex >= 0 && lastIndex < numSamples)
+                ? (lastIndex + 1) % numSamples
+                : 0;
+        }
+        else
+        {
+            // Hybrid mode: randomize with anti-repeat weighting instead of
+            // walking monotonically through the sample list.
+            const int nextIndex = (lastIndex >= 0 && lastIndex < numSamples)
+                ? (lastIndex + 1) % numSamples
+                : 0;
+
+            float totalWeight = 0.0f;
+            for (int i = 0; i < numSamples; ++i)
+            {
+                float weight = 1.0f;
+
+                if (i == lastIndex)
+                {
+                    const float penalty = 0.1f - (roundRobinAmount * 0.08f);
+                    weight *= juce::jmax(0.01f, penalty);
+                }
+                else if (i == nextIndex)
+                {
+                    weight *= (1.0f + roundRobinAmount * 1.5f);
+                }
+
+                totalWeight += weight;
+            }
+
+            float randomValue = rrRng.nextFloat() * totalWeight;
+            float cumulative = 0.0f;
+
+            for (int i = 0; i < numSamples; ++i)
+            {
+                float weight = 1.0f;
+
+                if (i == lastIndex)
+                {
+                    const float penalty = 0.1f - (roundRobinAmount * 0.08f);
+                    weight *= juce::jmax(0.01f, penalty);
+                }
+                else if (i == nextIndex)
+                {
+                    weight *= (1.0f + roundRobinAmount * 1.5f);
+                }
+
+                cumulative += weight;
+                if (randomValue <= cumulative)
+                {
+                    selectedIndex = i;
+                    break;
+                }
+            }
+        }
+
+        lastSampleIndex[noteIndex].store(selectedIndex, std::memory_order_relaxed);
+        return &targetInstrument->samples[selectedIndex];
     }
 
     // Normalize velocity to power range

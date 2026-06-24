@@ -3,7 +3,8 @@
 
 DrumSamplerProcessor::DrumSamplerProcessor()
     : AudioProcessor(BusesProperties()
-        .withOutput("Kick", juce::AudioChannelSet::stereo(), true)
+        .withOutput("Main", juce::AudioChannelSet::stereo(), true)
+        .withOutput("Kick", juce::AudioChannelSet::stereo(), false)
         .withOutput("Snare", juce::AudioChannelSet::stereo(), false)
         .withOutput("HiHat", juce::AudioChannelSet::stereo(), false)
         .withOutput("Toms", juce::AudioChannelSet::stereo(), false)
@@ -154,34 +155,12 @@ void DrumSamplerProcessor::processBlock(juce::AudioBuffer<float>& buffer, juce::
         }
     }
     
-    // Count enabled buses
-    int numEnabledBuses = 0;
-    for (int i = 0; i < getTotalNumOutputChannels() / 2; ++i)
-    {
-        auto* bus = getBus(false, i);
-        if (bus && bus->isEnabled())
-            numEnabledBuses++;
-    }
-    
-    float gainLinear = juce::Decibels::decibelsToGain(masterVolume->get());
-    
-    // MULTI-CHANNEL MODE: Render all voices once, routing to appropriate buses
-    if (numEnabledBuses > 1 && !instrumentToBusMap.empty())
-    {
-        voiceManager->renderNextBlockMultiBus(buffer, 0, buffer.getNumSamples(),
-                                             gainLinear, this);
-    }
-    else
-    {
-        // STEREO MODE: Render all voices to main output
-        auto* mainBus = getBus(false, 0);
-        if (mainBus && mainBus->isEnabled())
-        {
-            auto mainBuffer = getBusBuffer(buffer, false, 0);
-            voiceManager->renderNextBlock(mainBuffer, 0, buffer.getNumSamples());
-            mainBuffer.applyGain(gainLinear);
-        }
-    }
+    const float gainLinear = juce::Decibels::decibelsToGain(masterVolume->get());
+
+    // Bus 0 is always the summed stereo Main mix. Additional enabled buses
+    // receive their individual routed drum groups in parallel.
+    voiceManager->renderNextBlockMultiBus(buffer, 0, buffer.getNumSamples(),
+                                         gainLinear, this);
 }
 
 
@@ -196,59 +175,60 @@ void DrumSamplerProcessor::setupInstrumentRouting()
     instrumentGroups.clear();
 
     // IMPLEMENTING FIXED ROUTING STRATEGY
-    // Bus 0: Kick
-    // Bus 1: Snare
-    // Bus 2: HiHat
-    // Bus 3: Toms (Stereo Mix)
-    // Bus 4: Ride
-    // Bus 5: Crash
-    // Bus 6: China/Splash/Bell
-    // Bus 7: Ambience/Room (if present as separate instrument)
-    // Bus 8-15: Aux
+    // Bus 0: Main stereo mix
+    // Bus 1: Kick
+    // Bus 2: Snare
+    // Bus 3: HiHat
+    // Bus 4: Toms (Stereo Mix)
+    // Bus 5: Ride
+    // Bus 6: Crash
+    // Bus 7: China/Splash/Bell
+    // Bus 8: Ambience/Room (if present as separate instrument)
+    // Bus 9-16: Aux
 
     for (const auto& instrument : kit->instruments)
     {
         juce::String name = instrument->name;
-        int targetBus = 15; // Default to last Aux
+        int targetBus = 16; // Default to last Aux
 
         if (name.containsIgnoreCase("Kick") || name.containsIgnoreCase("KDrum"))
         {
-            targetBus = 0;
+            targetBus = 1;
             if (instrumentGroups.size() == 0) instrumentGroups.push_back("Kick");
         }
         else if (name.containsIgnoreCase("Snare"))
         {
-            targetBus = 1;
+            targetBus = 2;
         }
         else if (name.containsIgnoreCase("Hihat") || name.containsIgnoreCase("HH"))
         {
-            targetBus = 2;
+            targetBus = 3;
         }
         else if (name.containsIgnoreCase("Tom") || name.containsIgnoreCase("Floor"))
         {
-            targetBus = 3; // All Toms to Bus 3
+            targetBus = 4; // All Toms to Bus 4
         }
         else if (name.containsIgnoreCase("Ride"))
         {
-            targetBus = 4;
+            targetBus = 5;
         }
         else if (name.containsIgnoreCase("Crash"))
         {
-            targetBus = 5; // All Crashes to Bus 5
+            targetBus = 6; // All Crashes to Bus 6
         }
         else if (name.containsIgnoreCase("China") || name.containsIgnoreCase("Splash") || 
                  name.containsIgnoreCase("Bell") || name.containsIgnoreCase("Zilbel") || 
                  name.containsIgnoreCase("Cym"))
         {
-            targetBus = 6;
+            targetBus = 7;
         }
         else if (name.containsIgnoreCase("Room") || name.containsIgnoreCase("Amb"))
         {
-            targetBus = 7;
+            targetBus = 8;
         }
         else
         {
-            targetBus = 8;
+            targetBus = 9;
         }
 
         instrumentToBusMap[name] = targetBus;

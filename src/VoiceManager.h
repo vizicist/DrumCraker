@@ -73,7 +73,7 @@ public:
     void renderNextBlock(juce::AudioBuffer<float>& outputBuffer,
                         int startSample, int numSamples);
     
-    // OPTIMIZED: Render all voices once, routing to appropriate buses
+    // Render a complete mix to bus 0 and routed drum groups to enabled buses.
     void renderNextBlockMultiBus(juce::AudioBuffer<float>& mainBuffer,
                                  int startSample, int numSamples,
                                  float gainLinear,

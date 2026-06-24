@@ -17,8 +17,8 @@
 ### Core Functionality
 - **DrumGizmo Compatible**: Load any DrumGizmo drum kit (XML format)
 - **Separate Kit & MIDI Map Loading**: Independent control over drum kit and MIDI mapping
-- **Multi-Channel Output**: 16 Fixed Stereo Buses (Kick, Snare, HH, Toms, Ride, Crash, SFX, Amb...)
-- **DAW Integration**: Buses are named ("Kick", "Snare") for easy mixing in Reaper/Ardour
+- **Main Stereo Output + Multi-Channel Stems**: Full stereo mix plus fixed stereo buses (Kick, Snare, HH, Toms, Ride, Crash, SFX, Amb...)
+- **DAW Integration**: Buses are named ("Main", "Kick", "Snare") for easy mixing in Reaper/Ardour
 - **Velocity Layers**: Automatic sample selection based on MIDI velocity
 - **High-Quality Resampling**: Lagrange interpolation for automatic sample rate conversion
 - **Asynchronous Loading**: Non-blocking sample loading in background thread
@@ -29,7 +29,7 @@
 - **64 Polyphonic Voices**: Simultaneous note playback with intelligent voice stealing
 - **Lock-Free Audio Thread**: No allocations or locks in real-time processing
 - **Master Volume Control**: -60dB to +12dB range with smooth gain adjustment
-- **Multi-Bus Rendering**: Efficient per-bus voice rendering with zero overhead in stereo mode
+- **Multi-Bus Rendering**: Main stereo mix with optional parallel per-bus stem rendering
 - **Optimized Lookups**: Hash-based caching for instrument and sample access
 
 ### Humanization Engine
@@ -179,17 +179,18 @@ Popular kits include:
 DrumCraker uses a **Fixed Routing** strategy to ensure consistent mixing across different drum kits. Buses are explicitly named in your DAW (if supported, e.g., Reaper, Ardour) for easy identification.
 
 **Fixed Bus Map:**
-- **Bus 1**: "Kick" (Main Kick + Kick Sub)
-- **Bus 2**: "Snare" (Top, Bottom, Trigger)
-- **Bus 3**: "HiHat" (Closed, Open, Pedal)
-- **Bus 4**: "Toms" (All Toms mixed to stereo)
-- **Bus 5**: "Ride" (Bow, Bell)
-- **Bus 6**: "Crash" (All Crashes mixed to stereo)
-- **Bus 7**: "China/Splash" (Effect cymbals)
-- **Bus 8**: "Ambience" (Room/Overhead mics if exposed as separate instruments)
-- **Bus 9-16**: "Aux" (Percussion and unclassified instruments)
+- **Bus 1**: "Main" (full stereo drum mix)
+- **Bus 2**: "Kick" (Kick drum + Kick Sub)
+- **Bus 3**: "Snare" (Top, Bottom, Trigger)
+- **Bus 4**: "HiHat" (Closed, Open, Pedal)
+- **Bus 5**: "Toms" (All Toms mixed to stereo)
+- **Bus 6**: "Ride" (Bow, Bell)
+- **Bus 7**: "Crash" (All Crashes mixed to stereo)
+- **Bus 8**: "China/Splash" (Effect cymbals)
+- **Bus 9**: "Ambience" (Room/Overhead mics if exposed as separate instruments)
+- **Bus 10-17**: "Aux" (Percussion and unclassified instruments)
 
-This allows you to create a SINGLE template in your DAW that works with ANY DrumGizmo kit, without channels shifting around when you change kits.
+Use "Main" when you only want a simple stereo instrument track. Enable the additional buses when you want separate stems; they are rendered in parallel, so the Main output remains available.
 
 ### Parameters
 #### Master Volume

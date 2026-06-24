@@ -296,23 +296,32 @@ void VoiceManager::renderNextBlockMultiBus(juce::AudioBuffer<float>& mainBuffer,
                                            juce::AudioProcessor* processor)
 {
     // Pre-cache enabled buses to avoid repeated virtual calls
-    bool busEnabled[16] = {false};
-    for (int i = 0; i < 16; ++i)
+    const int busCount = processor->getBusCount(false);
+    std::vector<bool> busEnabled(static_cast<size_t>(busCount), false);
+
+    for (int i = 0; i < busCount; ++i)
     {
         auto* bus = processor->getBus(false, i);
-        busEnabled[i] = (bus && bus->isEnabled());
+        busEnabled[static_cast<size_t>(i)] = (bus && bus->isEnabled());
     }
     
-    // Render each voice ONCE to its pre-assigned bus (ultra-fast)
+    // Bus 0 is a full stereo mix. Other enabled buses receive their routed
+    // drum groups in parallel, so users can choose simple stereo or stems.
     for (auto& voice : voices)
     {
         if (!voice.isActive())
             continue;
+
+        if (busCount > 0 && busEnabled[0])
+        {
+            auto mainBusBuffer = processor->getBusBuffer(mainBuffer, false, 0);
+            voice.renderToBuffer(mainBusBuffer, startSample, numSamples);
+        }
         
         const int busIndex = voice.getBusIndex();
         
         // Check if bus is enabled (cached, no virtual call)
-        if (!busEnabled[busIndex])
+        if (busIndex <= 0 || busIndex >= busCount || !busEnabled[static_cast<size_t>(busIndex)])
             continue;
         
         // Get buffer for this bus and render
@@ -321,9 +330,9 @@ void VoiceManager::renderNextBlockMultiBus(juce::AudioBuffer<float>& mainBuffer,
     }
     
     // Apply gain to all enabled buses (using cached info)
-    for (int busIndex = 0; busIndex < 16; ++busIndex)
+    for (int busIndex = 0; busIndex < busCount; ++busIndex)
     {
-        if (busEnabled[busIndex])
+        if (busEnabled[static_cast<size_t>(busIndex)])
         {
             auto busBuffer = processor->getBusBuffer(mainBuffer, false, busIndex);
             busBuffer.applyGain(gainLinear);
