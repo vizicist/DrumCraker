@@ -1,0 +1,159 @@
+﻿<?xml version='1.0' encoding='UTF-8'?>
+<instrument version="2.0" name="tom_12_prem">
+  <samples>
+  <sample name="tom_12_prem_a_01" power="1">
+    <audiofile channel="TOM_1" file="samples/tom_12_prem_a_01.wav" filechannel="1"/>
+    <audiofile channel="TOMS_OH_L" file="samples/tom_12_prem_a_01.wav" filechannel="2"/>
+    <audiofile channel="TOMS_OH_R" file="samples/tom_12_prem_a_01.wav" filechannel="3"/>
+    <audiofile channel="TOMS_ROOM_L" file="samples/tom_12_prem_a_01.wav" filechannel="4"/>
+    <audiofile channel="TOMS_ROOM_R" file="samples/tom_12_prem_a_01.wav" filechannel="5"/>
+  </sample>
+  <sample name="tom_12_prem_b_01" power="1">
+    <audiofile channel="TOM_1" file="samples/tom_12_prem_b_01.wav" filechannel="1"/>
+    <audiofile channel="TOMS_OH_L" file="samples/tom_12_prem_b_01.wav" filechannel="2"/>
+    <audiofile channel="TOMS_OH_R" file="samples/tom_12_prem_b_01.wav" filechannel="3"/>
+    <audiofile channel="TOMS_ROOM_L" file="samples/tom_12_prem_b_01.wav" filechannel="4"/>
+    <audiofile channel="TOMS_ROOM_R" file="samples/tom_12_prem_b_01.wav" filechannel="5"/>
+  </sample>
+  <sample name="tom_12_prem_a_02" power="2">
+    <audiofile channel="TOM_1" file="samples/tom_12_prem_a_02.wav" filechannel="1"/>
+    <audiofile channel="TOMS_OH_L" file="samples/tom_12_prem_a_02.wav" filechannel="2"/>
+    <audiofile channel="TOMS_OH_R" file="samples/tom_12_prem_a_02.wav" filechannel="3"/>
+    <audiofile channel="TOMS_ROOM_L" file="samples/tom_12_prem_a_02.wav" filechannel="4"/>
+    <audiofile channel="TOMS_ROOM_R" file="samples/tom_12_prem_a_02.wav" filechannel="5"/>
+  </sample>
+  <sample name="tom_12_prem_b_02" power="2">
+    <audiofile channel="TOM_1" file="samples/tom_12_prem_b_02.wav" filechannel="1"/>
+    <audiofile channel="TOMS_OH_L" file="samples/tom_12_prem_b_02.wav" filechannel="2"/>
+    <audiofile channel="TOMS_OH_R" file="samples/tom_12_prem_b_02.wav" filechannel="3"/>
+    <audiofile channel="TOMS_ROOM_L" file="samples/tom_12_prem_b_02.wav" filechannel="4"/>
+    <audiofile channel="TOMS_ROOM_R" file="samples/tom_12_prem_b_02.wav" filechannel="5"/>
+  </sample>
+  <sample name="tom_12_prem_a_03" power="3">
+    <audiofile channel="TOM_1" file="samples/tom_12_prem_a_03.wav" filechannel="1"/>
+    <audiofile channel="TOMS_OH_L" file="samples/tom_12_prem_a_03.wav" filechannel="2"/>
+    <audiofile channel="TOMS_OH_R" file="samples/tom_12_prem_a_03.wav" filechannel="3"/>
+    <audiofile channel="TOMS_ROOM_L" file="samples/tom_12_prem_a_03.wav" filechannel="4"/>
+    <audiofile channel="TOMS_ROOM_R" file="samples/tom_12_prem_a_03.wav" filechannel="5"/>
+  </sample>
+  <sample name="tom_12_prem_b_03" power="3">
+    <audiofile channel="TOM_1" file="samples/tom_12_prem_b_03.wav" filechannel="1"/>
+    <audiofile channel="TOMS_OH_L" file="samples/tom_12_prem_b_03.wav" filechannel="2"/>
+    <audiofile channel="TOMS_OH_R" file="samples/tom_12_prem_b_03.wav" filechannel="3"/>
+    <audiofile channel="TOMS_ROOM_L" file="samples/tom_12_prem_b_03.wav" filechannel="4"/>
+    <audiofile channel="TOMS_ROOM_R" file="samples/tom_12_prem_b_03.wav" filechannel="5"/>
+  </sample>
+  <sample name="tom_12_prem_a_04" power="4">
+    <audiofile channel="TOM_1" file="samples/tom_12_prem_a_04.wav" filechannel="1"/>
+    <audiofile channel="TOMS_OH_L" file="samples/tom_12_prem_a_04.wav" filechannel="2"/>
+    <audiofile channel="TOMS_OH_R" file="samples/tom_12_prem_a_04.wav" filechannel="3"/>
+    <audiofile channel="TOMS_ROOM_L" file="samples/tom_12_prem_a_04.wav" filechannel="4"/>
+    <audiofile channel="TOMS_ROOM_R" file="samples/tom_12_prem_a_04.wav" filechannel="5"/>
+  </sample>
+  <sample name="tom_12_prem_b_04" power="4">
+    <audiofile channel="TOM_1" file="samples/tom_12_prem_b_04.wav" filechannel="1"/>
+    <audiofile channel="TOMS_OH_L" file="samples/tom_12_prem_b_04.wav" filechannel="2"/>
+    <audiofile channel="TOMS_OH_R" file="samples/tom_12_prem_b_04.wav" filechannel="3"/>
+    <audiofile channel="TOMS_ROOM_L" file="samples/tom_12_prem_b_04.wav" filechannel="4"/>
+    <audiofile channel="TOMS_ROOM_R" file="samples/tom_12_prem_b_04.wav" filechannel="5"/>
+  </sample>
+  <sample name="tom_12_prem_a_05" power="5">
+    <audiofile channel="TOM_1" file="samples/tom_12_prem_a_05.wav" filechannel="1"/>
+    <audiofile channel="TOMS_OH_L" file="samples/tom_12_prem_a_05.wav" filechannel="2"/>
+    <audiofile channel="TOMS_OH_R" file="samples/tom_12_prem_a_05.wav" filechannel="3"/>
+    <audiofile channel="TOMS_ROOM_L" file="samples/tom_12_prem_a_05.wav" filechannel="4"/>
+    <audiofile channel="TOMS_ROOM_R" file="samples/tom_12_prem_a_05.wav" filechannel="5"/>
+  </sample>
+  <sample name="tom_12_prem_b_05" power="5">
+    <audiofile channel="TOM_1" file="samples/tom_12_prem_b_05.wav" filechannel="1"/>
+    <audiofile channel="TOMS_OH_L" file="samples/tom_12_prem_b_05.wav" filechannel="2"/>
+    <audiofile channel="TOMS_OH_R" file="samples/tom_12_prem_b_05.wav" filechannel="3"/>
+    <audiofile channel="TOMS_ROOM_L" file="samples/tom_12_prem_b_05.wav" filechannel="4"/>
+    <audiofile channel="TOMS_ROOM_R" file="samples/tom_12_prem_b_05.wav" filechannel="5"/>
+  </sample>
+  <sample name="tom_12_prem_a_06" power="6">
+    <audiofile channel="TOM_1" file="samples/tom_12_prem_a_06.wav" filechannel="1"/>
+    <audiofile channel="TOMS_OH_L" file="samples/tom_12_prem_a_06.wav" filechannel="2"/>
+    <audiofile channel="TOMS_OH_R" file="samples/tom_12_prem_a_06.wav" filechannel="3"/>
+    <audiofile channel="TOMS_ROOM_L" file="samples/tom_12_prem_a_06.wav" filechannel="4"/>
+    <audiofile channel="TOMS_ROOM_R" file="samples/tom_12_prem_a_06.wav" filechannel="5"/>
+  </sample>
+  <sample name="tom_12_prem_b_06" power="6">
+    <audiofile channel="TOM_1" file="samples/tom_12_prem_b_06.wav" filechannel="1"/>
+    <audiofile channel="TOMS_OH_L" file="samples/tom_12_prem_b_06.wav" filechannel="2"/>
+    <audiofile channel="TOMS_OH_R" file="samples/tom_12_prem_b_06.wav" filechannel="3"/>
+    <audiofile channel="TOMS_ROOM_L" file="samples/tom_12_prem_b_06.wav" filechannel="4"/>
+    <audiofile channel="TOMS_ROOM_R" file="samples/tom_12_prem_b_06.wav" filechannel="5"/>
+  </sample>
+  <sample name="tom_12_prem_a_07" power="7">
+    <audiofile channel="TOM_1" file="samples/tom_12_prem_a_07.wav" filechannel="1"/>
+    <audiofile channel="TOMS_OH_L" file="samples/tom_12_prem_a_07.wav" filechannel="2"/>
+    <audiofile channel="TOMS_OH_R" file="samples/tom_12_prem_a_07.wav" filechannel="3"/>
+    <audiofile channel="TOMS_ROOM_L" file="samples/tom_12_prem_a_07.wav" filechannel="4"/>
+    <audiofile channel="TOMS_ROOM_R" file="samples/tom_12_prem_a_07.wav" filechannel="5"/>
+  </sample>
+  <sample name="tom_12_prem_b_07" power="7">
+    <audiofile channel="TOM_1" file="samples/tom_12_prem_b_07.wav" filechannel="1"/>
+    <audiofile channel="TOMS_OH_L" file="samples/tom_12_prem_b_07.wav" filechannel="2"/>
+    <audiofile channel="TOMS_OH_R" file="samples/tom_12_prem_b_07.wav" filechannel="3"/>
+    <audiofile channel="TOMS_ROOM_L" file="samples/tom_12_prem_b_07.wav" filechannel="4"/>
+    <audiofile channel="TOMS_ROOM_R" file="samples/tom_12_prem_b_07.wav" filechannel="5"/>
+  </sample>
+  <sample name="tom_12_prem_a_08" power="8">
+    <audiofile channel="TOM_1" file="samples/tom_12_prem_a_08.wav" filechannel="1"/>
+    <audiofile channel="TOMS_OH_L" file="samples/tom_12_prem_a_08.wav" filechannel="2"/>
+    <audiofile channel="TOMS_OH_R" file="samples/tom_12_prem_a_08.wav" filechannel="3"/>
+    <audiofile channel="TOMS_ROOM_L" file="samples/tom_12_prem_a_08.wav" filechannel="4"/>
+    <audiofile channel="TOMS_ROOM_R" file="samples/tom_12_prem_a_08.wav" filechannel="5"/>
+  </sample>
+  <sample name="tom_12_prem_b_08" power="8">
+    <audiofile channel="TOM_1" file="samples/tom_12_prem_b_08.wav" filechannel="1"/>
+    <audiofile channel="TOMS_OH_L" file="samples/tom_12_prem_b_08.wav" filechannel="2"/>
+    <audiofile channel="TOMS_OH_R" file="samples/tom_12_prem_b_08.wav" filechannel="3"/>
+    <audiofile channel="TOMS_ROOM_L" file="samples/tom_12_prem_b_08.wav" filechannel="4"/>
+    <audiofile channel="TOMS_ROOM_R" file="samples/tom_12_prem_b_08.wav" filechannel="5"/>
+  </sample>
+  <sample name="tom_12_prem_a_09" power="9">
+    <audiofile channel="TOM_1" file="samples/tom_12_prem_a_09.wav" filechannel="1"/>
+    <audiofile channel="TOMS_OH_L" file="samples/tom_12_prem_a_09.wav" filechannel="2"/>
+    <audiofile channel="TOMS_OH_R" file="samples/tom_12_prem_a_09.wav" filechannel="3"/>
+    <audiofile channel="TOMS_ROOM_L" file="samples/tom_12_prem_a_09.wav" filechannel="4"/>
+    <audiofile channel="TOMS_ROOM_R" file="samples/tom_12_prem_a_09.wav" filechannel="5"/>
+  </sample>
+  <sample name="tom_12_prem_b_09" power="9">
+    <audiofile channel="TOM_1" file="samples/tom_12_prem_b_09.wav" filechannel="1"/>
+    <audiofile channel="TOMS_OH_L" file="samples/tom_12_prem_b_09.wav" filechannel="2"/>
+    <audiofile channel="TOMS_OH_R" file="samples/tom_12_prem_b_09.wav" filechannel="3"/>
+    <audiofile channel="TOMS_ROOM_L" file="samples/tom_12_prem_b_09.wav" filechannel="4"/>
+    <audiofile channel="TOMS_ROOM_R" file="samples/tom_12_prem_b_09.wav" filechannel="5"/>
+  </sample>
+  <sample name="tom_12_prem_a_10" power="10">
+    <audiofile channel="TOM_1" file="samples/tom_12_prem_a_10.wav" filechannel="1"/>
+    <audiofile channel="TOMS_OH_L" file="samples/tom_12_prem_a_10.wav" filechannel="2"/>
+    <audiofile channel="TOMS_OH_R" file="samples/tom_12_prem_a_10.wav" filechannel="3"/>
+    <audiofile channel="TOMS_ROOM_L" file="samples/tom_12_prem_a_10.wav" filechannel="4"/>
+    <audiofile channel="TOMS_ROOM_R" file="samples/tom_12_prem_a_10.wav" filechannel="5"/>
+  </sample>
+  <sample name="tom_12_prem_b_10" power="10">
+    <audiofile channel="TOM_1" file="samples/tom_12_prem_b_10.wav" filechannel="1"/>
+    <audiofile channel="TOMS_OH_L" file="samples/tom_12_prem_b_10.wav" filechannel="2"/>
+    <audiofile channel="TOMS_OH_R" file="samples/tom_12_prem_b_10.wav" filechannel="3"/>
+    <audiofile channel="TOMS_ROOM_L" file="samples/tom_12_prem_b_10.wav" filechannel="4"/>
+    <audiofile channel="TOMS_ROOM_R" file="samples/tom_12_prem_b_10.wav" filechannel="5"/>
+  </sample>
+  <sample name="tom_12_prem_a_11" power="11">
+    <audiofile channel="TOM_1" file="samples/tom_12_prem_a_11.wav" filechannel="1"/>
+    <audiofile channel="TOMS_OH_L" file="samples/tom_12_prem_a_11.wav" filechannel="2"/>
+    <audiofile channel="TOMS_OH_R" file="samples/tom_12_prem_a_11.wav" filechannel="3"/>
+    <audiofile channel="TOMS_ROOM_L" file="samples/tom_12_prem_a_11.wav" filechannel="4"/>
+    <audiofile channel="TOMS_ROOM_R" file="samples/tom_12_prem_a_11.wav" filechannel="5"/>
+  </sample>
+  <sample name="tom_12_prem_b_11" power="11">
+    <audiofile channel="TOM_1" file="samples/tom_12_prem_b_11.wav" filechannel="1"/>
+    <audiofile channel="TOMS_OH_L" file="samples/tom_12_prem_b_11.wav" filechannel="2"/>
+    <audiofile channel="TOMS_OH_R" file="samples/tom_12_prem_b_11.wav" filechannel="3"/>
+    <audiofile channel="TOMS_ROOM_L" file="samples/tom_12_prem_b_11.wav" filechannel="4"/>
+    <audiofile channel="TOMS_ROOM_R" file="samples/tom_12_prem_b_11.wav" filechannel="5"/>
+  </sample>
+  </samples>
+</instrument>

@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<midimap>
+  <map note="35" instr="tom_12_prem"/>
+  <map note="36" instr="tom_12_prem_edg"/>
+  <map note="38" instr="tom_13_prem"/>
+  <map note="39" instr="tom_13_prem_edg"/>
+  <map note="41" instr="tom_16_prem"/>
+  <map note="42" instr="tom_16_prem_edg"/>
+</midimap>

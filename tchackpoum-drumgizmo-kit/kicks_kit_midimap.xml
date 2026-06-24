@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<midimap>
+	<map note="00" instr="kick_ludw"/>
+	<map note="02" instr="kick_ludw_damp"/>
+  <map note="04" instr="kick_ludw_jazz"/>
+  <map note="06" instr="kick_prem_damp"/>
+  <map note="08" instr="kick_prem_free"/>
+  <map note="10" instr="kick_sono"/>
+</midimap>

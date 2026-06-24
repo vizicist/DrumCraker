@@ -1,0 +1,8 @@
+﻿<?xml version='1.0' encoding='UTF-8'?>
+<instrument version="2.0" name="crash_mute">
+  <samples>
+  <sample name="mute" power="1">
+    <audiofile channel="CYM_MUTE" file="mute.wav" filechannel="1"/>
+  </sample>
+  </samples>
+</instrument>

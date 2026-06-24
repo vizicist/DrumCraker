@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<midimap>
+  <map note="44" instr="crash_14_zild_bow"/>
+  <map note="45" instr="crash_14_zild_edg"/>
+  <map note="47" instr="crash_15_sabi_bow"/>
+  <map note="48" instr="crash_15_sabi_edg"/>
+  <map note="50" instr="cymb_18_zild_efx_bow"/>
+  <map note="51" instr="cymb_18_zild_efx_edg"/>
+  <map note="53" instr="crash_mute"/>
+</midimap>

@@ -1,0 +1,239 @@
+﻿<?xml version='1.0' encoding='UTF-8'?>
+<instrument version="2.0" name="kick_ludw">
+  <samples>
+  <sample name="kick_ludw_a_01" power="1">
+    <audiofile channel="KICK_IN" file="samples/kick_ludw_a_01.wav" filechannel="1"/>
+    <audiofile channel="KICK_OUT" file="samples/kick_ludw_a_01.wav" filechannel="2"/>
+    <audiofile channel="KICK_SUB" file="samples/kick_ludw_a_01.wav" filechannel="3"/>
+    <audiofile channel="KICK_OH_L" file="samples/kick_ludw_a_01.wav" filechannel="4"/>
+    <audiofile channel="KICK_OH_R" file="samples/kick_ludw_a_01.wav" filechannel="5"/>
+    <audiofile channel="KICK_ROOM_L" file="samples/kick_ludw_a_01.wav" filechannel="6"/>
+    <audiofile channel="KICK_ROOM_R" file="samples/kick_ludw_a_01.wav" filechannel="7"/>
+  </sample>
+  <sample name="kick_ludw_b_01" power="1">
+    <audiofile channel="KICK_IN" file="samples/kick_ludw_b_01.wav" filechannel="1"/>
+    <audiofile channel="KICK_OUT" file="samples/kick_ludw_b_01.wav" filechannel="2"/>
+    <audiofile channel="KICK_SUB" file="samples/kick_ludw_b_01.wav" filechannel="3"/>
+    <audiofile channel="KICK_OH_L" file="samples/kick_ludw_b_01.wav" filechannel="4"/>
+    <audiofile channel="KICK_OH_R" file="samples/kick_ludw_b_01.wav" filechannel="5"/>
+    <audiofile channel="KICK_ROOM_L" file="samples/kick_ludw_b_01.wav" filechannel="6"/>
+    <audiofile channel="KICK_ROOM_R" file="samples/kick_ludw_b_01.wav" filechannel="7"/>
+  </sample>
+  <sample name="kick_ludw_a_02" power="2">
+    <audiofile channel="KICK_IN" file="samples/kick_ludw_a_02.wav" filechannel="1"/>
+    <audiofile channel="KICK_OUT" file="samples/kick_ludw_a_02.wav" filechannel="2"/>
+    <audiofile channel="KICK_SUB" file="samples/kick_ludw_a_02.wav" filechannel="3"/>
+    <audiofile channel="KICK_OH_L" file="samples/kick_ludw_a_02.wav" filechannel="4"/>
+    <audiofile channel="KICK_OH_R" file="samples/kick_ludw_a_02.wav" filechannel="5"/>
+    <audiofile channel="KICK_ROOM_L" file="samples/kick_ludw_a_02.wav" filechannel="6"/>
+    <audiofile channel="KICK_ROOM_R" file="samples/kick_ludw_a_02.wav" filechannel="7"/>
+  </sample>
+  <sample name="kick_ludw_b_02" power="2">
+    <audiofile channel="KICK_IN" file="samples/kick_ludw_b_02.wav" filechannel="1"/>
+    <audiofile channel="KICK_OUT" file="samples/kick_ludw_b_02.wav" filechannel="2"/>
+    <audiofile channel="KICK_SUB" file="samples/kick_ludw_b_02.wav" filechannel="3"/>
+    <audiofile channel="KICK_OH_L" file="samples/kick_ludw_b_02.wav" filechannel="4"/>
+    <audiofile channel="KICK_OH_R" file="samples/kick_ludw_b_02.wav" filechannel="5"/>
+    <audiofile channel="KICK_ROOM_L" file="samples/kick_ludw_b_02.wav" filechannel="6"/>
+    <audiofile channel="KICK_ROOM_R" file="samples/kick_ludw_b_02.wav" filechannel="7"/>
+  </sample>
+  <sample name="kick_ludw_a_03" power="3">
+    <audiofile channel="KICK_IN" file="samples/kick_ludw_a_03.wav" filechannel="1"/>
+    <audiofile channel="KICK_OUT" file="samples/kick_ludw_a_03.wav" filechannel="2"/>
+    <audiofile channel="KICK_SUB" file="samples/kick_ludw_a_03.wav" filechannel="3"/>
+    <audiofile channel="KICK_OH_L" file="samples/kick_ludw_a_03.wav" filechannel="4"/>
+    <audiofile channel="KICK_OH_R" file="samples/kick_ludw_a_03.wav" filechannel="5"/>
+    <audiofile channel="KICK_ROOM_L" file="samples/kick_ludw_a_03.wav" filechannel="6"/>
+    <audiofile channel="KICK_ROOM_R" file="samples/kick_ludw_a_03.wav" filechannel="7"/>
+  </sample>
+  <sample name="kick_ludw_b_03" power="3">
+    <audiofile channel="KICK_IN" file="samples/kick_ludw_b_03.wav" filechannel="1"/>
+    <audiofile channel="KICK_OUT" file="samples/kick_ludw_b_03.wav" filechannel="2"/>
+    <audiofile channel="KICK_SUB" file="samples/kick_ludw_b_03.wav" filechannel="3"/>
+    <audiofile channel="KICK_OH_L" file="samples/kick_ludw_b_03.wav" filechannel="4"/>
+    <audiofile channel="KICK_OH_R" file="samples/kick_ludw_b_03.wav" filechannel="5"/>
+    <audiofile channel="KICK_ROOM_L" file="samples/kick_ludw_b_03.wav" filechannel="6"/>
+    <audiofile channel="KICK_ROOM_R" file="samples/kick_ludw_b_03.wav" filechannel="7"/>
+  </sample>
+  <sample name="kick_ludw_a_04" power="4">
+    <audiofile channel="KICK_IN" file="samples/kick_ludw_a_04.wav" filechannel="1"/>
+    <audiofile channel="KICK_OUT" file="samples/kick_ludw_a_04.wav" filechannel="2"/>
+    <audiofile channel="KICK_SUB" file="samples/kick_ludw_a_04.wav" filechannel="3"/>
+    <audiofile channel="KICK_OH_L" file="samples/kick_ludw_a_04.wav" filechannel="4"/>
+    <audiofile channel="KICK_OH_R" file="samples/kick_ludw_a_04.wav" filechannel="5"/>
+    <audiofile channel="KICK_ROOM_L" file="samples/kick_ludw_a_04.wav" filechannel="6"/>
+    <audiofile channel="KICK_ROOM_R" file="samples/kick_ludw_a_04.wav" filechannel="7"/>
+  </sample>
+  <sample name="kick_ludw_b_04" power="4">
+    <audiofile channel="KICK_IN" file="samples/kick_ludw_b_04.wav" filechannel="1"/>
+    <audiofile channel="KICK_OUT" file="samples/kick_ludw_b_04.wav" filechannel="2"/>
+    <audiofile channel="KICK_SUB" file="samples/kick_ludw_b_04.wav" filechannel="3"/>
+    <audiofile channel="KICK_OH_L" file="samples/kick_ludw_b_04.wav" filechannel="4"/>
+    <audiofile channel="KICK_OH_R" file="samples/kick_ludw_b_04.wav" filechannel="5"/>
+    <audiofile channel="KICK_ROOM_L" file="samples/kick_ludw_b_04.wav" filechannel="6"/>
+    <audiofile channel="KICK_ROOM_R" file="samples/kick_ludw_b_04.wav" filechannel="7"/>
+  </sample>
+  <sample name="kick_ludw_a_05" power="5">
+    <audiofile channel="KICK_IN" file="samples/kick_ludw_a_05.wav" filechannel="1"/>
+    <audiofile channel="KICK_OUT" file="samples/kick_ludw_a_05.wav" filechannel="2"/>
+    <audiofile channel="KICK_SUB" file="samples/kick_ludw_a_05.wav" filechannel="3"/>
+    <audiofile channel="KICK_OH_L" file="samples/kick_ludw_a_05.wav" filechannel="4"/>
+    <audiofile channel="KICK_OH_R" file="samples/kick_ludw_a_05.wav" filechannel="5"/>
+    <audiofile channel="KICK_ROOM_L" file="samples/kick_ludw_a_05.wav" filechannel="6"/>
+    <audiofile channel="KICK_ROOM_R" file="samples/kick_ludw_a_05.wav" filechannel="7"/>
+  </sample>
+  <sample name="kick_ludw_b_05" power="5">
+    <audiofile channel="KICK_IN" file="samples/kick_ludw_b_05.wav" filechannel="1"/>
+    <audiofile channel="KICK_OUT" file="samples/kick_ludw_b_05.wav" filechannel="2"/>
+    <audiofile channel="KICK_SUB" file="samples/kick_ludw_b_05.wav" filechannel="3"/>
+    <audiofile channel="KICK_OH_L" file="samples/kick_ludw_b_05.wav" filechannel="4"/>
+    <audiofile channel="KICK_OH_R" file="samples/kick_ludw_b_05.wav" filechannel="5"/>
+    <audiofile channel="KICK_ROOM_L" file="samples/kick_ludw_b_05.wav" filechannel="6"/>
+    <audiofile channel="KICK_ROOM_R" file="samples/kick_ludw_b_05.wav" filechannel="7"/>
+  </sample>
+  <sample name="kick_ludw_a_06" power="6">
+    <audiofile channel="KICK_IN" file="samples/kick_ludw_a_06.wav" filechannel="1"/>
+    <audiofile channel="KICK_OUT" file="samples/kick_ludw_a_06.wav" filechannel="2"/>
+    <audiofile channel="KICK_SUB" file="samples/kick_ludw_a_06.wav" filechannel="3"/>
+    <audiofile channel="KICK_OH_L" file="samples/kick_ludw_a_06.wav" filechannel="4"/>
+    <audiofile channel="KICK_OH_R" file="samples/kick_ludw_a_06.wav" filechannel="5"/>
+    <audiofile channel="KICK_ROOM_L" file="samples/kick_ludw_a_06.wav" filechannel="6"/>
+    <audiofile channel="KICK_ROOM_R" file="samples/kick_ludw_a_06.wav" filechannel="7"/>
+  </sample>
+  <sample name="kick_ludw_b_06" power="6">
+    <audiofile channel="KICK_IN" file="samples/kick_ludw_b_06.wav" filechannel="1"/>
+    <audiofile channel="KICK_OUT" file="samples/kick_ludw_b_06.wav" filechannel="2"/>
+    <audiofile channel="KICK_SUB" file="samples/kick_ludw_b_06.wav" filechannel="3"/>
+    <audiofile channel="KICK_OH_L" file="samples/kick_ludw_b_06.wav" filechannel="4"/>
+    <audiofile channel="KICK_OH_R" file="samples/kick_ludw_b_06.wav" filechannel="5"/>
+    <audiofile channel="KICK_ROOM_L" file="samples/kick_ludw_b_06.wav" filechannel="6"/>
+    <audiofile channel="KICK_ROOM_R" file="samples/kick_ludw_b_06.wav" filechannel="7"/>
+  </sample>
+  <sample name="kick_ludw_a_07" power="7">
+    <audiofile channel="KICK_IN" file="samples/kick_ludw_a_07.wav" filechannel="1"/>
+    <audiofile channel="KICK_OUT" file="samples/kick_ludw_a_07.wav" filechannel="2"/>
+    <audiofile channel="KICK_SUB" file="samples/kick_ludw_a_07.wav" filechannel="3"/>
+    <audiofile channel="KICK_OH_L" file="samples/kick_ludw_a_07.wav" filechannel="4"/>
+    <audiofile channel="KICK_OH_R" file="samples/kick_ludw_a_07.wav" filechannel="5"/>
+    <audiofile channel="KICK_ROOM_L" file="samples/kick_ludw_a_07.wav" filechannel="6"/>
+    <audiofile channel="KICK_ROOM_R" file="samples/kick_ludw_a_07.wav" filechannel="7"/>
+  </sample>
+  <sample name="kick_ludw_b_07" power="7">
+    <audiofile channel="KICK_IN" file="samples/kick_ludw_b_07.wav" filechannel="1"/>
+    <audiofile channel="KICK_OUT" file="samples/kick_ludw_b_07.wav" filechannel="2"/>
+    <audiofile channel="KICK_SUB" file="samples/kick_ludw_b_07.wav" filechannel="3"/>
+    <audiofile channel="KICK_OH_L" file="samples/kick_ludw_b_07.wav" filechannel="4"/>
+    <audiofile channel="KICK_OH_R" file="samples/kick_ludw_b_07.wav" filechannel="5"/>
+    <audiofile channel="KICK_ROOM_L" file="samples/kick_ludw_b_07.wav" filechannel="6"/>
+    <audiofile channel="KICK_ROOM_R" file="samples/kick_ludw_b_07.wav" filechannel="7"/>
+  </sample>
+  <sample name="kick_ludw_a_08" power="8">
+    <audiofile channel="KICK_IN" file="samples/kick_ludw_a_08.wav" filechannel="1"/>
+    <audiofile channel="KICK_OUT" file="samples/kick_ludw_a_08.wav" filechannel="2"/>
+    <audiofile channel="KICK_SUB" file="samples/kick_ludw_a_08.wav" filechannel="3"/>
+    <audiofile channel="KICK_OH_L" file="samples/kick_ludw_a_08.wav" filechannel="4"/>
+    <audiofile channel="KICK_OH_R" file="samples/kick_ludw_a_08.wav" filechannel="5"/>
+    <audiofile channel="KICK_ROOM_L" file="samples/kick_ludw_a_08.wav" filechannel="6"/>
+    <audiofile channel="KICK_ROOM_R" file="samples/kick_ludw_a_08.wav" filechannel="7"/>
+  </sample>
+  <sample name="kick_ludw_b_08" power="8">
+    <audiofile channel="KICK_IN" file="samples/kick_ludw_b_08.wav" filechannel="1"/>
+    <audiofile channel="KICK_OUT" file="samples/kick_ludw_b_08.wav" filechannel="2"/>
+    <audiofile channel="KICK_SUB" file="samples/kick_ludw_b_08.wav" filechannel="3"/>
+    <audiofile channel="KICK_OH_L" file="samples/kick_ludw_b_08.wav" filechannel="4"/>
+    <audiofile channel="KICK_OH_R" file="samples/kick_ludw_b_08.wav" filechannel="5"/>
+    <audiofile channel="KICK_ROOM_L" file="samples/kick_ludw_b_08.wav" filechannel="6"/>
+    <audiofile channel="KICK_ROOM_R" file="samples/kick_ludw_b_08.wav" filechannel="7"/>
+  </sample>
+  <sample name="kick_ludw_a_09" power="9">
+    <audiofile channel="KICK_IN" file="samples/kick_ludw_a_09.wav" filechannel="1"/>
+    <audiofile channel="KICK_OUT" file="samples/kick_ludw_a_09.wav" filechannel="2"/>
+    <audiofile channel="KICK_SUB" file="samples/kick_ludw_a_09.wav" filechannel="3"/>
+    <audiofile channel="KICK_OH_L" file="samples/kick_ludw_a_09.wav" filechannel="4"/>
+    <audiofile channel="KICK_OH_R" file="samples/kick_ludw_a_09.wav" filechannel="5"/>
+    <audiofile channel="KICK_ROOM_L" file="samples/kick_ludw_a_09.wav" filechannel="6"/>
+    <audiofile channel="KICK_ROOM_R" file="samples/kick_ludw_a_09.wav" filechannel="7"/>
+  </sample>
+  <sample name="kick_ludw_b_09" power="9">
+    <audiofile channel="KICK_IN" file="samples/kick_ludw_b_09.wav" filechannel="1"/>
+    <audiofile channel="KICK_OUT" file="samples/kick_ludw_b_09.wav" filechannel="2"/>
+    <audiofile channel="KICK_SUB" file="samples/kick_ludw_b_09.wav" filechannel="3"/>
+    <audiofile channel="KICK_OH_L" file="samples/kick_ludw_b_09.wav" filechannel="4"/>
+    <audiofile channel="KICK_OH_R" file="samples/kick_ludw_b_09.wav" filechannel="5"/>
+    <audiofile channel="KICK_ROOM_L" file="samples/kick_ludw_b_09.wav" filechannel="6"/>
+    <audiofile channel="KICK_ROOM_R" file="samples/kick_ludw_b_09.wav" filechannel="7"/>
+  </sample>
+  <sample name="kick_ludw_a_10" power="10">
+    <audiofile channel="KICK_IN" file="samples/kick_ludw_a_10.wav" filechannel="1"/>
+    <audiofile channel="KICK_OUT" file="samples/kick_ludw_a_10.wav" filechannel="2"/>
+    <audiofile channel="KICK_SUB" file="samples/kick_ludw_a_10.wav" filechannel="3"/>
+    <audiofile channel="KICK_OH_L" file="samples/kick_ludw_a_10.wav" filechannel="4"/>
+    <audiofile channel="KICK_OH_R" file="samples/kick_ludw_a_10.wav" filechannel="5"/>
+    <audiofile channel="KICK_ROOM_L" file="samples/kick_ludw_a_10.wav" filechannel="6"/>
+    <audiofile channel="KICK_ROOM_R" file="samples/kick_ludw_a_10.wav" filechannel="7"/>
+  </sample>
+  <sample name="kick_ludw_b_10" power="10">
+    <audiofile channel="KICK_IN" file="samples/kick_ludw_b_10.wav" filechannel="1"/>
+    <audiofile channel="KICK_OUT" file="samples/kick_ludw_b_10.wav" filechannel="2"/>
+    <audiofile channel="KICK_SUB" file="samples/kick_ludw_b_10.wav" filechannel="3"/>
+    <audiofile channel="KICK_OH_L" file="samples/kick_ludw_b_10.wav" filechannel="4"/>
+    <audiofile channel="KICK_OH_R" file="samples/kick_ludw_b_10.wav" filechannel="5"/>
+    <audiofile channel="KICK_ROOM_L" file="samples/kick_ludw_b_10.wav" filechannel="6"/>
+    <audiofile channel="KICK_ROOM_R" file="samples/kick_ludw_b_10.wav" filechannel="7"/>
+  </sample>
+  <sample name="kick_ludw_a_11" power="11">
+    <audiofile channel="KICK_IN" file="samples/kick_ludw_a_11.wav" filechannel="1"/>
+    <audiofile channel="KICK_OUT" file="samples/kick_ludw_a_11.wav" filechannel="2"/>
+    <audiofile channel="KICK_SUB" file="samples/kick_ludw_a_11.wav" filechannel="3"/>
+    <audiofile channel="KICK_OH_L" file="samples/kick_ludw_a_11.wav" filechannel="4"/>
+    <audiofile channel="KICK_OH_R" file="samples/kick_ludw_a_11.wav" filechannel="5"/>
+    <audiofile channel="KICK_ROOM_L" file="samples/kick_ludw_a_11.wav" filechannel="6"/>
+    <audiofile channel="KICK_ROOM_R" file="samples/kick_ludw_a_11.wav" filechannel="7"/>
+  </sample>
+  <sample name="kick_ludw_b_11" power="11">
+    <audiofile channel="KICK_IN" file="samples/kick_ludw_b_11.wav" filechannel="1"/>
+    <audiofile channel="KICK_OUT" file="samples/kick_ludw_b_11.wav" filechannel="2"/>
+    <audiofile channel="KICK_SUB" file="samples/kick_ludw_b_11.wav" filechannel="3"/>
+    <audiofile channel="KICK_OH_L" file="samples/kick_ludw_b_11.wav" filechannel="4"/>
+    <audiofile channel="KICK_OH_R" file="samples/kick_ludw_b_11.wav" filechannel="5"/>
+    <audiofile channel="KICK_ROOM_L" file="samples/kick_ludw_b_11.wav" filechannel="6"/>
+    <audiofile channel="KICK_ROOM_R" file="samples/kick_ludw_b_11.wav" filechannel="7"/>
+  </sample>
+  <sample name="kick_ludw_a_12" power="12">
+    <audiofile channel="KICK_IN" file="samples/kick_ludw_a_12.wav" filechannel="1"/>
+    <audiofile channel="KICK_OUT" file="samples/kick_ludw_a_12.wav" filechannel="2"/>
+    <audiofile channel="KICK_SUB" file="samples/kick_ludw_a_12.wav" filechannel="3"/>
+    <audiofile channel="KICK_OH_L" file="samples/kick_ludw_a_12.wav" filechannel="4"/>
+    <audiofile channel="KICK_OH_R" file="samples/kick_ludw_a_12.wav" filechannel="5"/>
+    <audiofile channel="KICK_ROOM_L" file="samples/kick_ludw_a_12.wav" filechannel="6"/>
+    <audiofile channel="KICK_ROOM_R" file="samples/kick_ludw_a_12.wav" filechannel="7"/>
+  </sample>
+  <sample name="kick_ludw_b_12" power="12">
+    <audiofile channel="KICK_IN" file="samples/kick_ludw_b_12.wav" filechannel="1"/>
+    <audiofile channel="KICK_OUT" file="samples/kick_ludw_b_12.wav" filechannel="2"/>
+    <audiofile channel="KICK_SUB" file="samples/kick_ludw_b_12.wav" filechannel="3"/>
+    <audiofile channel="KICK_OH_L" file="samples/kick_ludw_b_12.wav" filechannel="4"/>
+    <audiofile channel="KICK_OH_R" file="samples/kick_ludw_b_12.wav" filechannel="5"/>
+    <audiofile channel="KICK_ROOM_L" file="samples/kick_ludw_b_12.wav" filechannel="6"/>
+    <audiofile channel="KICK_ROOM_R" file="samples/kick_ludw_b_12.wav" filechannel="7"/>
+  </sample>
+  <sample name="kick_ludw_a_13" power="13">
+    <audiofile channel="KICK_IN" file="samples/kick_ludw_a_13.wav" filechannel="1"/>
+    <audiofile channel="KICK_OUT" file="samples/kick_ludw_a_13.wav" filechannel="2"/>
+    <audiofile channel="KICK_SUB" file="samples/kick_ludw_a_13.wav" filechannel="3"/>
+    <audiofile channel="KICK_OH_L" file="samples/kick_ludw_a_13.wav" filechannel="4"/>
+    <audiofile channel="KICK_OH_R" file="samples/kick_ludw_a_13.wav" filechannel="5"/>
+    <audiofile channel="KICK_ROOM_L" file="samples/kick_ludw_a_13.wav" filechannel="6"/>
+    <audiofile channel="KICK_ROOM_R" file="samples/kick_ludw_a_13.wav" filechannel="7"/>
+  </sample>
+  <sample name="kick_ludw_b_13" power="13">
+    <audiofile channel="KICK_IN" file="samples/kick_ludw_b_13.wav" filechannel="1"/>
+    <audiofile channel="KICK_OUT" file="samples/kick_ludw_b_13.wav" filechannel="2"/>
+    <audiofile channel="KICK_SUB" file="samples/kick_ludw_b_13.wav" filechannel="3"/>
+    <audiofile channel="KICK_OH_L" file="samples/kick_ludw_b_13.wav" filechannel="4"/>
+    <audiofile channel="KICK_OH_R" file="samples/kick_ludw_b_13.wav" filechannel="5"/>
+    <audiofile channel="KICK_ROOM_L" file="samples/kick_ludw_b_13.wav" filechannel="6"/>
+    <audiofile channel="KICK_ROOM_R" file="samples/kick_ludw_b_13.wav" filechannel="7"/>
+  </sample>
+  </samples>
+</instrument>

@@ -1,0 +1,61 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<drumkit name="cymbals kit" description="all crash cymbals">
+<metadata>
+<defaultmidimap src="cymbals_kit_midimap.xml"/>
+</metadata>
+  <channels>
+   <channel name="CYM_OH_L"/>
+   <channel name="CYM_OH_R"/>
+   <channel name="CYM_ROOM_L"/>
+   <channel name="CYM_ROOM_R"/>
+  </channels>
+  <instruments>
+  <instrument name="crash_14_zild_bow" file="kitpieces/crash_14_zildjian_k_custom_dark/crash_14_zild_bow.xml">
+    <channelmap in="CYM_OH_L" out="CYM_OH_L"/>
+    <channelmap in="CYM_OH_R" out="CYM_OH_R"/>
+    <channelmap in="CYM_ROOM_L" out="CYM_ROOM_L"/>
+    <channelmap in="CYM_ROOM_R" out="CYM_ROOM_R"/>
+  </instrument>
+  <instrument name="crash_14_zild_edg" file="kitpieces/crash_14_zildjian_k_custom_dark/crash_14_zild_edg.xml">
+    <channelmap in="CYM_OH_L" out="CYM_OH_L"/>
+    <channelmap in="CYM_OH_R" out="CYM_OH_R"/>
+    <channelmap in="CYM_ROOM_L" out="CYM_ROOM_L"/>
+    <channelmap in="CYM_ROOM_R" out="CYM_ROOM_R"/>
+  </instrument>
+  <instrument name="crash_15_sabi_bow" file="kitpieces/crash_15_sabian_hh/crash_15_sabi_bow.xml">
+    <channelmap in="CYM_OH_L" out="CYM_OH_L"/>
+    <channelmap in="CYM_OH_R" out="CYM_OH_R"/>
+    <channelmap in="CYM_ROOM_L" out="CYM_ROOM_L"/>
+    <channelmap in="CYM_ROOM_R" out="CYM_ROOM_R"/>
+  </instrument>
+  <instrument name="crash_15_sabi_edg" file="kitpieces/crash_15_sabian_hh/crash_15_sabi_edg.xml">
+    <channelmap in="CYM_OH_L" out="CYM_OH_L"/>
+    <channelmap in="CYM_OH_R" out="CYM_OH_R"/>
+    <channelmap in="CYM_ROOM_L" out="CYM_ROOM_L"/>
+    <channelmap in="CYM_ROOM_R" out="CYM_ROOM_R"/>
+  </instrument>
+  <instrument name="cymb_18_zild_efx_bow" file="kitpieces/crash_18_zildjian_k_efx/cymb_18_zild_efx_bow.xml">
+    <channelmap in="CYM_OH_L" out="CYM_OH_L"/>
+    <channelmap in="CYM_OH_R" out="CYM_OH_R"/>
+    <channelmap in="CYM_ROOM_L" out="CYM_ROOM_L"/>
+    <channelmap in="CYM_ROOM_R" out="CYM_ROOM_R"/>
+  </instrument>
+  <instrument name="cymb_18_zild_efx_edg" file="kitpieces/crash_18_zildjian_k_efx/cymb_18_zild_efx_edg.xml">
+    <channelmap in="CYM_OH_L" out="CYM_OH_L"/>
+    <channelmap in="CYM_OH_R" out="CYM_OH_R"/>
+    <channelmap in="CYM_ROOM_L" out="CYM_ROOM_L"/>
+    <channelmap in="CYM_ROOM_R" out="CYM_ROOM_R"/>
+  </instrument>
+  <instrument name="crash_mute" file="kitpieces/mute/crash_mute.xml">
+    <chokes>
+    <choke instrument="crash_14_zild_bow" choketime="30"/>
+    <choke instrument="crash_14_zild_edg" choketime="30"/>
+    <choke instrument="crash_15_sabi_bow" choketime="30"/>
+    <choke instrument="crash_15_sabi_edg" choketime="30"/>
+    <choke instrument="cymb_18_zild_efx_bow" choketime="30"/>
+    <choke instrument="cymb_18_zild_efx_edg" choketime="30"/>
+    </chokes>
+    <channelmap in="CYM_MUTE" out="CYM_OH_L"/>
+  </instrument>
+  </instruments>
+</drumkit>

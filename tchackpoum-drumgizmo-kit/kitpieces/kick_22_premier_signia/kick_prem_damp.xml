@@ -1,0 +1,165 @@
+﻿<?xml version='1.0' encoding='UTF-8'?>
+<instrument version="2.0" name="kick_prem_damp">
+  <samples>
+  <sample name="kick_prem_damp_a_01" power="1">
+    <audiofile channel="KICK_IN" file="samples/kick_prem_damp_a_01.wav" filechannel="1"/>
+    <audiofile channel="KICK_OUT" file="samples/kick_prem_damp_a_01.wav" filechannel="2"/>
+    <audiofile channel="KICK_OH_L" file="samples/kick_prem_damp_a_01.wav" filechannel="4"/>
+    <audiofile channel="KICK_OH_R" file="samples/kick_prem_damp_a_01.wav" filechannel="5"/>
+    <audiofile channel="KICK_ROOM_L" file="samples/kick_prem_damp_a_01.wav" filechannel="6"/>
+    <audiofile channel="KICK_ROOM_R" file="samples/kick_prem_damp_a_01.wav" filechannel="7"/>
+  </sample>
+  <sample name="kick_prem_damp_b_01" power="1">
+    <audiofile channel="KICK_IN" file="samples/kick_prem_damp_b_01.wav" filechannel="1"/>
+    <audiofile channel="KICK_OUT" file="samples/kick_prem_damp_b_01.wav" filechannel="2"/>
+    <audiofile channel="KICK_OH_L" file="samples/kick_prem_damp_b_01.wav" filechannel="4"/>
+    <audiofile channel="KICK_OH_R" file="samples/kick_prem_damp_b_01.wav" filechannel="5"/>
+    <audiofile channel="KICK_ROOM_L" file="samples/kick_prem_damp_b_01.wav" filechannel="6"/>
+    <audiofile channel="KICK_ROOM_R" file="samples/kick_prem_damp_b_01.wav" filechannel="7"/>
+  </sample>
+  <sample name="kick_prem_damp_a_02" power="2">
+    <audiofile channel="KICK_IN" file="samples/kick_prem_damp_a_02.wav" filechannel="1"/>
+    <audiofile channel="KICK_OUT" file="samples/kick_prem_damp_a_02.wav" filechannel="2"/>
+    <audiofile channel="KICK_OH_L" file="samples/kick_prem_damp_a_02.wav" filechannel="4"/>
+    <audiofile channel="KICK_OH_R" file="samples/kick_prem_damp_a_02.wav" filechannel="5"/>
+    <audiofile channel="KICK_ROOM_L" file="samples/kick_prem_damp_a_02.wav" filechannel="6"/>
+    <audiofile channel="KICK_ROOM_R" file="samples/kick_prem_damp_a_02.wav" filechannel="7"/>
+  </sample>
+  <sample name="kick_prem_damp_b_02" power="2">
+    <audiofile channel="KICK_IN" file="samples/kick_prem_damp_b_02.wav" filechannel="1"/>
+    <audiofile channel="KICK_OUT" file="samples/kick_prem_damp_b_02.wav" filechannel="2"/>
+    <audiofile channel="KICK_OH_L" file="samples/kick_prem_damp_b_02.wav" filechannel="4"/>
+    <audiofile channel="KICK_OH_R" file="samples/kick_prem_damp_b_02.wav" filechannel="5"/>
+    <audiofile channel="KICK_ROOM_L" file="samples/kick_prem_damp_b_02.wav" filechannel="6"/>
+    <audiofile channel="KICK_ROOM_R" file="samples/kick_prem_damp_b_02.wav" filechannel="7"/>
+  </sample>
+  <sample name="kick_prem_damp_a_03" power="3">
+    <audiofile channel="KICK_IN" file="samples/kick_prem_damp_a_03.wav" filechannel="1"/>
+    <audiofile channel="KICK_OUT" file="samples/kick_prem_damp_a_03.wav" filechannel="2"/>
+    <audiofile channel="KICK_OH_L" file="samples/kick_prem_damp_a_03.wav" filechannel="4"/>
+    <audiofile channel="KICK_OH_R" file="samples/kick_prem_damp_a_03.wav" filechannel="5"/>
+    <audiofile channel="KICK_ROOM_L" file="samples/kick_prem_damp_a_03.wav" filechannel="6"/>
+    <audiofile channel="KICK_ROOM_R" file="samples/kick_prem_damp_a_03.wav" filechannel="7"/>
+  </sample>
+  <sample name="kick_prem_damp_b_03" power="3">
+    <audiofile channel="KICK_IN" file="samples/kick_prem_damp_b_03.wav" filechannel="1"/>
+    <audiofile channel="KICK_OUT" file="samples/kick_prem_damp_b_03.wav" filechannel="2"/>
+    <audiofile channel="KICK_OH_L" file="samples/kick_prem_damp_b_03.wav" filechannel="4"/>
+    <audiofile channel="KICK_OH_R" file="samples/kick_prem_damp_b_03.wav" filechannel="5"/>
+    <audiofile channel="KICK_ROOM_L" file="samples/kick_prem_damp_b_03.wav" filechannel="6"/>
+    <audiofile channel="KICK_ROOM_R" file="samples/kick_prem_damp_b_03.wav" filechannel="7"/>
+  </sample>
+  <sample name="kick_prem_damp_a_04" power="4">
+    <audiofile channel="KICK_IN" file="samples/kick_prem_damp_a_04.wav" filechannel="1"/>
+    <audiofile channel="KICK_OUT" file="samples/kick_prem_damp_a_04.wav" filechannel="2"/>
+    <audiofile channel="KICK_OH_L" file="samples/kick_prem_damp_a_04.wav" filechannel="4"/>
+    <audiofile channel="KICK_OH_R" file="samples/kick_prem_damp_a_04.wav" filechannel="5"/>
+    <audiofile channel="KICK_ROOM_L" file="samples/kick_prem_damp_a_04.wav" filechannel="6"/>
+    <audiofile channel="KICK_ROOM_R" file="samples/kick_prem_damp_a_04.wav" filechannel="7"/>
+  </sample>
+  <sample name="kick_prem_damp_b_04" power="4">
+    <audiofile channel="KICK_IN" file="samples/kick_prem_damp_b_04.wav" filechannel="1"/>
+    <audiofile channel="KICK_OUT" file="samples/kick_prem_damp_b_04.wav" filechannel="2"/>
+    <audiofile channel="KICK_OH_L" file="samples/kick_prem_damp_b_04.wav" filechannel="4"/>
+    <audiofile channel="KICK_OH_R" file="samples/kick_prem_damp_b_04.wav" filechannel="5"/>
+    <audiofile channel="KICK_ROOM_L" file="samples/kick_prem_damp_b_04.wav" filechannel="6"/>
+    <audiofile channel="KICK_ROOM_R" file="samples/kick_prem_damp_b_04.wav" filechannel="7"/>
+  </sample>
+  <sample name="kick_prem_damp_a_05" power="5">
+    <audiofile channel="KICK_IN" file="samples/kick_prem_damp_a_05.wav" filechannel="1"/>
+    <audiofile channel="KICK_OUT" file="samples/kick_prem_damp_a_05.wav" filechannel="2"/>
+    <audiofile channel="KICK_OH_L" file="samples/kick_prem_damp_a_05.wav" filechannel="4"/>
+    <audiofile channel="KICK_OH_R" file="samples/kick_prem_damp_a_05.wav" filechannel="5"/>
+    <audiofile channel="KICK_ROOM_L" file="samples/kick_prem_damp_a_05.wav" filechannel="6"/>
+    <audiofile channel="KICK_ROOM_R" file="samples/kick_prem_damp_a_05.wav" filechannel="7"/>
+  </sample>
+  <sample name="kick_prem_damp_b_05" power="5">
+    <audiofile channel="KICK_IN" file="samples/kick_prem_damp_b_05.wav" filechannel="1"/>
+    <audiofile channel="KICK_OUT" file="samples/kick_prem_damp_b_05.wav" filechannel="2"/>
+    <audiofile channel="KICK_OH_L" file="samples/kick_prem_damp_b_05.wav" filechannel="4"/>
+    <audiofile channel="KICK_OH_R" file="samples/kick_prem_damp_b_05.wav" filechannel="5"/>
+    <audiofile channel="KICK_ROOM_L" file="samples/kick_prem_damp_b_05.wav" filechannel="6"/>
+    <audiofile channel="KICK_ROOM_R" file="samples/kick_prem_damp_b_05.wav" filechannel="7"/>
+  </sample>
+  <sample name="kick_prem_damp_a_06" power="6">
+    <audiofile channel="KICK_IN" file="samples/kick_prem_damp_a_06.wav" filechannel="1"/>
+    <audiofile channel="KICK_OUT" file="samples/kick_prem_damp_a_06.wav" filechannel="2"/>
+    <audiofile channel="KICK_OH_L" file="samples/kick_prem_damp_a_06.wav" filechannel="4"/>
+    <audiofile channel="KICK_OH_R" file="samples/kick_prem_damp_a_06.wav" filechannel="5"/>
+    <audiofile channel="KICK_ROOM_L" file="samples/kick_prem_damp_a_06.wav" filechannel="6"/>
+    <audiofile channel="KICK_ROOM_R" file="samples/kick_prem_damp_a_06.wav" filechannel="7"/>
+  </sample>
+  <sample name="kick_prem_damp_b_06" power="6">
+    <audiofile channel="KICK_IN" file="samples/kick_prem_damp_b_06.wav" filechannel="1"/>
+    <audiofile channel="KICK_OUT" file="samples/kick_prem_damp_b_06.wav" filechannel="2"/>
+    <audiofile channel="KICK_OH_L" file="samples/kick_prem_damp_b_06.wav" filechannel="4"/>
+    <audiofile channel="KICK_OH_R" file="samples/kick_prem_damp_b_06.wav" filechannel="5"/>
+    <audiofile channel="KICK_ROOM_L" file="samples/kick_prem_damp_b_06.wav" filechannel="6"/>
+    <audiofile channel="KICK_ROOM_R" file="samples/kick_prem_damp_b_06.wav" filechannel="7"/>
+  </sample>
+  <sample name="kick_prem_damp_a_07" power="7">
+    <audiofile channel="KICK_IN" file="samples/kick_prem_damp_a_07.wav" filechannel="1"/>
+    <audiofile channel="KICK_OUT" file="samples/kick_prem_damp_a_07.wav" filechannel="2"/>
+    <audiofile channel="KICK_OH_L" file="samples/kick_prem_damp_a_07.wav" filechannel="4"/>
+    <audiofile channel="KICK_OH_R" file="samples/kick_prem_damp_a_07.wav" filechannel="5"/>
+    <audiofile channel="KICK_ROOM_L" file="samples/kick_prem_damp_a_07.wav" filechannel="6"/>
+    <audiofile channel="KICK_ROOM_R" file="samples/kick_prem_damp_a_07.wav" filechannel="7"/>
+  </sample>
+  <sample name="kick_prem_damp_b_07" power="7">
+    <audiofile channel="KICK_IN" file="samples/kick_prem_damp_b_07.wav" filechannel="1"/>
+    <audiofile channel="KICK_OUT" file="samples/kick_prem_damp_b_07.wav" filechannel="2"/>
+    <audiofile channel="KICK_OH_L" file="samples/kick_prem_damp_b_07.wav" filechannel="4"/>
+    <audiofile channel="KICK_OH_R" file="samples/kick_prem_damp_b_07.wav" filechannel="5"/>
+    <audiofile channel="KICK_ROOM_L" file="samples/kick_prem_damp_b_07.wav" filechannel="6"/>
+    <audiofile channel="KICK_ROOM_R" file="samples/kick_prem_damp_b_07.wav" filechannel="7"/>
+  </sample>
+  <sample name="kick_prem_damp_a_08" power="8">
+    <audiofile channel="KICK_IN" file="samples/kick_prem_damp_a_08.wav" filechannel="1"/>
+    <audiofile channel="KICK_OUT" file="samples/kick_prem_damp_a_08.wav" filechannel="2"/>
+    <audiofile channel="KICK_OH_L" file="samples/kick_prem_damp_a_08.wav" filechannel="4"/>
+    <audiofile channel="KICK_OH_R" file="samples/kick_prem_damp_a_08.wav" filechannel="5"/>
+    <audiofile channel="KICK_ROOM_L" file="samples/kick_prem_damp_a_08.wav" filechannel="6"/>
+    <audiofile channel="KICK_ROOM_R" file="samples/kick_prem_damp_a_08.wav" filechannel="7"/>
+  </sample>
+  <sample name="kick_prem_damp_b_08" power="8">
+    <audiofile channel="KICK_IN" file="samples/kick_prem_damp_b_08.wav" filechannel="1"/>
+    <audiofile channel="KICK_OUT" file="samples/kick_prem_damp_b_08.wav" filechannel="2"/>
+    <audiofile channel="KICK_OH_L" file="samples/kick_prem_damp_b_08.wav" filechannel="4"/>
+    <audiofile channel="KICK_OH_R" file="samples/kick_prem_damp_b_08.wav" filechannel="5"/>
+    <audiofile channel="KICK_ROOM_L" file="samples/kick_prem_damp_b_08.wav" filechannel="6"/>
+    <audiofile channel="KICK_ROOM_R" file="samples/kick_prem_damp_b_08.wav" filechannel="7"/>
+  </sample>
+  <sample name="kick_prem_damp_a_09" power="9">
+    <audiofile channel="KICK_IN" file="samples/kick_prem_damp_a_09.wav" filechannel="1"/>
+    <audiofile channel="KICK_OUT" file="samples/kick_prem_damp_a_09.wav" filechannel="2"/>
+    <audiofile channel="KICK_OH_L" file="samples/kick_prem_damp_a_09.wav" filechannel="4"/>
+    <audiofile channel="KICK_OH_R" file="samples/kick_prem_damp_a_09.wav" filechannel="5"/>
+    <audiofile channel="KICK_ROOM_L" file="samples/kick_prem_damp_a_09.wav" filechannel="6"/>
+    <audiofile channel="KICK_ROOM_R" file="samples/kick_prem_damp_a_09.wav" filechannel="7"/>
+  </sample>
+  <sample name="kick_prem_damp_b_09" power="9">
+    <audiofile channel="KICK_IN" file="samples/kick_prem_damp_b_09.wav" filechannel="1"/>
+    <audiofile channel="KICK_OUT" file="samples/kick_prem_damp_b_09.wav" filechannel="2"/>
+    <audiofile channel="KICK_OH_L" file="samples/kick_prem_damp_b_09.wav" filechannel="4"/>
+    <audiofile channel="KICK_OH_R" file="samples/kick_prem_damp_b_09.wav" filechannel="5"/>
+    <audiofile channel="KICK_ROOM_L" file="samples/kick_prem_damp_b_09.wav" filechannel="6"/>
+    <audiofile channel="KICK_ROOM_R" file="samples/kick_prem_damp_b_09.wav" filechannel="7"/>
+  </sample>
+  <sample name="kick_prem_damp_a_10" power="10">
+    <audiofile channel="KICK_IN" file="samples/kick_prem_damp_a_10.wav" filechannel="1"/>
+    <audiofile channel="KICK_OUT" file="samples/kick_prem_damp_a_10.wav" filechannel="2"/>
+    <audiofile channel="KICK_OH_L" file="samples/kick_prem_damp_a_10.wav" filechannel="4"/>
+    <audiofile channel="KICK_OH_R" file="samples/kick_prem_damp_a_10.wav" filechannel="5"/>
+    <audiofile channel="KICK_ROOM_L" file="samples/kick_prem_damp_a_10.wav" filechannel="6"/>
+    <audiofile channel="KICK_ROOM_R" file="samples/kick_prem_damp_a_10.wav" filechannel="7"/>
+  </sample>
+  <sample name="kick_prem_damp_b_10" power="10">
+    <audiofile channel="KICK_IN" file="samples/kick_prem_damp_b_10.wav" filechannel="1"/>
+    <audiofile channel="KICK_OUT" file="samples/kick_prem_damp_b_10.wav" filechannel="2"/>
+    <audiofile channel="KICK_OH_L" file="samples/kick_prem_damp_b_10.wav" filechannel="4"/>
+    <audiofile channel="KICK_OH_R" file="samples/kick_prem_damp_b_10.wav" filechannel="5"/>
+    <audiofile channel="KICK_ROOM_L" file="samples/kick_prem_damp_b_10.wav" filechannel="6"/>
+    <audiofile channel="KICK_ROOM_R" file="samples/kick_prem_damp_b_10.wav" filechannel="7"/>
+  </sample>
+  </samples>
+</instrument>

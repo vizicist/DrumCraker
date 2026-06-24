@@ -1,0 +1,80 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<drumkit name="snares kit" description="all snares">
+<metadata>
+<defaultmidimap src="snares_kit_midimap.xml"/>
+</metadata>
+  <channels>
+   <channel name="SNARE_TOP"/>
+   <channel name="SNARE_BTM"/>
+   <channel name="SNARE_OH_L"/>
+   <channel name="SNARE_OH_R"/>
+   <channel name="SNARE_ROOM_L"/>
+   <channel name="SNARE_ROOM_R"/>
+  </channels>
+  <instruments>
+  <instrument name="snare_supr64" file="kitpieces/snare_14x5_ludwig_supraphonic64/snare_supr64.xml">
+    <channelmap in="SNARE_TOP" out="SNARE_TOP"/>
+    <channelmap in="SNARE_BTM" out="SNARE_BTM"/>
+    <channelmap in="SNARE_OH_L" out="SNARE_OH_L"/>
+    <channelmap in="SNARE_OH_R" out="SNARE_OH_R"/>
+    <channelmap in="SNARE_ROOM_L" out="SNARE_ROOM_L"/>
+    <channelmap in="SNARE_ROOM_R" out="SNARE_ROOM_R"/>
+  </instrument>
+  <instrument name="snare_supr64_edg" file="kitpieces/snare_14x5_ludwig_supraphonic64/snare_supr64_edg.xml">
+    <channelmap in="SNARE_TOP" out="SNARE_TOP"/>
+    <channelmap in="SNARE_BTM" out="SNARE_BTM"/>
+    <channelmap in="SNARE_OH_L" out="SNARE_OH_L"/>
+    <channelmap in="SNARE_OH_R" out="SNARE_OH_R"/>
+    <channelmap in="SNARE_ROOM_L" out="SNARE_ROOM_L"/>
+    <channelmap in="SNARE_ROOM_R" out="SNARE_ROOM_R"/>
+  </instrument>
+  <instrument name="snare_supr64_rim" file="kitpieces/snare_14x5_ludwig_supraphonic64/snare_supr64_rim.xml">
+    <channelmap in="SNARE_TOP" out="SNARE_TOP"/>
+    <channelmap in="SNARE_BTM" out="SNARE_BTM"/>
+    <channelmap in="SNARE_OH_L" out="SNARE_OH_L"/>
+    <channelmap in="SNARE_OH_R" out="SNARE_OH_R"/>
+    <channelmap in="SNARE_ROOM_L" out="SNARE_ROOM_L"/>
+    <channelmap in="SNARE_ROOM_R" out="SNARE_ROOM_R"/>
+  </instrument>
+  <instrument name="snare_pear" file="kitpieces/snare_14x6.5_pearl_free_floating_maple88/snare_pear.xml">
+    <channelmap in="SNARE_TOP" out="SNARE_TOP"/>
+    <channelmap in="SNARE_BTM" out="SNARE_BTM"/>
+    <channelmap in="SNARE_OH_L" out="SNARE_OH_L"/>
+    <channelmap in="SNARE_OH_R" out="SNARE_OH_R"/>
+    <channelmap in="SNARE_ROOM_L" out="SNARE_ROOM_L"/>
+    <channelmap in="SNARE_ROOM_R" out="SNARE_ROOM_R"/>
+  </instrument>
+  <instrument name="snare_pear_damp" file="kitpieces/snare_14x6.5_pearl_free_floating_maple88/snare_pear_damp.xml">
+    <channelmap in="SNARE_TOP" out="SNARE_TOP"/>
+    <channelmap in="SNARE_BTM" out="SNARE_BTM"/>
+    <channelmap in="SNARE_OH_L" out="SNARE_OH_L"/>
+    <channelmap in="SNARE_OH_R" out="SNARE_OH_R"/>
+    <channelmap in="SNARE_ROOM_L" out="SNARE_ROOM_L"/>
+    <channelmap in="SNARE_ROOM_R" out="SNARE_ROOM_R"/>
+  </instrument>
+  <instrument name="snare_pear_edg" file="kitpieces/snare_14x6.5_pearl_free_floating_maple88/snare_pear_edg.xml">
+    <channelmap in="SNARE_TOP" out="SNARE_TOP"/>
+    <channelmap in="SNARE_BTM" out="SNARE_BTM"/>
+    <channelmap in="SNARE_OH_L" out="SNARE_OH_L"/>
+    <channelmap in="SNARE_OH_R" out="SNARE_OH_R"/>
+    <channelmap in="SNARE_ROOM_L" out="SNARE_ROOM_L"/>
+    <channelmap in="SNARE_ROOM_R" out="SNARE_ROOM_R"/>
+  </instrument>
+  <instrument name="snare_pear_rim" file="kitpieces/snare_14x6.5_pearl_free_floating_maple88/snare_pear_rim.xml">
+    <channelmap in="SNARE_TOP" out="SNARE_TOP"/>
+    <channelmap in="SNARE_BTM" out="SNARE_BTM"/>
+    <channelmap in="SNARE_OH_L" out="SNARE_OH_L"/>
+    <channelmap in="SNARE_OH_R" out="SNARE_OH_R"/>
+    <channelmap in="SNARE_ROOM_L" out="SNARE_ROOM_L"/>
+    <channelmap in="SNARE_ROOM_R" out="SNARE_ROOM_R"/>
+  </instrument>
+  <instrument name="snare_ss" file="kitpieces/snare_sidestick/snare_ss.xml">
+    <channelmap in="SNARE_TOP" out="SNARE_TOP"/>
+    <channelmap in="SNARE_BTM" out="SNARE_BTM"/>
+    <channelmap in="SNARE_OH_L" out="SNARE_OH_L"/>
+    <channelmap in="SNARE_OH_R" out="SNARE_OH_R"/>
+    <channelmap in="SNARE_ROOM_L" out="SNARE_ROOM_L"/>
+    <channelmap in="SNARE_ROOM_R" out="SNARE_ROOM_R"/>
+  </instrument>
+  </instruments>
+</drumkit>

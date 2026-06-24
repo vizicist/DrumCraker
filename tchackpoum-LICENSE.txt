@@ -1,0 +1,31 @@
+Tchackpoum drumkits for DrumGizmo — License
+============================================
+(Applies to: tchackpoum-drumgizmo-kit.zip — version 1.3, January 2021)
+
+DrumGizmo kit files & documentation
+-----------------------------------
+Copyright (c) 2021 James Peters
+
+This work is free. You can redistribute it and/or modify it under the
+terms of the Do What The Fuck You Want To Public License, Version 2
+(WTFPL v2), as published by Sam Hocevar. See http://www.wtfpl.net/ for
+more details.
+
+This covers James Peters' contribution: the DrumGizmo kit files (the
+.xml patches, sample renaming/reorganization, round-robin setup, MIDI
+maps, Reaper templates) and the accompanying readme.
+
+Underlying samples
+------------------
+The WAV samples were recorded by Vincent Sermonne (http://tchackpoum.fr/).
+The readme does not attach a formal license to the raw recordings; instead
+it points to his site, which has a "donate" link at the bottom of the page:
+
+    "If you wish to donate money for this, please visit the link above."
+
+In short: the DrumGizmo packaging is WTFPL (do anything you want); the
+sample recordings come courtesy of Vincent Sermonne with a donation
+request rather than a stated license. If you use this kit in a project,
+consider donating to Vincent Sermonne for the samples.
+
+Source of this summary: readme.pdf inside tchackpoum-documentation.zip, page 1.

@@ -1,0 +1,124 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<drumkit name="hihat kit" description="the hihat">
+<metadata>
+<defaultmidimap src="hihat_kit_midimap.xml"/>
+</metadata>
+  <channels>
+   <channel name="HIHAT"/>
+   <channel name="HIHAT_OH_L"/>
+   <channel name="HIHAT_OH_R"/>
+   <channel name="HIHAT_ROOM_L"/>
+   <channel name="HIHAT_ROOM_R"/>
+  </channels>
+  <instruments>
+  <instrument name="hihat_zild_clo" file="kitpieces/hihat_14_zildjian_k_custom_hybrid/hihat_zild_clo.xml">
+    <chokes>
+    	<choke instrument="hihat_zild_op1" choketime="30"/>
+   	<choke instrument="hihat_zild_op1_edg" choketime="30"/>
+   	<choke instrument="hihat_zild_op2" choketime="30"/>
+   	<choke instrument="hihat_zild_op2_edg" choketime="30"/>
+   	<choke instrument="hihat_zild_op3" choketime="30"/>
+    	<choke instrument="hihat_zild_op3_edg" choketime="30"/>
+    	<choke instrument="hihat_zild_spl" choketime="30"/>
+    </chokes>
+    <channelmap in="HIHAT" out="HIHAT"/>
+    <channelmap in="HIHAT_OH_L" out="HIHAT_OH_L"/>
+    <channelmap in="HIHAT_OH_R" out="HIHAT_OH_R"/>
+    <channelmap in="HIHAT_ROOM_L" out="HIHAT_ROOM_L"/>
+    <channelmap in="HIHAT_ROOM_R" out="HIHAT_ROOM_R"/>
+  </instrument>
+  <instrument name="hihat_zild_clo_edg" file="kitpieces/hihat_14_zildjian_k_custom_hybrid/hihat_zild_clo_edg.xml">
+    <chokes>
+    <choke instrument="hihat_zild_op1" choketime="30"/>
+    <choke instrument="hihat_zild_op1_edg" choketime="30"/>
+    <choke instrument="hihat_zild_op2" choketime="30"/>
+    <choke instrument="hihat_zild_op2_edg" choketime="30"/>
+    <choke instrument="hihat_zild_op3" choketime="30"/>
+    <choke instrument="hihat_zild_op3_edg" choketime="30"/>
+    <choke instrument="hihat_zild_spl" choketime="30"/>
+    </chokes>
+    <channelmap in="HIHAT" out="HIHAT"/>
+    <channelmap in="HIHAT_OH_L" out="HIHAT_OH_L"/>
+    <channelmap in="HIHAT_OH_R" out="HIHAT_OH_R"/>
+    <channelmap in="HIHAT_ROOM_L" out="HIHAT_ROOM_L"/>
+    <channelmap in="HIHAT_ROOM_R" out="HIHAT_ROOM_R"/>
+  </instrument>
+  <instrument name="hihat_zild_op1" file="kitpieces/hihat_14_zildjian_k_custom_hybrid/hihat_zild_op1.xml">
+    <channelmap in="HIHAT" out="HIHAT"/>
+    <channelmap in="HIHAT_OH_L" out="HIHAT_OH_L"/>
+    <channelmap in="HIHAT_OH_R" out="HIHAT_OH_R"/>
+    <channelmap in="HIHAT_ROOM_L" out="HIHAT_ROOM_L"/>
+    <channelmap in="HIHAT_ROOM_R" out="HIHAT_ROOM_R"/>
+  </instrument>
+  <instrument name="hihat_zild_op1_edg" file="kitpieces/hihat_14_zildjian_k_custom_hybrid/hihat_zild_op1_edg.xml">
+    <channelmap in="HIHAT" out="HIHAT"/>
+    <channelmap in="HIHAT_OH_L" out="HIHAT_OH_L"/>
+    <channelmap in="HIHAT_OH_R" out="HIHAT_OH_R"/>
+    <channelmap in="HIHAT_ROOM_L" out="HIHAT_ROOM_L"/>
+    <channelmap in="HIHAT_ROOM_R" out="HIHAT_ROOM_R"/>
+  </instrument>
+  <instrument name="hihat_zild_op2" file="kitpieces/hihat_14_zildjian_k_custom_hybrid/hihat_zild_op2.xml">
+    <channelmap in="HIHAT" out="HIHAT"/>
+    <channelmap in="HIHAT_OH_L" out="HIHAT_OH_L"/>
+    <channelmap in="HIHAT_OH_R" out="HIHAT_OH_R"/>
+    <channelmap in="HIHAT_ROOM_L" out="HIHAT_ROOM_L"/>
+    <channelmap in="HIHAT_ROOM_R" out="HIHAT_ROOM_R"/>
+  </instrument>
+  <instrument name="hihat_zild_op2_edg" file="kitpieces/hihat_14_zildjian_k_custom_hybrid/hihat_zild_op2_edg.xml">
+    <channelmap in="HIHAT" out="HIHAT"/>
+    <channelmap in="HIHAT_OH_L" out="HIHAT_OH_L"/>
+    <channelmap in="HIHAT_OH_R" out="HIHAT_OH_R"/>
+    <channelmap in="HIHAT_ROOM_L" out="HIHAT_ROOM_L"/>
+    <channelmap in="HIHAT_ROOM_R" out="HIHAT_ROOM_R"/>
+  </instrument>
+  <instrument name="hihat_zild_op3" file="kitpieces/hihat_14_zildjian_k_custom_hybrid/hihat_zild_op3.xml">
+    <channelmap in="HIHAT" out="HIHAT"/>
+    <channelmap in="HIHAT_OH_L" out="HIHAT_OH_L"/>
+    <channelmap in="HIHAT_OH_R" out="HIHAT_OH_R"/>
+    <channelmap in="HIHAT_ROOM_L" out="HIHAT_ROOM_L"/>
+    <channelmap in="HIHAT_ROOM_R" out="HIHAT_ROOM_R"/>
+  </instrument>
+  <instrument name="hihat_zild_op3_edg" file="kitpieces/hihat_14_zildjian_k_custom_hybrid/hihat_zild_op3_edg.xml">
+    <channelmap in="HIHAT" out="HIHAT"/>
+    <channelmap in="HIHAT_OH_L" out="HIHAT_OH_L"/>
+    <channelmap in="HIHAT_OH_R" out="HIHAT_OH_R"/>
+    <channelmap in="HIHAT_ROOM_L" out="HIHAT_ROOM_L"/>
+    <channelmap in="HIHAT_ROOM_R" out="HIHAT_ROOM_R"/>
+  </instrument>
+  <instrument name="hihat_zild_ped" file="kitpieces/hihat_14_zildjian_k_custom_hybrid/hihat_zild_ped.xml">
+    <chokes>
+    <choke instrument="hihat_zild_op1" choketime="30"/>
+    <choke instrument="hihat_zild_op1_edg" choketime="30"/>
+    <choke instrument="hihat_zild_op2" choketime="30"/>
+    <choke instrument="hihat_zild_op2_edg" choketime="30"/>
+    <choke instrument="hihat_zild_op3" choketime="30"/>
+    <choke instrument="hihat_zild_op3_edg" choketime="30"/>
+    <choke instrument="hihat_zild_spl" choketime="30"/>
+    </chokes>
+    <channelmap in="HIHAT" out="HIHAT"/>
+    <channelmap in="HIHAT_OH_L" out="HIHAT_OH_L"/>
+    <channelmap in="HIHAT_OH_R" out="HIHAT_OH_R"/>
+    <channelmap in="HIHAT_ROOM_L" out="HIHAT_ROOM_L"/>
+    <channelmap in="HIHAT_ROOM_R" out="HIHAT_ROOM_R"/>
+  </instrument>
+  <instrument name="hihat_zild_spl" file="kitpieces/hihat_14_zildjian_k_custom_hybrid/hihat_zild_spl.xml">
+    <channelmap in="HIHAT" out="HIHAT"/>
+    <channelmap in="HIHAT_OH_L" out="HIHAT_OH_L"/>
+    <channelmap in="HIHAT_OH_R" out="HIHAT_OH_R"/>
+    <channelmap in="HIHAT_ROOM_L" out="HIHAT_ROOM_L"/>
+    <channelmap in="HIHAT_ROOM_R" out="HIHAT_ROOM_R"/>
+  </instrument>
+    <instrument name="hihat_mute" file="kitpieces/mute/hihat_mute.xml">
+    <chokes>
+    <choke instrument="hihat_zild_op1" choketime="30"/>
+    <choke instrument="hihat_zild_op1_edg" choketime="30"/>
+    <choke instrument="hihat_zild_op2" choketime="30"/>
+    <choke instrument="hihat_zild_op2_edg" choketime="30"/>
+    <choke instrument="hihat_zild_op3" choketime="30"/>
+    <choke instrument="hihat_zild_op3_edg" choketime="30"/>
+    <choke instrument="hihat_zild_spl" choketime="30"/>
+    </chokes>
+    <channelmap in="HIHAT_MUTE" out="HIHAT"/>
+  </instrument>
+  </instruments>
+</drumkit>

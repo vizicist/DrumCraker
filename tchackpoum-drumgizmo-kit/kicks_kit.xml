@@ -1,0 +1,71 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<drumkit name="kicks kit" description="all kicks">
+<metadata>
+<defaultmidimap src="kicks_kit_midimap.xml"/>
+</metadata>
+  <channels>
+   <channel name="KICK_IN"/>
+   <channel name="KICK_OUT"/>
+   <channel name="KICK_SUB"/>
+   <channel name="KICK_OH_L"/>
+   <channel name="KICK_OH_R"/>
+   <channel name="KICK_ROOM_L"/>
+   <channel name="KICK_ROOM_R"/>
+  </channels>
+  <instruments>
+  <instrument name="kick_ludw" file="kitpieces/kick_20_ludwig_superclassic64/kick_ludw_sub.xml">
+    <channelmap in="KICK_IN" out="KICK_IN"/>
+    <channelmap in="KICK_OUT" out="KICK_OUT"/>
+    <channelmap in="KICK_SUB" out="KICK_SUB"/>
+    <channelmap in="KICK_OH_L" out="KICK_OH_L"/>
+    <channelmap in="KICK_OH_R" out="KICK_OH_R"/>
+    <channelmap in="KICK_ROOM_L" out="KICK_ROOM_L"/>
+    <channelmap in="KICK_ROOM_R" out="KICK_ROOM_R"/>
+  </instrument>
+  <instrument name="kick_ludw_damp" file="kitpieces/kick_20_ludwig_superclassic64/kick_ludw_damp_sub.xml">
+    <channelmap in="KICK_IN" out="KICK_IN"/>
+    <channelmap in="KICK_OUT" out="KICK_OUT"/>
+    <channelmap in="KICK_SUB" out="KICK_SUB"/>
+    <channelmap in="KICK_OH_L" out="KICK_OH_L"/>
+    <channelmap in="KICK_OH_R" out="KICK_OH_R"/>
+    <channelmap in="KICK_ROOM_L" out="KICK_ROOM_L"/>
+    <channelmap in="KICK_ROOM_R" out="KICK_ROOM_R"/>
+  </instrument>
+  <instrument name="kick_ludw_jazz" file="kitpieces/kick_20_ludwig_superclassic64/kick_ludw_jazz_sub.xml">
+    <channelmap in="KICK_IN" out="KICK_IN"/>
+    <channelmap in="KICK_OUT" out="KICK_OUT"/>
+    <channelmap in="KICK_SUB" out="KICK_SUB"/>
+    <channelmap in="KICK_OH_L" out="KICK_OH_L"/>
+    <channelmap in="KICK_OH_R" out="KICK_OH_R"/>
+    <channelmap in="KICK_ROOM_L" out="KICK_ROOM_L"/>
+    <channelmap in="KICK_ROOM_R" out="KICK_ROOM_R"/>
+  </instrument>
+  <instrument name="kick_prem_damp" file="kitpieces/kick_22_premier_signia/kick_prem_damp_sub.xml">
+    <channelmap in="KICK_IN" out="KICK_IN"/>
+    <channelmap in="KICK_OUT" out="KICK_OUT"/>
+    <channelmap in="KICK_SUB" out="KICK_SUB"/>
+    <channelmap in="KICK_OH_L" out="KICK_OH_L"/>
+    <channelmap in="KICK_OH_R" out="KICK_OH_R"/>
+    <channelmap in="KICK_ROOM_L" out="KICK_ROOM_L"/>
+    <channelmap in="KICK_ROOM_R" out="KICK_ROOM_R"/>
+  </instrument>
+  <instrument name="kick_prem_free" file="kitpieces/kick_22_premier_signia/kick_prem_free_sub.xml">
+    <channelmap in="KICK_IN" out="KICK_IN"/>
+    <channelmap in="KICK_OUT" out="KICK_OUT"/>
+    <channelmap in="KICK_SUB" out="KICK_SUB"/>
+    <channelmap in="KICK_OH_L" out="KICK_OH_L"/>
+    <channelmap in="KICK_OH_R" out="KICK_OH_R"/>
+    <channelmap in="KICK_ROOM_L" out="KICK_ROOM_L"/>
+    <channelmap in="KICK_ROOM_R" out="KICK_ROOM_R"/>
+  </instrument>
+  <instrument name="kick_sono" file="kitpieces/kick_27_sonor_antique20/kick_sono_sub.xml">
+    <channelmap in="KICK_IN" out="KICK_IN"/>
+    <channelmap in="KICK_OUT" out="KICK_OUT"/>
+    <channelmap in="KICK_SUB" out="KICK_SUB"/>
+    <channelmap in="KICK_OH_L" out="KICK_OH_L"/>
+    <channelmap in="KICK_OH_R" out="KICK_OH_R"/>
+    <channelmap in="KICK_ROOM_L" out="KICK_ROOM_L"/>
+    <channelmap in="KICK_ROOM_R" out="KICK_ROOM_R"/>
+  </instrument>
+  </instruments>
+</drumkit>

@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<drumkit name="cowbell kit" description="the cowbell">
+<metadata>
+<defaultmidimap src="cowbell_kit_midimap.xml"/>
+</metadata>
+  <channels>
+   <channel name="COW"/>
+   <channel name="COW_OH_L"/>
+   <channel name="COW_OH_R"/>
+   <channel name="COW_ROOM_L"/>
+   <channel name="COW_ROOM_R"/>
+  </channels>
+  <instruments>
+  <instrument name="cowbell" file="kitpieces/cowbell_lp_bb/cowbell.xml">
+    <channelmap in="COW" out="COW"/>
+    <channelmap in="COW_OH_L" out="COW_OH_L"/>
+    <channelmap in="COW_OH_R" out="COW_OH_R"/>
+    <channelmap in="COW_ROOM_L" out="COW_ROOM_L"/>
+    <channelmap in="COW_ROOM_R" out="COW_ROOM_R"/>
+  </instrument>
+  <instrument name="cowbell_muff" file="kitpieces/cowbell_lp_bb/cowbell_muff.xml">
+    <channelmap in="COW" out="COW"/>
+    <channelmap in="COW_OH_L" out="COW_OH_L"/>
+    <channelmap in="COW_OH_R" out="COW_OH_R"/>
+    <channelmap in="COW_ROOM_L" out="COW_ROOM_L"/>
+    <channelmap in="COW_ROOM_R" out="COW_ROOM_R"/>
+  </instrument>
+  <instrument name="cowbell_muff_hi" file="kitpieces/cowbell_lp_bb/cowbell_muff_hi.xml">
+    <channelmap in="COW" out="COW"/>
+    <channelmap in="COW_OH_L" out="COW_OH_L"/>
+    <channelmap in="COW_OH_R" out="COW_OH_R"/>
+    <channelmap in="COW_ROOM_L" out="COW_ROOM_L"/>
+    <channelmap in="COW_ROOM_R" out="COW_ROOM_R"/>
+  </instrument>
+  </instruments>
+</drumkit>

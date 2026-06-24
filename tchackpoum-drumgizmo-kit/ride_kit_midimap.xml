@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<midimap>
+  <map note="55" instr="ride_20_pais_bel"/>
+	<map note="56" instr="ride_20_pais_bow"/>
+  <map note="57" instr="ride_20_pais_edg"/>
+  <map note="59" instr="ride_mute"/>
+</midimap>

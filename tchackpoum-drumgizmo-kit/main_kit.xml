@@ -1,0 +1,362 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<drumkit name="entire kit" description="everything but cowbell" samplerate="44100">
+<metadata>
+<defaultmidimap src="main_kit_midimap.xml"/>
+</metadata>
+  <channels>
+   <channel name="SNARE_TOP"/>
+   <channel name="SNARE_BTM"/>
+   <channel name="KICK_IN"/>
+   <channel name="KICK_OUT"/>
+   <channel name="TOM_1"/>
+   <channel name="TOM_2"/>
+   <channel name="TOM_3"/>
+   <channel name="HIHAT"/>
+   <channel name="RIDE_OH_L"/>
+   <channel name="RIDE_OH_R"/>
+   <channel name="MIX_CYM_OH_L"/>
+   <channel name="MIX_CYM_OH_R"/>
+   <channel name="MIX_OH_L"/>
+   <channel name="MIX_OH_R"/>
+   <channel name="MIX_ROOM_L"/>
+   <channel name="MIX_ROOM_R"/>
+  </channels>
+  <instruments>
+  <instrument name="kick_ludw" file="kitpieces/kick_20_ludwig_superclassic64/kick_ludw.xml">
+    <channelmap in="KICK_IN" out="KICK_IN"/>
+    <channelmap in="KICK_OUT" out="KICK_OUT"/>
+    <channelmap in="KICK_OH_L" out="MIX_OH_L"/>
+    <channelmap in="KICK_OH_R" out="MIX_OH_R"/>
+    <channelmap in="KICK_ROOM_L" out="MIX_ROOM_L"/>
+    <channelmap in="KICK_ROOM_R" out="MIX_ROOM_R"/>
+  </instrument>
+  <instrument name="kick_ludw_damp" file="kitpieces/kick_20_ludwig_superclassic64/kick_ludw_damp.xml">
+    <channelmap in="KICK_IN" out="KICK_IN"/>
+    <channelmap in="KICK_OUT" out="KICK_OUT"/>
+    <channelmap in="KICK_OH_L" out="MIX_OH_L"/>
+    <channelmap in="KICK_OH_R" out="MIX_OH_R"/>
+    <channelmap in="KICK_ROOM_L" out="MIX_ROOM_L"/>
+    <channelmap in="KICK_ROOM_R" out="MIX_ROOM_R"/>
+  </instrument>
+  <instrument name="kick_ludw_jazz" file="kitpieces/kick_20_ludwig_superclassic64/kick_ludw_jazz.xml">
+    <channelmap in="KICK_IN" out="KICK_IN"/>
+    <channelmap in="KICK_OUT" out="KICK_OUT"/>
+    <channelmap in="KICK_OH_L" out="MIX_OH_L"/>
+    <channelmap in="KICK_OH_R" out="MIX_OH_R"/>
+    <channelmap in="KICK_ROOM_L" out="MIX_ROOM_L"/>
+    <channelmap in="KICK_ROOM_R" out="MIX_ROOM_R"/>
+  </instrument>
+  <instrument name="kick_prem_damp" file="kitpieces/kick_22_premier_signia/kick_prem_damp.xml">
+    <channelmap in="KICK_IN" out="KICK_IN"/>
+    <channelmap in="KICK_OUT" out="KICK_OUT"/>
+    <channelmap in="KICK_OH_L" out="MIX_OH_L"/>
+    <channelmap in="KICK_OH_R" out="MIX_OH_R"/>
+    <channelmap in="KICK_ROOM_L" out="MIX_ROOM_L"/>
+    <channelmap in="KICK_ROOM_R" out="MIX_ROOM_R"/>
+  </instrument>
+  <instrument name="kick_prem_free" file="kitpieces/kick_22_premier_signia/kick_prem_free.xml">
+    <channelmap in="KICK_IN" out="KICK_IN"/>
+    <channelmap in="KICK_OUT" out="KICK_OUT"/>
+    <channelmap in="KICK_OH_L" out="MIX_OH_L"/>
+    <channelmap in="KICK_OH_R" out="MIX_OH_R"/>
+    <channelmap in="KICK_ROOM_L" out="MIX_ROOM_L"/>
+    <channelmap in="KICK_ROOM_R" out="MIX_ROOM_R"/>
+  </instrument>
+  <instrument name="kick_sono" file="kitpieces/kick_27_sonor_antique20/kick_sono.xml">
+    <channelmap in="KICK_IN" out="KICK_IN"/>
+    <channelmap in="KICK_OUT" out="KICK_OUT"/>
+    <channelmap in="KICK_OH_L" out="MIX_OH_L"/>
+    <channelmap in="KICK_OH_R" out="MIX_OH_R"/>
+    <channelmap in="KICK_ROOM_L" out="MIX_ROOM_L"/>
+    <channelmap in="KICK_ROOM_R" out="MIX_ROOM_R"/>
+  </instrument>
+  <instrument name="snare_supr64" file="kitpieces/snare_14x5_ludwig_supraphonic64/snare_supr64.xml">
+    <channelmap in="SNARE_TOP" out="SNARE_TOP"/>
+    <channelmap in="SNARE_BTM" out="SNARE_BTM"/>
+    <channelmap in="SNARE_OH_L" out="MIX_OH_L"/>
+    <channelmap in="SNARE_OH_R" out="MIX_OH_R"/>
+    <channelmap in="SNARE_ROOM_L" out="MIX_ROOM_L"/>
+    <channelmap in="SNARE_ROOM_R" out="MIX_ROOM_R"/>
+  </instrument>
+  <instrument name="snare_supr64_edg" file="kitpieces/snare_14x5_ludwig_supraphonic64/snare_supr64_edg.xml">
+    <channelmap in="SNARE_TOP" out="SNARE_TOP"/>
+    <channelmap in="SNARE_BTM" out="SNARE_BTM"/>
+    <channelmap in="SNARE_OH_L" out="MIX_OH_L"/>
+    <channelmap in="SNARE_OH_R" out="MIX_OH_R"/>
+    <channelmap in="SNARE_ROOM_L" out="MIX_ROOM_L"/>
+    <channelmap in="SNARE_ROOM_R" out="MIX_ROOM_R"/>
+  </instrument>
+  <instrument name="snare_supr64_rim" file="kitpieces/snare_14x5_ludwig_supraphonic64/snare_supr64_rim.xml">
+    <channelmap in="SNARE_TOP" out="SNARE_TOP"/>
+    <channelmap in="SNARE_BTM" out="SNARE_BTM"/>
+    <channelmap in="SNARE_OH_L" out="MIX_OH_L"/>
+    <channelmap in="SNARE_OH_R" out="MIX_OH_R"/>
+    <channelmap in="SNARE_ROOM_L" out="MIX_ROOM_L"/>
+    <channelmap in="SNARE_ROOM_R" out="MIX_ROOM_R"/>
+  </instrument>
+  <instrument name="snare_pear" file="kitpieces/snare_14x6.5_pearl_free_floating_maple88/snare_pear.xml">
+    <channelmap in="SNARE_TOP" out="SNARE_TOP"/>
+    <channelmap in="SNARE_BTM" out="SNARE_BTM"/>
+    <channelmap in="SNARE_OH_L" out="MIX_OH_L"/>
+    <channelmap in="SNARE_OH_R" out="MIX_OH_R"/>
+    <channelmap in="SNARE_ROOM_L" out="MIX_ROOM_L"/>
+    <channelmap in="SNARE_ROOM_R" out="MIX_ROOM_R"/>
+  </instrument>
+  <instrument name="snare_pear_damp" file="kitpieces/snare_14x6.5_pearl_free_floating_maple88/snare_pear_damp.xml">
+    <channelmap in="SNARE_TOP" out="SNARE_TOP"/>
+    <channelmap in="SNARE_BTM" out="SNARE_BTM"/>
+    <channelmap in="SNARE_OH_L" out="MIX_OH_L"/>
+    <channelmap in="SNARE_OH_R" out="MIX_OH_R"/>
+    <channelmap in="SNARE_ROOM_L" out="MIX_ROOM_L"/>
+    <channelmap in="SNARE_ROOM_R" out="MIX_ROOM_R"/>
+  </instrument>
+  <instrument name="snare_pear_edg" file="kitpieces/snare_14x6.5_pearl_free_floating_maple88/snare_pear_edg.xml">
+    <channelmap in="SNARE_TOP" out="SNARE_TOP"/>
+    <channelmap in="SNARE_BTM" out="SNARE_BTM"/>
+    <channelmap in="SNARE_OH_L" out="MIX_OH_L"/>
+    <channelmap in="SNARE_OH_R" out="MIX_OH_R"/>
+    <channelmap in="SNARE_ROOM_L" out="MIX_ROOM_L"/>
+    <channelmap in="SNARE_ROOM_R" out="MIX_ROOM_R"/>
+  </instrument>
+  <instrument name="snare_pear_rim" file="kitpieces/snare_14x6.5_pearl_free_floating_maple88/snare_pear_rim.xml">
+    <channelmap in="SNARE_TOP" out="SNARE_TOP"/>
+    <channelmap in="SNARE_BTM" out="SNARE_BTM"/>
+    <channelmap in="SNARE_OH_L" out="MIX_OH_L"/>
+    <channelmap in="SNARE_OH_R" out="MIX_OH_R"/>
+    <channelmap in="SNARE_ROOM_L" out="MIX_ROOM_L"/>
+    <channelmap in="SNARE_ROOM_R" out="MIX_ROOM_R"/>
+  </instrument>
+  <instrument name="snare_ss" file="kitpieces/snare_sidestick/snare_ss.xml">
+    <channelmap in="SNARE_TOP" out="SNARE_TOP"/>
+    <channelmap in="SNARE_BTM" out="SNARE_BTM"/>
+    <channelmap in="SNARE_OH_L" out="MIX_OH_L"/>
+    <channelmap in="SNARE_OH_R" out="MIX_OH_R"/>
+    <channelmap in="SNARE_ROOM_L" out="MIX_ROOM_L"/>
+    <channelmap in="SNARE_ROOM_R" out="MIX_ROOM_R"/>
+  </instrument>
+  <instrument name="hihat_zild_clo" file="kitpieces/hihat_14_zildjian_k_custom_hybrid/hihat_zild_clo.xml">
+    <chokes>
+    	<choke instrument="hihat_zild_op1" choketime="30"/>
+    	<choke instrument="hihat_zild_op1_edg" choketime="30"/>
+    	<choke instrument="hihat_zild_op2" choketime="30"/>
+    	<choke instrument="hihat_zild_op2_edg" choketime="30"/>
+    	<choke instrument="hihat_zild_op3" choketime="30"/>
+    	<choke instrument="hihat_zild_op3_edg" choketime="30"/>
+    	<choke instrument="hihat_zild_spl" choketime="30"/>
+    </chokes>
+    <channelmap in="HIHAT" out="HIHAT"/>
+    <channelmap in="HIHAT_OH_L" out="MIX_CYM_OH_L"/>
+    <channelmap in="HIHAT_OH_R" out="MIX_CYM_OH_R"/>
+    <channelmap in="HIHAT_ROOM_L" out="MIX_ROOM_L"/>
+    <channelmap in="HIHAT_ROOM_R" out="MIX_ROOM_R"/>
+  </instrument>
+  <instrument name="hihat_zild_clo_edg" file="kitpieces/hihat_14_zildjian_k_custom_hybrid/hihat_zild_clo_edg.xml">
+    <chokes>
+    	<choke instrument="hihat_zild_op1" choketime="30"/>
+    	<choke instrument="hihat_zild_op1_edg" choketime="30"/>
+    	<choke instrument="hihat_zild_op2" choketime="30"/>
+    	<choke instrument="hihat_zild_op2_edg" choketime="30"/>
+    	<choke instrument="hihat_zild_op3" choketime="30"/>
+    	<choke instrument="hihat_zild_op3_edg" choketime="30"/>
+    	<choke instrument="hihat_zild_spl" choketime="30"/>
+    </chokes>
+    <channelmap in="HIHAT" out="HIHAT"/>
+    <channelmap in="HIHAT_OH_L" out="MIX_CYM_OH_L"/>
+    <channelmap in="HIHAT_OH_R" out="MIX_CYM_OH_R"/>
+    <channelmap in="HIHAT_ROOM_L" out="MIX_ROOM_L"/>
+    <channelmap in="HIHAT_ROOM_R" out="MIX_ROOM_R"/>
+  </instrument>
+  <instrument name="hihat_zild_op1" file="kitpieces/hihat_14_zildjian_k_custom_hybrid/hihat_zild_op1.xml">
+    <channelmap in="HIHAT" out="HIHAT"/>
+    <channelmap in="HIHAT_OH_L" out="MIX_CYM_OH_L"/>
+    <channelmap in="HIHAT_OH_R" out="MIX_CYM_OH_R"/>
+    <channelmap in="HIHAT_ROOM_L" out="MIX_ROOM_L"/>
+    <channelmap in="HIHAT_ROOM_R" out="MIX_ROOM_R"/>
+  </instrument>
+  <instrument name="hihat_zild_op1_edg" file="kitpieces/hihat_14_zildjian_k_custom_hybrid/hihat_zild_op1_edg.xml">
+    <channelmap in="HIHAT" out="HIHAT"/>
+    <channelmap in="HIHAT_OH_L" out="MIX_CYM_OH_L"/>
+    <channelmap in="HIHAT_OH_R" out="MIX_CYM_OH_R"/>
+    <channelmap in="HIHAT_ROOM_L" out="MIX_ROOM_L"/>
+    <channelmap in="HIHAT_ROOM_R" out="MIX_ROOM_R"/>
+  </instrument>
+  <instrument name="hihat_zild_op2" file="kitpieces/hihat_14_zildjian_k_custom_hybrid/hihat_zild_op2.xml">
+    <channelmap in="HIHAT" out="HIHAT"/>
+    <channelmap in="HIHAT_OH_L" out="MIX_CYM_OH_L"/>
+    <channelmap in="HIHAT_OH_R" out="MIX_CYM_OH_R"/>
+    <channelmap in="HIHAT_ROOM_L" out="MIX_ROOM_L"/>
+    <channelmap in="HIHAT_ROOM_R" out="MIX_ROOM_R"/>
+  </instrument>
+  <instrument name="hihat_zild_op2_edg" file="kitpieces/hihat_14_zildjian_k_custom_hybrid/hihat_zild_op2_edg.xml">
+    <channelmap in="HIHAT" out="HIHAT"/>
+    <channelmap in="HIHAT_OH_L" out="MIX_CYM_OH_L"/>
+    <channelmap in="HIHAT_OH_R" out="MIX_CYM_OH_R"/>
+    <channelmap in="HIHAT_ROOM_L" out="MIX_ROOM_L"/>
+    <channelmap in="HIHAT_ROOM_R" out="MIX_ROOM_R"/>
+  </instrument>
+  <instrument name="hihat_zild_op3" file="kitpieces/hihat_14_zildjian_k_custom_hybrid/hihat_zild_op3.xml">
+    <channelmap in="HIHAT" out="HIHAT"/>
+    <channelmap in="HIHAT_OH_L" out="MIX_CYM_OH_L"/>
+    <channelmap in="HIHAT_OH_R" out="MIX_CYM_OH_R"/>
+    <channelmap in="HIHAT_ROOM_L" out="MIX_ROOM_L"/>
+    <channelmap in="HIHAT_ROOM_R" out="MIX_ROOM_R"/>
+  </instrument>
+  <instrument name="hihat_zild_op3_edg" file="kitpieces/hihat_14_zildjian_k_custom_hybrid/hihat_zild_op3_edg.xml">
+    <channelmap in="HIHAT" out="HIHAT"/>
+    <channelmap in="HIHAT_OH_L" out="MIX_CYM_OH_L"/>
+    <channelmap in="HIHAT_OH_R" out="MIX_CYM_OH_R"/>
+    <channelmap in="HIHAT_ROOM_L" out="MIX_ROOM_L"/>
+    <channelmap in="HIHAT_ROOM_R" out="MIX_ROOM_R"/>
+  </instrument>
+  <instrument name="hihat_zild_ped" file="kitpieces/hihat_14_zildjian_k_custom_hybrid/hihat_zild_ped.xml">
+    <chokes>
+    	<choke instrument="hihat_zild_op1" choketime="30"/>
+    	<choke instrument="hihat_zild_op1_edg" choketime="30"/>
+    	<choke instrument="hihat_zild_op2" choketime="30"/>
+    	<choke instrument="hihat_zild_op2_edg" choketime="30"/>
+    	<choke instrument="hihat_zild_op3" choketime="30"/>
+    	<choke instrument="hihat_zild_op3_edg" choketime="30"/>
+    	<choke instrument="hihat_zild_spl" choketime="30"/>
+    </chokes>
+    <channelmap in="HIHAT" out="HIHAT"/>
+    <channelmap in="HIHAT_OH_L" out="MIX_CYM_OH_L"/>
+    <channelmap in="HIHAT_OH_R" out="MIX_CYM_OH_R"/>
+    <channelmap in="HIHAT_ROOM_L" out="MIX_ROOM_L"/>
+    <channelmap in="HIHAT_ROOM_R" out="MIX_ROOM_R"/>
+  </instrument>
+  <instrument name="hihat_zild_spl" file="kitpieces/hihat_14_zildjian_k_custom_hybrid/hihat_zild_spl.xml">
+    <channelmap in="HIHAT" out="HIHAT"/>
+    <channelmap in="HIHAT_OH_L" out="MIX_CYM_OH_L"/>
+    <channelmap in="HIHAT_OH_R" out="MIX_CYM_OH_R"/>
+    <channelmap in="HIHAT_ROOM_L" out="MIX_ROOM_L"/>
+    <channelmap in="HIHAT_ROOM_R" out="MIX_ROOM_R"/>
+  </instrument>
+    <instrument name="hihat_mute" file="kitpieces/mute/hihat_mute.xml">
+    <chokes>
+   	<choke instrument="hihat_zild_op1" choketime="30"/>
+    	<choke instrument="hihat_zild_op1_edg" choketime="30"/>
+    	<choke instrument="hihat_zild_op2" choketime="30"/>
+    	<choke instrument="hihat_zild_op2_edg" choketime="30"/>
+    	<choke instrument="hihat_zild_op3" choketime="30"/>
+    	<choke instrument="hihat_zild_op3_edg" choketime="30"/>
+    	<choke instrument="hihat_zild_spl" choketime="30"/>
+    </chokes>
+    <channelmap in="HIHAT_MUTE" out="HIHAT"/>
+  </instrument>
+  <instrument name="tom_12_prem" file="kitpieces/toms_premier_signia/tom_12_prem.xml">
+    <channelmap in="TOM_1" out="TOM_1"/>
+    <channelmap in="TOMS_OH_L" out="MIX_OH_L"/>
+    <channelmap in="TOMS_OH_R" out="MIX_OH_R"/>
+    <channelmap in="TOMS_ROOM_L" out="MIX_ROOM_L"/>
+    <channelmap in="TOMS_ROOM_R" out="MIX_ROOM_R"/>
+  </instrument>
+  <instrument name="tom_12_prem_edg" file="kitpieces/toms_premier_signia/tom_12_prem_edg.xml">
+    <channelmap in="TOM_1" out="TOM_1"/>
+    <channelmap in="TOMS_OH_L" out="MIX_OH_L"/>
+    <channelmap in="TOMS_OH_R" out="MIX_OH_R"/>
+    <channelmap in="TOMS_ROOM_L" out="MIX_ROOM_L"/>
+    <channelmap in="TOMS_ROOM_R" out="MIX_ROOM_R"/>
+  </instrument>
+  <instrument name="tom_13_prem" file="kitpieces/toms_premier_signia/tom_13_prem.xml">
+    <channelmap in="TOM_2" out="TOM_2"/>
+    <channelmap in="TOMS_OH_L" out="MIX_OH_L"/>
+    <channelmap in="TOMS_OH_R" out="MIX_OH_R"/>
+    <channelmap in="TOMS_ROOM_L" out="MIX_ROOM_L"/>
+    <channelmap in="TOMS_ROOM_R" out="MIX_ROOM_R"/>
+  </instrument>
+  <instrument name="tom_13_prem_edg" file="kitpieces/toms_premier_signia/tom_13_prem_edg.xml">
+    <channelmap in="TOM_2" out="TOM_2"/>
+    <channelmap in="TOMS_OH_L" out="MIX_OH_L"/>
+    <channelmap in="TOMS_OH_R" out="MIX_OH_R"/>
+    <channelmap in="TOMS_ROOM_L" out="MIX_ROOM_L"/>
+    <channelmap in="TOMS_ROOM_R" out="MIX_ROOM_R"/>
+  </instrument>
+  <instrument name="tom_16_prem" file="kitpieces/toms_premier_signia/tom_16_prem.xml">
+    <channelmap in="TOM_3" out="TOM_3"/>
+    <channelmap in="TOMS_OH_L" out="MIX_OH_L"/>
+    <channelmap in="TOMS_OH_R" out="MIX_OH_R"/>
+    <channelmap in="TOMS_ROOM_L" out="MIX_ROOM_L"/>
+    <channelmap in="TOMS_ROOM_R" out="MIX_ROOM_R"/>
+  </instrument>
+  <instrument name="tom_16_prem_edg" file="kitpieces/toms_premier_signia/tom_16_prem_edg.xml">
+    <channelmap in="TOM_3" out="TOM_3"/>
+    <channelmap in="TOMS_OH_L" out="MIX_OH_L"/>
+    <channelmap in="TOMS_OH_R" out="MIX_OH_R"/>
+    <channelmap in="TOMS_ROOM_L" out="MIX_ROOM_L"/>
+    <channelmap in="TOMS_ROOM_R" out="MIX_ROOM_R"/>
+  </instrument>
+  <instrument name="crash_14_zild_bow" file="kitpieces/crash_14_zildjian_k_custom_dark/crash_14_zild_bow.xml">
+    <channelmap in="CYM_OH_L" out="MIX_CYM_OH_L"/>
+    <channelmap in="CYM_OH_R" out="MIX_CYM_OH_R"/>
+    <channelmap in="CYM_ROOM_L" out="MIX_ROOM_L"/>
+    <channelmap in="CYM_ROOM_R" out="MIX_ROOM_R"/>
+  </instrument>
+  <instrument name="crash_14_zild_edg" file="kitpieces/crash_14_zildjian_k_custom_dark/crash_14_zild_edg.xml">
+    <channelmap in="CYM_OH_L" out="MIX_CYM_OH_L"/>
+    <channelmap in="CYM_OH_R" out="MIX_CYM_OH_R"/>
+    <channelmap in="CYM_ROOM_L" out="MIX_ROOM_L"/>
+    <channelmap in="CYM_ROOM_R" out="MIX_ROOM_R"/>
+  </instrument>
+  <instrument name="crash_15_sabi_bow" file="kitpieces/crash_15_sabian_hh/crash_15_sabi_bow.xml">
+    <channelmap in="CYM_OH_L" out="MIX_CYM_OH_L"/>
+    <channelmap in="CYM_OH_R" out="MIX_CYM_OH_R"/>
+    <channelmap in="CYM_ROOM_L" out="MIX_ROOM_L"/>
+    <channelmap in="CYM_ROOM_R" out="MIX_ROOM_R"/>
+  </instrument>
+  <instrument name="crash_15_sabi_edg" file="kitpieces/crash_15_sabian_hh/crash_15_sabi_edg.xml">
+    <channelmap in="CYM_OH_L" out="MIX_CYM_OH_L"/>
+    <channelmap in="CYM_OH_R" out="MIX_CYM_OH_R"/>
+    <channelmap in="CYM_ROOM_L" out="MIX_ROOM_L"/>
+    <channelmap in="CYM_ROOM_R" out="MIX_ROOM_R"/>
+  </instrument>
+  <instrument name="cymb_18_zild_efx_bow" file="kitpieces/crash_18_zildjian_k_efx/cymb_18_zild_efx_bow.xml">
+    <channelmap in="CYM_OH_L" out="MIX_CYM_OH_L"/>
+    <channelmap in="CYM_OH_R" out="MIX_CYM_OH_R"/>
+    <channelmap in="CYM_ROOM_L" out="MIX_ROOM_L"/>
+    <channelmap in="CYM_ROOM_R" out="MIX_ROOM_R"/>
+  </instrument>
+  <instrument name="cymb_18_zild_efx_edg" file="kitpieces/crash_18_zildjian_k_efx/cymb_18_zild_efx_edg.xml">
+    <channelmap in="CYM_OH_L" out="MIX_CYM_OH_L"/>
+    <channelmap in="CYM_OH_R" out="MIX_CYM_OH_R"/>
+    <channelmap in="CYM_ROOM_L" out="MIX_ROOM_L"/>
+    <channelmap in="CYM_ROOM_R" out="MIX_ROOM_R"/>
+  </instrument>
+  <instrument name="crash_mute" file="kitpieces/mute/crash_mute.xml">
+    <chokes>
+    <choke instrument="crash_14_zild_bow" choketime="30"/>
+    <choke instrument="crash_14_zild_edg" choketime="30"/>
+    <choke instrument="crash_15_sabi_bow" choketime="30"/>
+    <choke instrument="crash_15_sabi_edg" choketime="30"/>
+    <choke instrument="cymb_18_zild_efx_bow" choketime="30"/>
+    <choke instrument="cymb_18_zild_efx_edg" choketime="30"/>
+    </chokes>
+    <channelmap in="CYM_MUTE" out="MIX_CYM_OH_L"/>
+  </instrument>
+  <instrument name="ride_20_pais_bel" file="kitpieces/ride_20_paiste_heavy_jazzrock_2002/ride_20_pais_bel.xml">
+    <channelmap in="RIDE_OH_L" out="RIDE_OH_L"/>
+    <channelmap in="RIDE_OH_R" out="RIDE_OH_R"/>
+    <channelmap in="RIDE_ROOM_L" out="MIX_ROOM_L"/>
+    <channelmap in="RIDE_ROOM_R" out="MIX_ROOM_R"/>
+  </instrument>
+  <instrument name="ride_20_pais_bow" file="kitpieces/ride_20_paiste_heavy_jazzrock_2002/ride_20_pais_bow.xml">
+    <channelmap in="RIDE_OH_L" out="RIDE_OH_L"/>
+    <channelmap in="RIDE_OH_R" out="RIDE_OH_R"/>
+    <channelmap in="RIDE_ROOM_L" out="MIX_ROOM_L"/>
+    <channelmap in="RIDE_ROOM_R" out="MIX_ROOM_R"/>
+  </instrument>
+  <instrument name="ride_20_pais_edg" file="kitpieces/ride_20_paiste_heavy_jazzrock_2002/ride_20_pais_edg.xml">
+    <channelmap in="RIDE_OH_L" out="RIDE_OH_L"/>
+    <channelmap in="RIDE_OH_R" out="RIDE_OH_R"/>
+    <channelmap in="RIDE_ROOM_L" out="MIX_ROOM_L"/>
+    <channelmap in="RIDE_ROOM_R" out="MIX_ROOM_R"/>
+  </instrument>
+    <instrument name="ride_mute" file="kitpieces/mute/ride_mute.xml">
+    <chokes>
+    <choke instrument="ride_20_pais_bel" choketime="30"/>
+    <choke instrument="ride_20_pais_bow" choketime="30"/>
+    <choke instrument="ride_20_pais_edg" choketime="30"/>
+    </chokes>
+    <channelmap in="RIDE_MUTE" out="RIDE_OH_L"/>
+  </instrument>
+  </instruments>
+</drumkit>

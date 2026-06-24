@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<midimap>
+	<map note="61" instr="cowbell"/>
+	<map note="62" instr="cowbell_muff"/>
+	<map note="63" instr="cowbell_muff_hi"/>
+</midimap>

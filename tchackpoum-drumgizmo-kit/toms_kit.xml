@@ -1,0 +1,59 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<drumkit name="toms kit" description="3 toms">
+<metadata>
+<defaultmidimap src="toms_kit_midimap.xml"/>
+</metadata>
+  <channels>
+   <channel name="TOM_1"/>
+   <channel name="TOM_2"/>
+   <channel name="TOM_3"/>
+   <channel name="TOMS_OH_L"/>
+   <channel name="TOMS_OH_R"/>
+   <channel name="TOMS_ROOM_L"/>
+   <channel name="TOMS_ROOM_R"/>
+  </channels>
+  <instruments>
+  <instrument name="tom_12_prem" file="kitpieces/toms_premier_signia/tom_12_prem.xml">
+    <channelmap in="TOM_1" out="TOM_1"/>
+    <channelmap in="TOMS_OH_L" out="TOMS_OH_L"/>
+    <channelmap in="TOMS_OH_R" out="TOMS_OH_R"/>
+    <channelmap in="TOMS_ROOM_L" out="TOMS_ROOM_L"/>
+    <channelmap in="TOMS_ROOM_R" out="TOMS_ROOM_R"/>
+  </instrument>
+  <instrument name="tom_12_prem_edg" file="kitpieces/toms_premier_signia/tom_12_prem_edg.xml">
+    <channelmap in="TOM_1" out="TOM_1"/>
+    <channelmap in="TOMS_OH_L" out="TOMS_OH_L"/>
+    <channelmap in="TOMS_OH_R" out="TOMS_OH_R"/>
+    <channelmap in="TOMS_ROOM_L" out="TOMS_ROOM_L"/>
+    <channelmap in="TOMS_ROOM_R" out="TOMS_ROOM_R"/>
+  </instrument>
+  <instrument name="tom_13_prem" file="kitpieces/toms_premier_signia/tom_13_prem.xml">
+    <channelmap in="TOM_2" out="TOM_2"/>
+    <channelmap in="TOMS_OH_L" out="TOMS_OH_L"/>
+    <channelmap in="TOMS_OH_R" out="TOMS_OH_R"/>
+    <channelmap in="TOMS_ROOM_L" out="TOMS_ROOM_L"/>
+    <channelmap in="TOMS_ROOM_R" out="TOMS_ROOM_R"/>
+  </instrument>
+  <instrument name="tom_13_prem_edg" file="kitpieces/toms_premier_signia/tom_13_prem_edg.xml">
+    <channelmap in="TOM_2" out="TOM_2"/>
+    <channelmap in="TOMS_OH_L" out="TOMS_OH_L"/>
+    <channelmap in="TOMS_OH_R" out="TOMS_OH_R"/>
+    <channelmap in="TOMS_ROOM_L" out="TOMS_ROOM_L"/>
+    <channelmap in="TOMS_ROOM_R" out="TOMS_ROOM_R"/>
+  </instrument>
+  <instrument name="tom_16_prem" file="kitpieces/toms_premier_signia/tom_16_prem.xml">
+    <channelmap in="TOM_3" out="TOM_3"/>
+    <channelmap in="TOMS_OH_L" out="TOMS_OH_L"/>
+    <channelmap in="TOMS_OH_R" out="TOMS_OH_R"/>
+    <channelmap in="TOMS_ROOM_L" out="TOMS_ROOM_L"/>
+    <channelmap in="TOMS_ROOM_R" out="TOMS_ROOM_R"/>
+  </instrument>
+  <instrument name="tom_16_prem_edg" file="kitpieces/toms_premier_signia/tom_16_prem_edg.xml">
+    <channelmap in="TOM_3" out="TOM_3"/>
+    <channelmap in="TOMS_OH_L" out="TOMS_OH_L"/>
+    <channelmap in="TOMS_OH_R" out="TOMS_OH_R"/>
+    <channelmap in="TOMS_ROOM_L" out="TOMS_ROOM_L"/>
+    <channelmap in="TOMS_ROOM_R" out="TOMS_ROOM_R"/>
+  </instrument>
+  </instruments>
+</drumkit>

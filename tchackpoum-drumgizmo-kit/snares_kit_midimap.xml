@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<midimap>
+	<map note="12" instr="snare_supr64"/>
+  <map note="13" instr="snare_supr64_edg"/>
+  <map note="14" instr="snare_supr64_rim"/>
+  <map note="16" instr="snare_pear"/>
+  <map note="17" instr="snare_pear_damp"/>
+  <map note="18" instr="snare_pear_edg"/>
+  <map note="19" instr="snare_pear_rim"/>
+	<map note="21" instr="snare_ss"/>
+</midimap>

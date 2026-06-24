@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<drumkit name="ride kit" description="the ride">
+<metadata>
+<defaultmidimap src="ride_kit_midimap.xml"/>
+</metadata>
+  <channels>
+   <channel name="RIDE_OH_L"/>
+   <channel name="RIDE_OH_R"/>
+   <channel name="RIDE_ROOM_L"/>
+   <channel name="RIDE_ROOM_R"/>
+  </channels>
+  <instruments>
+  <instrument name="ride_20_pais_bel" file="kitpieces/ride_20_paiste_heavy_jazzrock_2002/ride_20_pais_bel.xml">
+    <channelmap in="RIDE_OH_L" out="RIDE_OH_L"/>
+    <channelmap in="RIDE_OH_R" out="RIDE_OH_R"/>
+    <channelmap in="RIDE_ROOM_L" out="RIDE_ROOM_L"/>
+    <channelmap in="RIDE_ROOM_R" out="RIDE_ROOM_R"/>
+  </instrument>
+  <instrument name="ride_20_pais_bow" file="kitpieces/ride_20_paiste_heavy_jazzrock_2002/ride_20_pais_bow.xml">
+    <channelmap in="RIDE_OH_L" out="RIDE_OH_L"/>
+    <channelmap in="RIDE_OH_R" out="RIDE_OH_R"/>
+    <channelmap in="RIDE_ROOM_L" out="RIDE_ROOM_L"/>
+    <channelmap in="RIDE_ROOM_R" out="RIDE_ROOM_R"/>
+  </instrument>
+  <instrument name="ride_20_pais_edg" file="kitpieces/ride_20_paiste_heavy_jazzrock_2002/ride_20_pais_edg.xml">
+    <channelmap in="RIDE_OH_L" out="RIDE_OH_L"/>
+    <channelmap in="RIDE_OH_R" out="RIDE_OH_R"/>
+    <channelmap in="RIDE_ROOM_L" out="RIDE_ROOM_L"/>
+    <channelmap in="RIDE_ROOM_R" out="RIDE_ROOM_R"/>
+  </instrument>
+    <instrument name="ride_mute" file="kitpieces/mute/ride_mute.xml">
+    <chokes>
+    <choke instrument="ride_20_pais_bel" choketime="30"/>
+    <choke instrument="ride_20_pais_bow" choketime="30"/>
+    <choke instrument="ride_20_pais_edg" choketime="30"/>
+    </chokes>
+    <channelmap in="RIDE_MUTE" out="RIDE_OH_L"/>
+  </instrument>
+  </instruments>
+</drumkit>
