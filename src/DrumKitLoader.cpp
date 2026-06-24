@@ -6,6 +6,7 @@ std::unique_ptr<DrumKit> DrumKitLoader::loadKit(const juce::File& kitFile)
         return nullptr;
 
     auto kit = std::make_unique<DrumKit>();
+    kit->kitFile = kitFile;
     kit->basePath = kitFile.getParentDirectory();
 
     if (!parseKitXML(kitFile, *kit))

@@ -1,10 +1,10 @@
 cmake_minimum_required(VERSION 3.15)
-project(DrumCrakerVST VERSION 1.3.3)
+project(DrumCrakerVST VERSION 1.3.4)
 
 # Define plugin version
 set(PLUGIN_VERSION_MAJOR 1)
 set(PLUGIN_VERSION_MINOR 3)
-set(PLUGIN_VERSION_PATCH 3)
+set(PLUGIN_VERSION_PATCH 4)
 set(PLUGIN_VERSION "${PLUGIN_VERSION_MAJOR}.${PLUGIN_VERSION_MINOR}.${PLUGIN_VERSION_PATCH}")
 
 set(CMAKE_CXX_STANDARD 17)
@@ -59,7 +59,7 @@ target_compile_definitions(DrumCrakerVST PUBLIC
     PLUGIN_VERSION="${PLUGIN_VERSION}"
 )
 
-target_link_libraries(DrumCrakerVST 
+target_link_libraries(DrumCrakerVST
     PRIVATE
         juce::juce_audio_utils
         juce::juce_audio_processors
@@ -96,7 +96,7 @@ else()
     elseif(UNIX AND NOT APPLE)
         # Linux and FreeBSD
         target_link_options(DrumCrakerVST PRIVATE -s)
-        
+
         if(CMAKE_SYSTEM_NAME STREQUAL "FreeBSD")
             # FreeBSD-specific configurations
             target_link_libraries(DrumCrakerVST PRIVATE execinfo)
