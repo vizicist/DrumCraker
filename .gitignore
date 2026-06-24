@@ -1,0 +1,18 @@
+# Build artifacts
+build/
+releases/
+
+# JUCE framework (cloned by build.sh / CMake FetchContent)
+JUCE/
+
+# IDE / editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# OS files
+Thumbs.db
+desktop.ini

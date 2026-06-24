@@ -9,6 +9,7 @@
 #include <unordered_map>
 #include <utility>
 #include <array>
+#include <future>
 
 class SampleEngine
 {
@@ -43,8 +44,23 @@ public:
 private:
     void loadSamplesAsync();
     void loadSamplesSync();
-    bool loadSampleFile(const AudioSample& audioSample);
+    
+    // Fase 1: Decode each unique audio file ONCE, extract all requested channels.
+    // `channels` is a list of (fileChannel, cacheKey) pairs to extract from this file.
+    bool loadUniqueFile(const juce::File& audioFile,
+                        const std::vector<std::pair<int, juce::String>>& channels,
+                        juce::AudioFormatManager& formatManager);
+    
     void resampleBuffer(juce::AudioBuffer<float>& buffer, double sourceSampleRate, double targetSampleRate);
+    
+    // Fase 2: Disk cache (.dcc) — pre-decoded, resampled sample cache for instant reload.
+    static juce::File getCacheDirectory();
+    juce::File getCacheFileForKit(const juce::String& kitPath, double targetSR);
+    uint64_t computeKitSignature(const DrumKit& kit, double targetSR);
+    bool loadFromDiskCache(const juce::File& cacheFile, double expectedSR, uint64_t expectedSig);
+    void writeDiskCacheAsync(const juce::File& cacheFile, double targetSR, uint64_t kitSig);
+    void waitForCacheWrite();
+    void pruneDiskCache();
     
     std::unique_ptr<DrumKit> currentKit;
     std::atomic<bool> kitLoaded{false};
@@ -53,7 +69,9 @@ private:
     
     // Cache de buffers de audio cargados (optimized with unordered_map)
     std::unordered_map<juce::String, std::unique_ptr<juce::AudioBuffer<float>>> audioBufferCache;
-    std::unordered_map<juce::String, double> originalSampleRates; // Guardar sample rate original
+    // Sample rate the buffer is currently stored at (NOT the original file rate).
+    // Updated after every resample so prepare() always resamples from the correct rate.
+    std::unordered_map<juce::String, double> bufferSampleRates;
     juce::CriticalSection cacheLock;
 
     // Lock-free buffer access: atomic pointers for audio thread
@@ -87,6 +105,9 @@ private:
     std::pair<const DrumSample*, float> samplesWithDiffPool[maxSamplesPerInstrument];
     std::pair<int, float> weightedCandidatesPool[maxCandidates];
     std::pair<int, float> indexedCandidatesPool[maxCandidates];
+
+    // Disk cache write thread handle
+    std::future<void> cacheWriteFuture;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SampleEngine)
 };

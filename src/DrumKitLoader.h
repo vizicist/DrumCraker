@@ -35,6 +35,7 @@ struct DrumKit
     std::vector<std::unique_ptr<Instrument>> instruments;
     std::map<int, juce::String> midiMap; // MIDI note -> instrument name
     juce::File basePath;
+    juce::File kitFile;  // Full path to kit XML (for disk cache signature)
 };
 
 class DrumKitLoader
