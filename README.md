@@ -54,6 +54,41 @@ DrumCraker adds natural human feel to MIDI performances, working with both fixed
   - Always uses pool of 4 closest samples by velocity
   - Prevents same sample from playing consecutively
 
+## Web / WebAssembly Version
+
+DrumCraker also runs **in the browser** via WebAssembly. The audio core —
+velocity-layer selection, anti-machine-gun round robin, and Gaussian
+velocity/timing humanization — is compiled to WASM and runs on the audio thread
+inside an `AudioWorklet`, mirroring the lock-free design of the native plugin.
+
+The [`web/`](web/) folder contains a demo page that lets you play kits from drum
+pads and a step sequencer, tweak the engine parameters live, and load different
+DrumGizmo kits (including a folder on your machine).
+
+**Windows (one click):**
+
+```bat
+run_wasm.cmd            :: starts the local server and opens the demo in your browser
+build_wasm.cmd          :: (re)compile web\public\drumcraker.wasm with Emscripten
+build_wasm.cmd kit      :: also regenerate the bundled web kit from the source kit
+```
+
+`build_wasm.cmd` auto-detects the Emscripten SDK (via `%EMSDK%` or common
+locations such as `..\emsdk`); `run_wasm.cmd` uses Node from PATH or the copy
+bundled with emsdk.
+
+**Any platform:**
+
+```bash
+cd web
+node serve.mjs 8080          # AudioWorklet requires http(s), not file://
+# open http://localhost:8080 and click "Start Audio"
+```
+
+A compact, web-optimized version of the Tchackpoum kit is bundled, so the demo
+runs with no build step. See [web/README.md](web/README.md) for how to rebuild
+the WASM engine and generate your own web kit bundles.
+
 ## System Requirements
 
 ### Windows

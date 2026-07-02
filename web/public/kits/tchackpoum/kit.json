@@ -1,0 +1,1023 @@
+{
+ "name": "Tchackpoum",
+ "description": "everything but cowbell",
+ "sampleRate": 44100,
+ "instruments": [
+  {
+   "name": "kick_ludw",
+   "samples": [
+    {
+     "power": 0,
+     "file": "kick_ludw/0000.wav"
+    },
+    {
+     "power": 0.3333333333333333,
+     "file": "kick_ludw/0001.wav"
+    },
+    {
+     "power": 0.6666666666666666,
+     "file": "kick_ludw/0002.wav"
+    },
+    {
+     "power": 1,
+     "file": "kick_ludw/0003.wav"
+    }
+   ]
+  },
+  {
+   "name": "kick_ludw_damp",
+   "samples": [
+    {
+     "power": 0,
+     "file": "kick_ludw_damp/0000.wav"
+    },
+    {
+     "power": 0.35714285714285715,
+     "file": "kick_ludw_damp/0001.wav"
+    },
+    {
+     "power": 0.6428571428571429,
+     "file": "kick_ludw_damp/0002.wav"
+    },
+    {
+     "power": 1,
+     "file": "kick_ludw_damp/0003.wav"
+    }
+   ]
+  },
+  {
+   "name": "kick_ludw_jazz",
+   "samples": [
+    {
+     "power": 0,
+     "file": "kick_ludw_jazz/0000.wav"
+    },
+    {
+     "power": 0.3333333333333333,
+     "file": "kick_ludw_jazz/0001.wav"
+    },
+    {
+     "power": 0.6666666666666666,
+     "file": "kick_ludw_jazz/0002.wav"
+    },
+    {
+     "power": 1,
+     "file": "kick_ludw_jazz/0003.wav"
+    }
+   ]
+  },
+  {
+   "name": "kick_prem_damp",
+   "samples": [
+    {
+     "power": 0,
+     "file": "kick_prem_damp/0000.wav"
+    },
+    {
+     "power": 0.3333333333333333,
+     "file": "kick_prem_damp/0001.wav"
+    },
+    {
+     "power": 0.6666666666666666,
+     "file": "kick_prem_damp/0002.wav"
+    },
+    {
+     "power": 1,
+     "file": "kick_prem_damp/0003.wav"
+    }
+   ]
+  },
+  {
+   "name": "kick_prem_free",
+   "samples": [
+    {
+     "power": 0,
+     "file": "kick_prem_free/0000.wav"
+    },
+    {
+     "power": 0.36363636363636365,
+     "file": "kick_prem_free/0001.wav"
+    },
+    {
+     "power": 0.6363636363636364,
+     "file": "kick_prem_free/0002.wav"
+    },
+    {
+     "power": 1,
+     "file": "kick_prem_free/0003.wav"
+    }
+   ]
+  },
+  {
+   "name": "kick_sono",
+   "samples": [
+    {
+     "power": 0,
+     "file": "kick_sono/0000.wav"
+    },
+    {
+     "power": 0.3,
+     "file": "kick_sono/0001.wav"
+    },
+    {
+     "power": 0.7,
+     "file": "kick_sono/0002.wav"
+    },
+    {
+     "power": 1,
+     "file": "kick_sono/0003.wav"
+    }
+   ]
+  },
+  {
+   "name": "snare_supr64",
+   "samples": [
+    {
+     "power": 0,
+     "file": "snare_supr64/0000.wav"
+    },
+    {
+     "power": 0.35714285714285715,
+     "file": "snare_supr64/0001.wav"
+    },
+    {
+     "power": 0.6428571428571429,
+     "file": "snare_supr64/0002.wav"
+    },
+    {
+     "power": 1,
+     "file": "snare_supr64/0003.wav"
+    }
+   ]
+  },
+  {
+   "name": "snare_supr64_edg",
+   "samples": [
+    {
+     "power": 0,
+     "file": "snare_supr64_edg/0000.wav"
+    },
+    {
+     "power": 0.3076923076923077,
+     "file": "snare_supr64_edg/0001.wav"
+    },
+    {
+     "power": 0.6923076923076923,
+     "file": "snare_supr64_edg/0002.wav"
+    },
+    {
+     "power": 1,
+     "file": "snare_supr64_edg/0003.wav"
+    }
+   ]
+  },
+  {
+   "name": "snare_supr64_rim",
+   "samples": [
+    {
+     "power": 0,
+     "file": "snare_supr64_rim/0000.wav"
+    },
+    {
+     "power": 0.36363636363636365,
+     "file": "snare_supr64_rim/0001.wav"
+    },
+    {
+     "power": 0.6363636363636364,
+     "file": "snare_supr64_rim/0002.wav"
+    },
+    {
+     "power": 1,
+     "file": "snare_supr64_rim/0003.wav"
+    }
+   ]
+  },
+  {
+   "name": "snare_pear",
+   "samples": [
+    {
+     "power": 0,
+     "file": "snare_pear/0000.wav"
+    },
+    {
+     "power": 0.35714285714285715,
+     "file": "snare_pear/0001.wav"
+    },
+    {
+     "power": 0.6428571428571429,
+     "file": "snare_pear/0002.wav"
+    },
+    {
+     "power": 1,
+     "file": "snare_pear/0003.wav"
+    }
+   ]
+  },
+  {
+   "name": "snare_pear_damp",
+   "samples": [
+    {
+     "power": 0,
+     "file": "snare_pear_damp/0000.wav"
+    },
+    {
+     "power": 0.35714285714285715,
+     "file": "snare_pear_damp/0001.wav"
+    },
+    {
+     "power": 0.6428571428571429,
+     "file": "snare_pear_damp/0002.wav"
+    },
+    {
+     "power": 1,
+     "file": "snare_pear_damp/0003.wav"
+    }
+   ]
+  },
+  {
+   "name": "snare_pear_edg",
+   "samples": [
+    {
+     "power": 0,
+     "file": "snare_pear_edg/0000.wav"
+    },
+    {
+     "power": 0.35714285714285715,
+     "file": "snare_pear_edg/0001.wav"
+    },
+    {
+     "power": 0.6428571428571429,
+     "file": "snare_pear_edg/0002.wav"
+    },
+    {
+     "power": 1,
+     "file": "snare_pear_edg/0003.wav"
+    }
+   ]
+  },
+  {
+   "name": "snare_pear_rim",
+   "samples": [
+    {
+     "power": 0,
+     "file": "snare_pear_rim/0000.wav"
+    },
+    {
+     "power": 0.36363636363636365,
+     "file": "snare_pear_rim/0001.wav"
+    },
+    {
+     "power": 0.6363636363636364,
+     "file": "snare_pear_rim/0002.wav"
+    },
+    {
+     "power": 1,
+     "file": "snare_pear_rim/0003.wav"
+    }
+   ]
+  },
+  {
+   "name": "snare_ss",
+   "samples": [
+    {
+     "power": 0,
+     "file": "snare_ss/0000.wav"
+    },
+    {
+     "power": 0.3,
+     "file": "snare_ss/0001.wav"
+    },
+    {
+     "power": 0.7,
+     "file": "snare_ss/0002.wav"
+    },
+    {
+     "power": 1,
+     "file": "snare_ss/0003.wav"
+    }
+   ]
+  },
+  {
+   "name": "hihat_zild_clo",
+   "samples": [
+    {
+     "power": 0,
+     "file": "hihat_zild_clo/0000.wav"
+    },
+    {
+     "power": 0.4,
+     "file": "hihat_zild_clo/0001.wav"
+    },
+    {
+     "power": 0.6,
+     "file": "hihat_zild_clo/0002.wav"
+    },
+    {
+     "power": 1,
+     "file": "hihat_zild_clo/0003.wav"
+    }
+   ]
+  },
+  {
+   "name": "hihat_zild_clo_edg",
+   "samples": [
+    {
+     "power": 0,
+     "file": "hihat_zild_clo_edg/0000.wav"
+    },
+    {
+     "power": 0.3333333333333333,
+     "file": "hihat_zild_clo_edg/0001.wav"
+    },
+    {
+     "power": 0.6666666666666666,
+     "file": "hihat_zild_clo_edg/0002.wav"
+    },
+    {
+     "power": 1,
+     "file": "hihat_zild_clo_edg/0003.wav"
+    }
+   ]
+  },
+  {
+   "name": "hihat_zild_op1",
+   "samples": [
+    {
+     "power": 0,
+     "file": "hihat_zild_op1/0000.wav"
+    },
+    {
+     "power": 0.3333333333333333,
+     "file": "hihat_zild_op1/0001.wav"
+    },
+    {
+     "power": 0.6666666666666666,
+     "file": "hihat_zild_op1/0002.wav"
+    },
+    {
+     "power": 1,
+     "file": "hihat_zild_op1/0003.wav"
+    }
+   ]
+  },
+  {
+   "name": "hihat_zild_op1_edg",
+   "samples": [
+    {
+     "power": 0,
+     "file": "hihat_zild_op1_edg/0000.wav"
+    },
+    {
+     "power": 0.4,
+     "file": "hihat_zild_op1_edg/0001.wav"
+    },
+    {
+     "power": 0.6,
+     "file": "hihat_zild_op1_edg/0002.wav"
+    },
+    {
+     "power": 1,
+     "file": "hihat_zild_op1_edg/0003.wav"
+    }
+   ]
+  },
+  {
+   "name": "hihat_zild_op2",
+   "samples": [
+    {
+     "power": 0,
+     "file": "hihat_zild_op2/0000.wav"
+    },
+    {
+     "power": 0.4,
+     "file": "hihat_zild_op2/0001.wav"
+    },
+    {
+     "power": 0.6,
+     "file": "hihat_zild_op2/0002.wav"
+    },
+    {
+     "power": 1,
+     "file": "hihat_zild_op2/0003.wav"
+    }
+   ]
+  },
+  {
+   "name": "hihat_zild_op2_edg",
+   "samples": [
+    {
+     "power": 0,
+     "file": "hihat_zild_op2_edg/0000.wav"
+    },
+    {
+     "power": 0.4,
+     "file": "hihat_zild_op2_edg/0001.wav"
+    },
+    {
+     "power": 0.6,
+     "file": "hihat_zild_op2_edg/0002.wav"
+    },
+    {
+     "power": 1,
+     "file": "hihat_zild_op2_edg/0003.wav"
+    }
+   ]
+  },
+  {
+   "name": "hihat_zild_op3",
+   "samples": [
+    {
+     "power": 0,
+     "file": "hihat_zild_op3/0000.wav"
+    },
+    {
+     "power": 0.3333333333333333,
+     "file": "hihat_zild_op3/0001.wav"
+    },
+    {
+     "power": 0.6666666666666666,
+     "file": "hihat_zild_op3/0002.wav"
+    },
+    {
+     "power": 1,
+     "file": "hihat_zild_op3/0003.wav"
+    }
+   ]
+  },
+  {
+   "name": "hihat_zild_op3_edg",
+   "samples": [
+    {
+     "power": 0,
+     "file": "hihat_zild_op3_edg/0000.wav"
+    },
+    {
+     "power": 0.3333333333333333,
+     "file": "hihat_zild_op3_edg/0001.wav"
+    },
+    {
+     "power": 0.6666666666666666,
+     "file": "hihat_zild_op3_edg/0002.wav"
+    },
+    {
+     "power": 1,
+     "file": "hihat_zild_op3_edg/0003.wav"
+    }
+   ]
+  },
+  {
+   "name": "hihat_zild_ped",
+   "samples": [
+    {
+     "power": 0,
+     "file": "hihat_zild_ped/0000.wav"
+    },
+    {
+     "power": 0.3333333333333333,
+     "file": "hihat_zild_ped/0001.wav"
+    },
+    {
+     "power": 0.6666666666666666,
+     "file": "hihat_zild_ped/0002.wav"
+    },
+    {
+     "power": 1,
+     "file": "hihat_zild_ped/0003.wav"
+    }
+   ]
+  },
+  {
+   "name": "hihat_zild_spl",
+   "samples": [
+    {
+     "power": 0,
+     "file": "hihat_zild_spl/0000.wav"
+    },
+    {
+     "power": 0.4,
+     "file": "hihat_zild_spl/0001.wav"
+    },
+    {
+     "power": 0.6,
+     "file": "hihat_zild_spl/0002.wav"
+    },
+    {
+     "power": 1,
+     "file": "hihat_zild_spl/0003.wav"
+    }
+   ]
+  },
+  {
+   "name": "hihat_mute",
+   "samples": [
+    {
+     "power": 1,
+     "file": "hihat_mute/0000.wav"
+    }
+   ]
+  },
+  {
+   "name": "tom_12_prem",
+   "samples": [
+    {
+     "power": 0,
+     "file": "tom_12_prem/0000.wav"
+    },
+    {
+     "power": 0.3,
+     "file": "tom_12_prem/0001.wav"
+    },
+    {
+     "power": 0.7,
+     "file": "tom_12_prem/0002.wav"
+    },
+    {
+     "power": 1,
+     "file": "tom_12_prem/0003.wav"
+    }
+   ]
+  },
+  {
+   "name": "tom_12_prem_edg",
+   "samples": [
+    {
+     "power": 0,
+     "file": "tom_12_prem_edg/0000.wav"
+    },
+    {
+     "power": 0.3,
+     "file": "tom_12_prem_edg/0001.wav"
+    },
+    {
+     "power": 0.7,
+     "file": "tom_12_prem_edg/0002.wav"
+    },
+    {
+     "power": 1,
+     "file": "tom_12_prem_edg/0003.wav"
+    }
+   ]
+  },
+  {
+   "name": "tom_13_prem",
+   "samples": [
+    {
+     "power": 0,
+     "file": "tom_13_prem/0000.wav"
+    },
+    {
+     "power": 0.3,
+     "file": "tom_13_prem/0001.wav"
+    },
+    {
+     "power": 0.7,
+     "file": "tom_13_prem/0002.wav"
+    },
+    {
+     "power": 1,
+     "file": "tom_13_prem/0003.wav"
+    }
+   ]
+  },
+  {
+   "name": "tom_13_prem_edg",
+   "samples": [
+    {
+     "power": 0,
+     "file": "tom_13_prem_edg/0000.wav"
+    },
+    {
+     "power": 0.3333333333333333,
+     "file": "tom_13_prem_edg/0001.wav"
+    },
+    {
+     "power": 0.6666666666666666,
+     "file": "tom_13_prem_edg/0002.wav"
+    },
+    {
+     "power": 1,
+     "file": "tom_13_prem_edg/0003.wav"
+    }
+   ]
+  },
+  {
+   "name": "tom_16_prem",
+   "samples": [
+    {
+     "power": 0,
+     "file": "tom_16_prem/0000.wav"
+    },
+    {
+     "power": 0.3,
+     "file": "tom_16_prem/0001.wav"
+    },
+    {
+     "power": 0.7,
+     "file": "tom_16_prem/0002.wav"
+    },
+    {
+     "power": 1,
+     "file": "tom_16_prem/0003.wav"
+    }
+   ]
+  },
+  {
+   "name": "tom_16_prem_edg",
+   "samples": [
+    {
+     "power": 0,
+     "file": "tom_16_prem_edg/0000.wav"
+    },
+    {
+     "power": 0.3333333333333333,
+     "file": "tom_16_prem_edg/0001.wav"
+    },
+    {
+     "power": 0.6666666666666666,
+     "file": "tom_16_prem_edg/0002.wav"
+    },
+    {
+     "power": 1,
+     "file": "tom_16_prem_edg/0003.wav"
+    }
+   ]
+  },
+  {
+   "name": "crash_14_zild_bow",
+   "samples": [
+    {
+     "power": 0,
+     "file": "crash_14_zild_bow/0000.wav"
+    },
+    {
+     "power": 0.3333333333333333,
+     "file": "crash_14_zild_bow/0001.wav"
+    },
+    {
+     "power": 0.6666666666666666,
+     "file": "crash_14_zild_bow/0002.wav"
+    },
+    {
+     "power": 1,
+     "file": "crash_14_zild_bow/0003.wav"
+    }
+   ]
+  },
+  {
+   "name": "crash_14_zild_edg",
+   "samples": [
+    {
+     "power": 0,
+     "file": "crash_14_zild_edg/0000.wav"
+    },
+    {
+     "power": 0.3333333333333333,
+     "file": "crash_14_zild_edg/0001.wav"
+    },
+    {
+     "power": 0.6666666666666666,
+     "file": "crash_14_zild_edg/0002.wav"
+    },
+    {
+     "power": 1,
+     "file": "crash_14_zild_edg/0003.wav"
+    }
+   ]
+  },
+  {
+   "name": "crash_15_sabi_bow",
+   "samples": [
+    {
+     "power": 0,
+     "file": "crash_15_sabi_bow/0000.wav"
+    },
+    {
+     "power": 0.25,
+     "file": "crash_15_sabi_bow/0001.wav"
+    },
+    {
+     "power": 0.75,
+     "file": "crash_15_sabi_bow/0002.wav"
+    },
+    {
+     "power": 1,
+     "file": "crash_15_sabi_bow/0003.wav"
+    }
+   ]
+  },
+  {
+   "name": "crash_15_sabi_edg",
+   "samples": [
+    {
+     "power": 0,
+     "file": "crash_15_sabi_edg/0000.wav"
+    },
+    {
+     "power": 0.25,
+     "file": "crash_15_sabi_edg/0001.wav"
+    },
+    {
+     "power": 0.75,
+     "file": "crash_15_sabi_edg/0002.wav"
+    },
+    {
+     "power": 1,
+     "file": "crash_15_sabi_edg/0003.wav"
+    }
+   ]
+  },
+  {
+   "name": "cymb_18_zild_efx_bow",
+   "samples": [
+    {
+     "power": 0,
+     "file": "cymb_18_zild_efx_bow/0000.wav"
+    },
+    {
+     "power": 0.3333333333333333,
+     "file": "cymb_18_zild_efx_bow/0001.wav"
+    },
+    {
+     "power": 0.6666666666666666,
+     "file": "cymb_18_zild_efx_bow/0002.wav"
+    },
+    {
+     "power": 1,
+     "file": "cymb_18_zild_efx_bow/0003.wav"
+    }
+   ]
+  },
+  {
+   "name": "cymb_18_zild_efx_edg",
+   "samples": [
+    {
+     "power": 0,
+     "file": "cymb_18_zild_efx_edg/0000.wav"
+    },
+    {
+     "power": 0.3,
+     "file": "cymb_18_zild_efx_edg/0001.wav"
+    },
+    {
+     "power": 0.7,
+     "file": "cymb_18_zild_efx_edg/0002.wav"
+    },
+    {
+     "power": 1,
+     "file": "cymb_18_zild_efx_edg/0003.wav"
+    }
+   ]
+  },
+  {
+   "name": "crash_mute",
+   "samples": [
+    {
+     "power": 1,
+     "file": "crash_mute/0000.wav"
+    }
+   ]
+  },
+  {
+   "name": "ride_20_pais_bel",
+   "samples": [
+    {
+     "power": 0,
+     "file": "ride_20_pais_bel/0000.wav"
+    },
+    {
+     "power": 0.3333333333333333,
+     "file": "ride_20_pais_bel/0001.wav"
+    },
+    {
+     "power": 0.6666666666666666,
+     "file": "ride_20_pais_bel/0002.wav"
+    },
+    {
+     "power": 1,
+     "file": "ride_20_pais_bel/0003.wav"
+    }
+   ]
+  },
+  {
+   "name": "ride_20_pais_bow",
+   "samples": [
+    {
+     "power": 0,
+     "file": "ride_20_pais_bow/0000.wav"
+    },
+    {
+     "power": 0.375,
+     "file": "ride_20_pais_bow/0001.wav"
+    },
+    {
+     "power": 0.625,
+     "file": "ride_20_pais_bow/0002.wav"
+    },
+    {
+     "power": 1,
+     "file": "ride_20_pais_bow/0003.wav"
+    }
+   ]
+  },
+  {
+   "name": "ride_20_pais_edg",
+   "samples": [
+    {
+     "power": 0,
+     "file": "ride_20_pais_edg/0000.wav"
+    },
+    {
+     "power": 0.3333333333333333,
+     "file": "ride_20_pais_edg/0001.wav"
+    },
+    {
+     "power": 0.6666666666666666,
+     "file": "ride_20_pais_edg/0002.wav"
+    },
+    {
+     "power": 1,
+     "file": "ride_20_pais_edg/0003.wav"
+    }
+   ]
+  },
+  {
+   "name": "ride_mute",
+   "samples": [
+    {
+     "power": 1,
+     "file": "ride_mute/0000.wav"
+    }
+   ]
+  }
+ ],
+ "midimap": [
+  {
+   "note": 0,
+   "instr": "kick_ludw"
+  },
+  {
+   "note": 2,
+   "instr": "kick_ludw_damp"
+  },
+  {
+   "note": 4,
+   "instr": "kick_ludw_jazz"
+  },
+  {
+   "note": 6,
+   "instr": "kick_prem_damp"
+  },
+  {
+   "note": 8,
+   "instr": "kick_prem_free"
+  },
+  {
+   "note": 10,
+   "instr": "kick_sono"
+  },
+  {
+   "note": 12,
+   "instr": "snare_supr64"
+  },
+  {
+   "note": 13,
+   "instr": "snare_supr64_edg"
+  },
+  {
+   "note": 14,
+   "instr": "snare_supr64_rim"
+  },
+  {
+   "note": 16,
+   "instr": "snare_pear"
+  },
+  {
+   "note": 17,
+   "instr": "snare_pear_damp"
+  },
+  {
+   "note": 18,
+   "instr": "snare_pear_edg"
+  },
+  {
+   "note": 19,
+   "instr": "snare_pear_rim"
+  },
+  {
+   "note": 21,
+   "instr": "snare_ss"
+  },
+  {
+   "note": 23,
+   "instr": "hihat_zild_clo"
+  },
+  {
+   "note": 24,
+   "instr": "hihat_zild_op1"
+  },
+  {
+   "note": 25,
+   "instr": "hihat_zild_op2"
+  },
+  {
+   "note": 26,
+   "instr": "hihat_zild_op3"
+  },
+  {
+   "note": 27,
+   "instr": "hihat_zild_clo_edg"
+  },
+  {
+   "note": 28,
+   "instr": "hihat_zild_op1_edg"
+  },
+  {
+   "note": 29,
+   "instr": "hihat_zild_op2_edg"
+  },
+  {
+   "note": 30,
+   "instr": "hihat_zild_op3_edg"
+  },
+  {
+   "note": 31,
+   "instr": "hihat_zild_ped"
+  },
+  {
+   "note": 32,
+   "instr": "hihat_zild_spl"
+  },
+  {
+   "note": 33,
+   "instr": "hihat_mute"
+  },
+  {
+   "note": 35,
+   "instr": "tom_12_prem"
+  },
+  {
+   "note": 36,
+   "instr": "tom_12_prem_edg"
+  },
+  {
+   "note": 38,
+   "instr": "tom_13_prem"
+  },
+  {
+   "note": 39,
+   "instr": "tom_13_prem_edg"
+  },
+  {
+   "note": 41,
+   "instr": "tom_16_prem"
+  },
+  {
+   "note": 42,
+   "instr": "tom_16_prem_edg"
+  },
+  {
+   "note": 44,
+   "instr": "crash_14_zild_bow"
+  },
+  {
+   "note": 45,
+   "instr": "crash_14_zild_edg"
+  },
+  {
+   "note": 47,
+   "instr": "crash_15_sabi_bow"
+  },
+  {
+   "note": 48,
+   "instr": "crash_15_sabi_edg"
+  },
+  {
+   "note": 50,
+   "instr": "cymb_18_zild_efx_bow"
+  },
+  {
+   "note": 51,
+   "instr": "cymb_18_zild_efx_edg"
+  },
+  {
+   "note": 53,
+   "instr": "crash_mute"
+  },
+  {
+   "note": 55,
+   "instr": "ride_20_pais_bel"
+  },
+  {
+   "note": 56,
+   "instr": "ride_20_pais_bow"
+  },
+  {
+   "note": 57,
+   "instr": "ride_20_pais_edg"
+  },
+  {
+   "note": 59,
+   "instr": "ride_mute"
+  }
+ ]
+}
